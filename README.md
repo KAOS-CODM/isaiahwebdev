@@ -3,7 +3,7 @@
 Welcome to my personal portfolio! 🚀  
 This site represents my journey as a web developer, showcasing my skills, creativity, and growth in building clean, functional, and user-friendly web interfaces.
 
-🔗 **Live Demo:** [Visit Portfolio](https://kaos-codm.github.io/portfolio/)
+🔗 **Live Demo:** [Visit Portfolio](https://kaos-codm.github.io/isaiahwebdev-portfolio/)
 
 ---
 
@@ -64,28 +64,20 @@ portfolio/          # Root folder
 
 ### 💼 Fiverr: https://www.fiverr.com/isaiahwebdev
 
-### 🌍 Portfolio: https://kaos-codm.github.io/portfolio/
+### 🌍 Portfolio: https://kaos-codm.github.io/isaiahwebdev-portfolio/
 
 
 ---
 
 ## 🚀 Getting Started
 
-### Clone the Repository
+### Clone the Repository, Go to project folder & Open Index file
 ```bash
-git clone https://github.com/KAOS-CODM/portfolio.git
-```
-### Go to project folder
-```bash
-cd portfolio/public
-```
-### Open index files
-```bash
-open index.html
+git clone https://github.KAOS-CODM/isaiahwebdev-portfolio.git
 ```
 
 ### Deploy
-Deployment is handled automatically with GitHub Pages.
+Deployment is handled automutomomy with GitHub  Pages.
 
 
 
