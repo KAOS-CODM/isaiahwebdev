@@ -16,6 +16,81 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="logo/logo.png">
+    <style>
+        /* Copy button styles */
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 0, 60, 0.2);
+            border-color: var(--neon-red);
+        }
+        
+        .copy-btn.copied {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .contact-text {
+            flex-grow: 1;
+        }
+        
+        .copy-feedback {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .copy-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .contact-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .copy-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+        }
+    </style>
 </head>
 <body>
     <a href="#contact-content" class="skip-link">Skip to main content</a>
@@ -62,28 +137,37 @@
                     <p>I'm available for freelance work, collaborations, and full-time opportunities. Whether you need a website, web application, or just want to connect, feel free to reach out!</p>
                     
                     <div class="contact-info" style="margin: 40px 0;">
-                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div class="contact-item">
                             <i class="fas fa-envelope" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
-                            <div>
+                            <div class="contact-text">
                                 <h3 style="margin: 0; color: var(--text-light);">Email</h3>
-                                <p style="margin: 5px 0; color: var(--text-dim);">kaoskonseptech@gmail.com</p>
+                                <p id="email-text" style="margin: 5px 0; color: var(--text-dim);">kaoskonseptech@gmail.com</p>
                             </div>
+                            <button class="copy-btn" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
                         </div>
 
-                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div class="contact-item">
                             <i class="fab fa-whatsapp" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
-                            <div>
+                            <div class="contact-text">
                                 <h3 style="margin: 0; color: var(--text-light);">WhatsApp</h3>
-                                <p style="margin: 5px 0; color: var(--text-dim);">+234 913 501 2572</p>
+                                <p id="phone-text" style="margin: 5px 0; color: var(--text-dim);">+234 913 501 2572</p>
                             </div>
+                            <button class="copy-btn" data-copy="+2349135012572" aria-label="Copy phone number">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
                         </div>
 
-                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div class="contact-item">
                             <i class="fab fa-github" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
-                            <div>
+                            <div class="contact-text">
                                 <h3 style="margin: 0; color: var(--text-light);">GitHub</h3>
-                                <p style="margin: 5px 0; color: var(--text-dim);">github.com/KAOS-CODM</p>
+                                <p id="github-text" style="margin: 5px 0; color: var(--text-dim);">github.com/KAOS-CODM</p>
                             </div>
+                            <button class="copy-btn" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -157,11 +241,87 @@
         <i class="fas fa-chevron-up"></i>
     </div>
 
+    <!-- Copy feedback element -->
+    <div class="copy-feedback" id="copyFeedback">
+        <i class="fas fa-check-circle"></i> Copied to clipboard!
+    </div>
+
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
 
     <script>
+        // Copy functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const copyFeedback = document.getElementById('copyFeedback');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const textToCopy = this.getAttribute('data-copy');
+                    
+                    // Use the Clipboard API if available
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(textToCopy)
+                            .then(() => {
+                                showCopySuccess(this);
+                            })
+                            .catch(err => {
+                                console.error('Failed to copy: ', err);
+                                fallbackCopy(textToCopy, this);
+                            });
+                    } else {
+                        // Fallback for older browsers
+                        fallbackCopy(textToCopy, this);
+                    }
+                });
+            });
+            
+            function fallbackCopy(text, button) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showCopySuccess(button);
+                    } else {
+                        console.error('Fallback copy failed');
+                    }
+                } catch (err) {
+                    console.error('Fallback copy failed: ', err);
+                }
+                
+                document.body.removeChild(textArea);
+            }
+            
+            function showCopySuccess(button) {
+                // Visual feedback on the button
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.classList.add('copied');
+                
+                // Show feedback message
+                copyFeedback.classList.add('show');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+                
+                // Hide feedback after 3 seconds
+                setTimeout(() => {
+                    copyFeedback.classList.remove('show');
+                }, 3000);
+            }
+        });
+
         // Enhanced contact form with validation
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
