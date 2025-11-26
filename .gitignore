@@ -38,3 +38,7 @@ Thumbs.db
 
 # We don't need webfonts directory (using CDN)
 webfonts/
+
+# Temporary scripts
+*.sh
+!check-seo.sh  # Keep if you want this one
