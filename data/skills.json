@@ -1,0 +1,53 @@
+{
+    "skillCategories": [
+        {
+            "name": "Frontend Technologies",
+            "icon": "fas fa-code",
+            "skills": [
+                { "name": "HTML5 & Semantic Markup", "level": 95 },
+                { "name": "CSS3 & Modern Layouts", "level": 90 },
+                { "name": "JavaScript (ES6+)", "level": 85 },
+                { "name": "React & Components", "level": 75 },
+                { "name": "Responsive Design", "level": 92 }
+            ]
+        },
+        {
+            "name": "Tools & Workflow",
+            "icon": "fas fa-tools",
+            "skills": [
+                { "name": "Git & Version Control", "level": 80 },
+                { "name": "Browser DevTools", "level": 88 },
+                { "name": "VS Code & Editors", "level": 90 },
+                { "name": "Figma & Prototyping", "level": 70 },
+                { "name": "Command Line", "level": 75 }
+            ]
+        },
+        {
+            "name": "Design & UX",
+            "icon": "fas fa-palette",
+            "skills": [
+                { "name": "UI Design Principles", "level": 80 },
+                { "name": "User Experience", "level": 75 },
+                { "name": "Wireframing", "level": 85 },
+                { "name": "Prototyping", "level": 70 }
+            ]
+        }
+    ],
+    "skillCards": [
+        {
+            "icon": "fas fa-code",
+            "title": "Frontend Development",
+            "description": "HTML5, CSS3, JavaScript, React, Responsive Design"
+        },
+        {
+            "icon": "fas fa-palette",
+            "title": "UI/UX Design",
+            "description": "User-centered design, prototyping, wireframing"
+        },
+        {
+            "icon": "fas fa-tools",
+            "title": "Tools & Technologies",
+            "description": "Git, VS Code, Figma, Chrome DevTools"
+        }
+    ]
+}

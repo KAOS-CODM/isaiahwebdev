@@ -8,61 +8,96 @@ const nextBtn = document.getElementById("next-btn");
 let currentGroup = [];
 let currentIndex = 0;
 
-fetch("projects.json")
-  .then(res => res.json())
-  .then(data => {
-    data.forEach((project, i) => {
-      // Create project card
-      const projectDiv = document.createElement("div");
-      projectDiv.classList.add("project");
+// Load projects
+async function loadProjects() {
+    try {
+        const response = await fetch("data/projects.json");
+        const data = await response.json();
+        
+        if (data.length === 0) {
+            projectsContainer.innerHTML = '<p class="no-projects">No projects available at the moment.</p>';
+            return;
+        }
+        
+        displayProjects(data);
+        setupLightbox(data);
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        projectsContainer.innerHTML = '<p class="error">Failed to load projects. Please try again later.</p>';
+    }
+}
 
-      projectDiv.innerHTML = `
-        <h3>${project.title}</h3>
-        <div class="project-thumb">
-          <img src="${project.images[0]}" alt="${project.title} Thumbnail" class="thumb" data-index="${i}">
+function displayProjects(projects) {
+    projectsContainer.innerHTML = projects.map((project, index) => `
+        <div class="project" data-index="${index}">
+            <h3>${project.title}</h3>
+            <div class="project-thumb">
+                <img src="${project.images[0]}" alt="${project.title} Thumbnail" class="thumb" loading="lazy">
+            </div>
+            <p>${project.description}</p>
+            ${project.technologies ? `<p><strong>Technologies:</strong> ${project.technologies.join(', ')}</p>` : ''}
+            <div class="project-links">
+                <a href="${project.site}" target="_blank" class="project-link">
+                    <i class="fas fa-external-link-alt"></i> Live Demo
+                </a>
+                <a href="${project.github}" target="_blank" class="project-link">
+                    <i class="fab fa-github"></i> Source Code
+                </a>
+            </div>
         </div>
-        <p>${project.description}</p>
-        <a href="${project.site}" target="_blank">View Project Site</a>
-        <p>View my work on <a href="${project.github}" target="_blank">GitHub</a></p>
-      `;
+    `).join('');
+}
 
-      projectsContainer.appendChild(projectDiv);
-    });
-
-    // Attach click listeners to thumbnails
-    document.querySelectorAll(".thumb").forEach((thumb, i) => {
-      thumb.addEventListener("click", () => {
-        fetch("projects.json")
-          .then(res => res.json())
-          .then(projects => {
-            currentGroup = projects[i].images; // set current group of images
-            currentIndex = 0; // start at first image
+function setupLightbox(projects) {
+    document.querySelectorAll('.thumb').forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+            currentGroup = projects[index].images;
+            currentIndex = 0;
             lightboxImg.src = currentGroup[currentIndex];
-            lightbox.style.display = "flex";
-          });
-      });
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
     });
-  });
+}
 
 // Lightbox controls
-closeBtn.addEventListener("click", () => lightbox.style.display = "none");
+closeBtn.addEventListener('click', closeLightbox);
+prevBtn.addEventListener('click', showPrevImage);
+nextBtn.addEventListener('click', showNextImage);
 
-prevBtn.addEventListener("click", () => {
-  if (currentGroup.length) {
-    currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
-    lightboxImg.src = currentGroup[currentIndex];
-  }
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
 });
 
-nextBtn.addEventListener("click", () => {
-  if (currentGroup.length) {
-    currentIndex = (currentIndex + 1) % currentGroup.length;
-    lightboxImg.src = currentGroup[currentIndex];
-  }
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showPrevImage();
+        if (e.key === 'ArrowRight') showNextImage();
+    }
 });
 
-lightbox.addEventListener("click", e => {
-  if (e.target === lightbox) {
-    lightbox.style.display = "none";
-  }
-});
+function closeLightbox() {
+    lightbox.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function showPrevImage() {
+    if (currentGroup.length) {
+        currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
+        lightboxImg.src = currentGroup[currentIndex];
+    }
+}
+
+function showNextImage() {
+    if (currentGroup.length) {
+        currentIndex = (currentIndex + 1) % currentGroup.length;
+        lightboxImg.src = currentGroup[currentIndex];
+    }
+}
+
+// Initialize
+loadProjects();

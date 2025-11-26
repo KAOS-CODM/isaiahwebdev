@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore IsaiahWebDev's portfolio projects - Modern web applications built with HTML, CSS, JavaScript, and React">
+    <meta name="keywords" content="web development projects, portfolio, HTML projects, CSS projects, JavaScript projects, React applications, frontend developer projects">
+    <meta name="author" content="IsaiahWebDev">
+    <meta property="og:title" content="Projects - IsaiahWebDev | Web Development Portfolio">
+    <meta property="og:description" content="Browse through my collection of web development projects showcasing modern technologies and creative solutions">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaiahwebdev.com/projects">
+    <meta name="keywords" content="web development projects, portfolio, HTML projects, CSS projects, JavaScript projects, React applications, frontend developer projects">
+    <meta name="author" content="IsaiahWebDev">
+    <meta property="og:title" content="Projects - IsaiahWebDev | Web Development Portfolio">
+    <meta property="og:description" content="Browse through my collection of web development projects showcasing modern technologies and creative solutions">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaiahwebdev.com/projects">
+    <title>Projects - IsaiahWebDev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="logo/logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="projects.html" class="nav-link active">Projects</a>
+            <a href="certificates.html" class="nav-link">Certificates</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
+    <a href="#projects" class="skip-link">Skip to main content</a>
+
+    <section id="projects-hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>MY PROJECTS</h1>
+                    <h2>Explore My Latest Work</h2>
+                    <p>Discover my portfolio of web development projects, showcasing modern design, responsive layouts, and cutting-edge technologies.</p>
+                    <div class="btn-group">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> View Projects
+                        </a>
+                    </div>
+                </div>
+                <div class="profile-container">
+                    <div class="profile-wrapper">
+                        <img src="images/profile.jpg" alt="Projects Overview" class="profile-img">
+                        <div class="glow-effect"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" style="padding: 60px 0;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Projects</h2>
+                <p>Handcrafted with modern technologies</p>
+            </div>
+            <div class="projects-container" id="projects-container-full">
+                <!-- Projects will be loaded here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="close">&times;</span>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="Expanded Project Image">
+        <div class="nav-btns">
+            <span id="prev-btn">&#10094;</span>
+            <span id="next-btn">&#10095;</span>
+        </div>
+    </div>
+
+    <footer id="main-footer">
+        <!-- Footer will be loaded here dynamically -->
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/footer-loader.js"></script>
+    <script src="js/hero-final-fix.js"></script>
+
+    <script>
+        // Enhanced project loading for projects page
+        const projectsContainer = document.getElementById("projects-container-full");
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightbox-img");
+        const closeBtn = document.querySelector(".close");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        let currentGroup = [];
+        let currentIndex = 0;
+
+        async function loadProjects() {
+            try {
+                const response = await fetch("data/projects.json");
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    projectsContainer.innerHTML = '<p class="no-projects">No projects available at the moment.</p>';
+                    return;
+                }
+                
+                displayProjects(data);
+                setupLightbox(data);
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                projectsContainer.innerHTML = '<p class="error">Failed to load projects. Please try again later.</p>';
+            }
+        }
+
+        function displayProjects(projects) {
+            projectsContainer.innerHTML = projects.map((project, index) => `
+                <div class="project" data-index="${index}">
+                    <h3>${project.title}</h3>
+                    <div class="project-thumb">
+                        <img src="${project.images[0]}" alt="${project.title} Thumbnail" class="thumb" loading="lazy">
+                    </div>
+                    <p>${project.description}</p>
+                    ${project.technologies ? `<p><strong>Technologies:</strong> ${project.technologies.join(', ')}</p>` : ''}
+                    <div class="project-links">
+                        <a href="${project.site}" target="_blank" class="project-link">
+                            <i class="fas fa-external-link-alt"></i> Live Demo
+                        </a>
+                        <a href="${project.github}" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> Source Code
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupLightbox(projects) {
+            document.querySelectorAll('.thumb').forEach((thumb, index) => {
+                thumb.addEventListener('click', () => {
+                    currentGroup = projects[index].images;
+                    currentIndex = 0;
+                    lightboxImg.src = currentGroup[currentIndex];
+                    lightbox.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        // Lightbox controls
+        closeBtn.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentGroup.length) {
+                currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
+                lightboxImg.src = currentGroup[currentIndex];
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentGroup.length) {
+                currentIndex = (currentIndex + 1) % currentGroup.length;
+                lightboxImg.src = currentGroup[currentIndex];
+            }
+        });
+
+        lightbox.addEventListener('click', e => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', e => {
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    lightbox.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+                if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+                if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                }
+            }
+        });
+
+        // Initialize
+        loadProjects();
+    </script>
+</body>
+</html>

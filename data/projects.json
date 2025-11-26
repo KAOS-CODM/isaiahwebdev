@@ -1,0 +1,14 @@
+[
+    {
+        "title": "Recipe Submission Website",
+        "description": "A full-stack recipe submission platform with user authentication, comment sections, admin dashboards, and advanced search functionality.",
+        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
+        "site": "https://praroz.onrender.com",
+        "github": "https://github.com/KAOS-CODM/PRAROZ.git",
+        "images": [
+            "images/recipe-submission1.PNG",
+            "images/recipe-submission2.PNG",
+            "images/recipe-submission3.PNG"
+        ]
+    }
+]

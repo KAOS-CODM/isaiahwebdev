@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+Disallow: /css/
+Disallow: /js/
+Disallow: /logo/
+
+Sitemap: https://isaiahwebdev.onrender.com/sitemap.xml

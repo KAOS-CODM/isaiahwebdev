@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: red;
+            z-index: 1000;
+        }
+        
+        #hero {
+            background: blue;
+            color: white;
+            min-height: 100vh;
+            padding-top: 90px; /* This should push content below navbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        NAVBAR (Fixed at top)
+    </nav>
+    
+    <section id="hero">
+        HERO SECTION (Should be below navbar)
+    </section>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const hero = document.getElementById('hero');
+            
+            console.log('Navbar height:', navbar.offsetHeight);
+            console.log('Navbar position:', navbar.getBoundingClientRect());
+            console.log('Hero position:', hero.getBoundingClientRect());
+            console.log('Hero padding-top:', window.getComputedStyle(hero).paddingTop);
+            
+            // Force check
+            if (hero.getBoundingClientRect().top < navbar.offsetHeight) {
+                console.log('❌ ISSUE: Hero is behind navbar!');
+                hero.style.paddingTop = (navbar.offsetHeight + 20) + 'px';
+            } else {
+                console.log('✅ SUCCESS: Hero is below navbar');
+            }
+        });
+    </script>
+</body>
+</html>

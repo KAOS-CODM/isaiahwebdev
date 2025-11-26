@@ -1,0 +1,25 @@
+{
+    "logo": "ISAIAH<span>WEB</span>DEV",
+    "tagline": "Creating digital experiences that illuminate the future of web development.",
+    "socialLinks": [
+        {
+            "platform": "GitHub",
+            "url": "https://www.github.com/KAOS-CODM",
+            "icon": "fab fa-github",
+            "ariaLabel": "GitHub Profile"
+        },
+        {
+            "platform": "WhatsApp",
+            "url": "https://wa.me/+2349135012572",
+            "icon": "fab fa-whatsapp",
+            "ariaLabel": "Contact on WhatsApp"
+        },
+        {
+            "platform": "Email",
+            "url": "mailto:kaoskonseptech@gmail.com",
+            "icon": "fas fa-envelope",
+            "ariaLabel": "Send Email"
+        }
+    ],
+    "copyright": "&copy; 2024 IsaiahWebDev Portfolio. All rights reserved."
+}
