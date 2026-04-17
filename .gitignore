@@ -1,53 +1,65 @@
-# Backup files
-*.backup
-*.backup.*
-*.temp
-*.old
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production build
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.[^.]+
+
+# Vite
+.cache/
+vite.config.*.js
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
 *~
 
-# HTML backups
-*.html.backup
-
-# Script backups and temporary files
-niclear_fix_final.sh
-fix-titles.sh
-fix_titles.sh
-fix_index_title.py
-remove-duplicates.sh
-verify-fix.sh
-verify_all.sh
-domain_check.sh
-final_verification.sh
-check_clean_state.sh
-safe_cleanup.sh
-
-# Documentation (keep README.md, remove others)
-RENDER_DEPLOYMENT.md
-DEPLOYMENT_CHECKLIST.md
-PROJECT_IMPROVEMENTS.md
-GITHUB_SETUP_GUIDE.md
-SSH_DEPLOYMENT_GUIDE.md
-seo_report.md
-
-# Test files
-test-simple.html
-readme1.md
-
-# System files
+# OS
 .DS_Store
 Thumbs.db
+.DS_Store?
 
-# We don't need webfonts directory (using CDN)
-webfonts/
+# Logs
+logs
+*.log
+npm-debug.log*
 
-# Temporary scripts
-*.sh
-!check-seo.sh  # Keep if you want this one
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# CSS files (keep only style.css)
-css/*
-!css/style.css
+# Temp
+tmp/
+temp/
 
-# CSS backup files
-css/*.backup
-css/*.backup.*
+# Firebase (if using)
+.firebaserc
+firebase-debug.log
+firebase-debug.*
+hosting-*.json
+
+# Editor directories
+.vscode/
+.idea/
+
+# Backup files
+*.bak
+*.backup
+
+# Project-specific temp
+TODO*.md
+*TODO.md
+readme1.md
+readme2.md
