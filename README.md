@@ -117,7 +117,7 @@ I'm Isaiah Adelowo, a Computer Science student passionate about web programming 
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](https://github.com/KAOS-CODM/isaiahwebdev#MIT-1-ov-file).
 
 ---
 
