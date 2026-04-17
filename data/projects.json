@@ -6,45 +6,22 @@
         "site": "https://praroz.onrender.com",
         "github": "https://github.com/KAOS-CODM/PRAROZ.git",
         "images": [
-            "images/recipe-submission1.PNG",
-            "images/recipe-submission2.PNG",
-            "images/recipe-submission3.PNG"
+            "data/project-images/praroz/recipe-submission1.PNG",
+            "data/project-images/praroz/recipe-submission2.PNG",
+            "data/project-images/praroz/recipe-submission3.PNG"
         ]
     },
     {
-        "title": "Recipe Submission Website",
-        "description": "A full-stack recipe submission platform with user authentication, comment sections, admin dashboards, and advanced search functionality.",
-        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
-        "site": "https://praroz.onrender.com",
-        "github": "https://github.com/KAOS-CODM/PRAROZ.git",
+        "title": "Bindr",
+        "description": "A Python-based file conversion tool with plans to upgrade to a multi-conversion utility.",
+        "technologies": ["Python"],
+        "site": "",
+        "github": "https://github.com/KAOS-CODM/bindrapp",
         "images": [
-            "images/recipe-submission1.PNG",
-            "images/recipe-submission2.PNG",
-            "images/recipe-submission3.PNG"
-        ]
-    },
-    {
-        "title": "Recipe Submission Website",
-        "description": "A full-stack recipe submission platform with user authentication, comment sections, admin dashboards, and advanced search functionality.",
-        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
-        "site": "https://praroz.onrender.com",
-        "github": "https://github.com/KAOS-CODM/PRAROZ.git",
-        "images": [
-            "images/recipe-submission1.PNG",
-            "images/recipe-submission2.PNG",
-            "images/recipe-submission3.PNG"
-        ]
-    },
-    {
-        "title": "Recipe Submission Website",
-        "description": "A full-stack recipe submission platform with user authentication, comment sections, admin dashboards, and advanced search functionality.",
-        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
-        "site": "https://praroz.onrender.com",
-        "github": "https://github.com/KAOS-CODM/PRAROZ.git",
-        "images": [
-            "images/recipe-submission1.PNG",
-            "images/recipe-submission2.PNG",
-            "images/recipe-submission3.PNG"
+            "data/project-images/Bindr/bindrapp1.png",
+            "data/project-images/Bindr/bindrapp2.png",
+            "data/project-images/Bindr/bindrapp3.png",
+            "data/project-images/Bindr/bindrapp4.png"
         ]
     }
 ]
