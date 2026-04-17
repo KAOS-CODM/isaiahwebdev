@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) ${new Date().getFullYear()} Isaiah WebDev
+Copyright (c) 4/17/2026 Isaiah WebDev
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
