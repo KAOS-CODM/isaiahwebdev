@@ -6,9 +6,43 @@
         "site": "https://praroz.onrender.com",
         "github": "https://github.com/KAOS-CODM/PRAROZ.git",
         "images": [
-            "images/recipe-submission1.PNG",
-            "images/recipe-submission2.PNG",
-            "images/recipe-submission3.PNG"
+        {
+            "src": "images/recipe/recipe-submission1.PNG",
+            "alt": "Recipe submission page with form and menu"
+        },
+        {
+            "src": "images/recipe/recipe-submission2.PNG",
+            "alt": "Recipe list and search results"
+        },
+        {
+            "src": "images/recipe/recipe-submission3.PNG",
+            "alt": "Recipe details view with comments"
+        }
+        ]
+    },
+    {
+        "title": "Fintech Multiputpose Website",
+        "description": "A fintech website with a sleek design, featuring a landing page, user dashboard, admin page, profile page etc. It includes user authentication, dynamic content rendering, and responsive design. It is built using HTML, CSS, JavaScript, and Node.js.",
+        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
+        "site": "https://kaossub.onrender.com",
+        "github": "https://github.com/KAOS-CODM/kaossub.git",
+        "images": [
+            {
+                "src": "images/kaossub/kaossub-dashboard.jpeg",
+                "alt": "Fintech dashboard overview with account summary"
+            },
+            {
+                "src": "images/kaossub/kaossub-plans.jpeg",
+                "alt": "Kaossub plan selection screen"
+            },
+            {
+                "src": "images/kaossub/kaossub-deposit.jpeg",
+                "alt": "Deposit screen for adding funds"
+            },
+            {
+                "src": "images/kaossub/kaossub-history.jpeg",
+                "alt": "Transaction history page"
+            }
         ]
     }
 ]

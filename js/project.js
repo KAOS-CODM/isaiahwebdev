@@ -27,33 +27,50 @@ async function loadProjects() {
     }
 }
 
+function getImageSrc(image) {
+    return image?.src ?? image ?? '';
+}
+
+function getImageAlt(image, fallback) {
+    return image?.alt ?? fallback;
+}
+
 function displayProjects(projects) {
-    projectsContainer.innerHTML = projects.map((project, index) => `
-        <div class="project" data-index="${index}">
-            <h3>${project.title}</h3>
-            <div class="project-thumb">
-                <img src="${project.images[0]}" alt="${project.title} Thumbnail" class="thumb" loading="lazy">
+    projectsContainer.innerHTML = projects.map((project, index) => {
+        const firstImage = project.images?.[0] ?? {};
+        return `
+            <div class="project" data-index="${index}">
+                <h3>${project.title}</h3>
+                <div class="project-thumb">
+                    <img src="${getImageSrc(firstImage)}" alt="${getImageAlt(firstImage, `${project.title} Thumbnail`)}" class="thumb" loading="lazy">
+                </div>
+                <p>${project.description}</p>
+                ${project.technologies ? `<p><strong>Technologies:</strong> ${project.technologies.join(', ')}</p>` : ''}
+                <div class="project-links">
+                    <a href="${project.site}" target="_blank" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Live Demo
+                    </a>
+                    <a href="${project.github}" target="_blank" class="project-link">
+                        <i class="fab fa-github"></i> Source Code
+                    </a>
+                </div>
             </div>
-            <p>${project.description}</p>
-            ${project.technologies ? `<p><strong>Technologies:</strong> ${project.technologies.join(', ')}</p>` : ''}
-            <div class="project-links">
-                <a href="${project.site}" target="_blank" class="project-link">
-                    <i class="fas fa-external-link-alt"></i> Live Demo
-                </a>
-                <a href="${project.github}" target="_blank" class="project-link">
-                    <i class="fab fa-github"></i> Source Code
-                </a>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+function updateLightboxImage() {
+    const image = currentGroup[currentIndex] ?? {};
+    lightboxImg.src = getImageSrc(image);
+    lightboxImg.alt = getImageAlt(image, `Project image ${currentIndex + 1}`);
 }
 
 function setupLightbox(projects) {
     document.querySelectorAll('.thumb').forEach((thumb, index) => {
         thumb.addEventListener('click', () => {
-            currentGroup = projects[index].images;
+            currentGroup = projects[index].images ?? [];
             currentIndex = 0;
-            lightboxImg.src = currentGroup[currentIndex];
+            updateLightboxImage();
             lightbox.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         });
@@ -88,14 +105,14 @@ function closeLightbox() {
 function showPrevImage() {
     if (currentGroup.length) {
         currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
-        lightboxImg.src = currentGroup[currentIndex];
+        updateLightboxImage();
     }
 }
 
 function showNextImage() {
     if (currentGroup.length) {
         currentIndex = (currentIndex + 1) % currentGroup.length;
-        lightboxImg.src = currentGroup[currentIndex];
+        updateLightboxImage();
     }
 }
 

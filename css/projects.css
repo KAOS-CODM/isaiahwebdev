@@ -1,0 +1,184 @@
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 350px), 1fr));
+    gap: clamp(15px, 3vw, 20px);
+    padding: clamp(15px, 3vw, 20px);
+}
+
+.project {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 0, 60, 0.15);
+    border-radius: 15px;
+    padding: clamp(20px, 4vw, 30px);
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+.project:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-red);
+    box-shadow: 0 15px 30px rgba(255, 0, 60, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.project h3 {
+    color: var(--text-light);
+    font-family: "Orbitron", sans-serif;
+    margin-bottom: clamp(10px, 2vw, 15px);
+    font-size: clamp(1.3rem, 3vw, 1.6rem);
+}
+
+.project p {
+    color: var(--text-dim);
+    margin-bottom: 10px;
+}
+
+.project a {
+    color: var(--neon-red);
+    transition: var(--transition);
+}
+
+.project a:hover {
+    color: var(--neon-pink);
+    transform: translateY(-2px);
+}
+
+.project-thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: clamp(10px, 2vw, 15px);
+}
+
+.project-thumb img.thumb {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-thumb img.thumb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255, 0, 60, 0.5);
+}
+
+.project-links {
+    display: flex;
+    gap: clamp(10px, 2vw, 15px);
+    margin-top: clamp(15px, 3vw, 20px);
+}
+
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(6px, 1.5vw, 8px);
+    padding: clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px);
+    background: rgba(255, 0, 60, 0.1);
+    border: 1px solid var(--neon-red);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.project-link:hover {
+    background: var(--neon-red);
+    color: #000 !important;
+}
+
+.projects-container:empty::before {
+    content: "Loading projects...";
+    color: var(--text-dim);
+    text-align: center;
+    display: block;
+    padding: 40px;
+}
+
+.no-projects,
+.error {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 40px;
+    font-size: 1.2rem;
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.lightbox-img {
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.lightbox .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.lightbox .close:hover {
+    transform: scale(1.2);
+}
+
+.nav-btns {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.nav-btns span {
+    color: white;
+    font-size: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+    pointer-events: all;
+    transition: transform 0.2s ease;
+}
+
+.nav-btns span:hover {
+    transform: scale(1.2);
+}
+
+@media (max-width: 576px) {
+    .projects-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+    }
+    .project {
+        padding: 20px;
+    }
+    .project-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

@@ -1,7 +1,7 @@
 {
     "skillCategories": [
         {
-            "name": "Frontend Technologies",
+            "name": "Frontend",
             "icon": "fas fa-code",
             "skills": [
                 { "name": "HTML5 & Semantic Markup", "level": 95 },

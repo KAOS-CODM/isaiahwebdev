@@ -42,11 +42,7 @@ webfonts/
 
 # Temporary scripts
 *.sh
-!check-seo.sh  # Keep if you want this one
-
-# CSS files (keep only style.css)
-css/*
-!css/style.css
+!check-seo.sh  # Keep if you want this o
 
 # CSS backup files
 css/*.backup

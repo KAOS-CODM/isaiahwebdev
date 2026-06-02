@@ -3,19 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="IsaiahWebDev's certifications and professional qualifications in web development and frontend technologies">
+    <meta name="description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
     <meta name="keywords" content="web development certifications, frontend developer qualifications, programming certificates, professional development">
     <meta name="author" content="IsaiahWebDev">
-    <meta property="og:title" content="Certifications - IsaiahWebDev | Professional Qualifications">
-    <meta property="og:description" content="View my professional certifications and qualifications in web development technologies">
+    <link rel="canonical" href="https://isaiahwebdev.onrender.com/certificates">
+    <meta property="og:site_name" content="IsaiahWebDev">
+    <meta property="og:title" content="Certifications | IsaiahWebDev">
+    <meta property="og:description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
     <meta property="og:type" content="website">
-    <title>Certifications - IsaiahWebDev | Professional Web Development Qualifications</title>
+    <meta property="og:url" content="https://isaiahwebdev.onrender.com/certificates">
+    <meta property="og:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <meta property="og:image:alt" content="Isaiah WebDev certifications page">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Certifications | IsaiahWebDev">
+    <meta name="twitter:description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
+    <meta name="twitter:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <title>Certifications | IsaiahWebDev</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="logo/logo.png">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/projects.css">
+    <link rel="icon" href="icon/favicon.ico">
 </head>
 <body>
     <nav class="navbar">
@@ -25,6 +35,7 @@
             <a href="about.html" class="nav-link">About</a>
             <a href="projects.html" class="nav-link">Projects</a>
             <a href="certificates.html" class="nav-link active">Certificates</a>
+            <a href="resume.html" class="nav-link">Resume</a>
             <a href="contact.html" class="nav-link">Contact</a>
         </div>
     </nav>
@@ -53,14 +64,14 @@
         </div>
     </section>
 
-    <section id="certificates" style="padding: 60px 0;">
+    <section id="certificates" class="section-padding">
         <div class="container">
             <div class="projects-container" id="certificates-container">
                 <!-- Certificates will be loaded here dynamically -->
             </div>
 
-            <div style="text-align: center; margin-top: 50px;">
-                <p style="font-size: 1.1rem; color: var(--text-dim);">
+            <div class="centered-content section-margin-top-large">
+                <p class="section-note">
                     Continuously learning and adding new certifications to enhance my skills!
                 </p>
             </div>
@@ -88,113 +99,6 @@
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
-
-    <script>
-        // Load certificates from JSON
-        const certificatesContainer = document.getElementById("certificates-container");
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.getElementById("lightbox-img");
-        const closeBtn = document.querySelector(".close");
-        const prevBtn = document.getElementById("prev-btn");
-        const nextBtn = document.getElementById("next-btn");
-
-        let currentCertificates = [];
-        let currentIndex = 0;
-
-        async function loadCertificates() {
-            try {
-                const response = await fetch("data/certificates.json");
-                const certificates = await response.json();
-
-                if (certificates.length === 0) {
-                    certificatesContainer.innerHTML = '<p class="no-projects">No certificates available at the moment.</p>';
-                    return;
-                }
-
-                displayCertificates(certificates);
-                setupLightbox(certificates);
-            } catch (error) {
-                console.error('Error loading certificates:', error);
-                certificatesContainer.innerHTML = '<p class="error">Failed to load certificates. Please try again later.</p>';
-            }
-        }
-
-        function displayCertificates(certificates) {
-            certificatesContainer.innerHTML = certificates.map(cert => `
-                <div class="project">
-                    <h3>${cert.title}</h3>
-                    <div class="project-thumb">
-                        <img src="${cert.image}" alt="${cert.title} Certificate" class="thumb" loading="lazy">
-                    </div>
-                    <p><strong>Issuer:</strong> ${cert.issuer}</p>
-                    <p><strong>Date:</strong> ${cert.date}</p>
-                    <p>${cert.description}</p>
-                    <div class="project-links">
-                        <a href="${cert.credentialUrl}" target="_blank" class="project-link">
-                            <i class="fas fa-external-link-alt"></i> Verify Certificate
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function setupLightbox(certificates) {
-            document.querySelectorAll('.thumb').forEach((thumb, index) => {
-                thumb.addEventListener('click', () => {
-                    currentCertificates = certificates.map(cert => cert.image);
-                    currentIndex = index;
-                    lightboxImg.src = currentCertificates[currentIndex];
-                    lightbox.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                });
-            });
-        }
-
-        // Lightbox controls
-        closeBtn.addEventListener('click', () => {
-            lightbox.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
-
-        prevBtn.addEventListener('click', () => {
-            if (currentCertificates.length) {
-                currentIndex = (currentIndex - 1 + currentCertificates.length) % currentCertificates.length;
-                lightboxImg.src = currentCertificates[currentIndex];
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentCertificates.length) {
-                currentIndex = (currentIndex + 1) % currentCertificates.length;
-                lightboxImg.src = currentCertificates[currentIndex];
-            }
-        });
-
-        lightbox.addEventListener('click', e => {
-            if (e.target === lightbox) {
-                lightbox.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', e => {
-            if (lightbox.style.display === 'flex') {
-                if (e.key === 'Escape') {
-                    lightbox.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-                if (e.key === 'ArrowLeft') {
-                    prevBtn.click();
-                }
-                if (e.key === 'ArrowRight') {
-                    nextBtn.click();
-                }
-            }
-        });
-
-        // Initialize
-        loadCertificates();
-    </script>
+    <script src="js/certificates.js"></script>
 </body>
 </html>

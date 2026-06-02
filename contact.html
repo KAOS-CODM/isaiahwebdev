@@ -3,98 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contact IsaiahWebDev for web development projects, collaborations, or employment opportunities. Get in touch for modern web solutions">
+    <meta name="description" content="Contact IsaiahWebDev for hiring, web development projects, or collaborations and get a modern web solution.">
     <meta name="keywords" content="contact web developer, hire frontend developer, web development services, project inquiry, collaboration">
     <meta name="author" content="IsaiahWebDev">
-    <meta property="og:title" content="Contact - IsaiahWebDev | Get in Touch">
-    <meta property="og:description" content="Contact me for web development projects, collaborations, or to discuss your next digital solution">
+    <link rel="canonical" href="https://isaiahwebdev.onrender.com/contact">
+    <meta property="og:site_name" content="IsaiahWebDev">
+    <meta property="og:title" content="Contact | IsaiahWebDev">
+    <meta property="og:description" content="Contact IsaiahWebDev for hiring, web development projects, or collaborations and get a modern web solution.">
     <meta property="og:type" content="website">
-    <title>Contact - IsaiahWebDev | Get in Touch for Web Development Projects</title>
+    <meta property="og:url" content="https://isaiahwebdev.onrender.com/contact">
+    <meta property="og:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <meta property="og:image:alt" content="Isaiah WebDev contact page">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Contact | IsaiahWebDev">
+    <meta name="twitter:description" content="Contact IsaiahWebDev for hiring, web development projects, or collaborations and get a modern web solution.">
+    <meta name="twitter:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <title>Contact | IsaiahWebDev</title>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"ContactPage","name":"Contact - IsaiahWebDev","url":"https://isaiahwebdev.onrender.com/contact","description":"Contact IsaiahWebDev for hiring, web development projects, or collaborations and get a modern web solution.","inLanguage":"en-US"}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="logo/logo.png">
-    <style>
-        /* Copy button styles */
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 15px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-        
-        .copy-btn:hover {
-            background: rgba(255, 0, 60, 0.2);
-            border-color: var(--neon-red);
-        }
-        
-        .copy-btn.copied {
-            background: rgba(0, 255, 0, 0.2);
-            border-color: #00ff00;
-            color: #00ff00;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-        }
-        
-        .contact-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .contact-text {
-            flex-grow: 1;
-        }
-        
-        .copy-feedback {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-        
-        .copy-feedback.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        @media (max-width: 768px) {
-            .contact-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .copy-btn {
-                margin-left: 0;
-                margin-top: 10px;
-                align-self: flex-end;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/contact.css">
+    <link rel="icon" href="icon/favicon.ico">
 </head>
 <body>
-    <a href="#contact-content" class="skip-link">Skip to main content</a>
-    
     <nav class="navbar">
         <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
         <div class="nav-links">
@@ -102,11 +38,15 @@
             <a href="about.html" class="nav-link">About</a>
             <a href="projects.html" class="nav-link">Projects</a>
             <a href="certificates.html" class="nav-link">Certificates</a>
+            <a href="resume.html" class="nav-link">Resume</a>
             <a href="contact.html" class="nav-link active">Contact</a>
         </div>
     </nav>
+    
+    <a href="#contact-content" class="skip-link">Skip to main content</a>
 
     <section id="contact-hero">
+        <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>GET IN TOUCH</h1>
@@ -128,19 +68,19 @@
         </div>
     </section>
 
-    <section id="contact-content">
+    <section id="contact-content" class="section-padding">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
                     <h2>Ready to Start Your Project?</h2>
                     <p>I'm available for freelance work, collaborations, and full-time opportunities. Whether you need a website, web application, or just want to connect, feel free to reach out!</p>
                     
-                    <div class="contact-info" style="margin: 40px 0;">
+                    <div class="contact-info">
                         <div class="contact-item">
-                            <i class="fas fa-envelope" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
+                            <i class="fas fa-envelope"></i>
                             <div class="contact-text">
-                                <h3 style="margin: 0; color: var(--text-light);">Email</h3>
-                                <p id="email-text" style="margin: 5px 0; color: var(--text-dim);">kaoskonseptech@gmail.com</p>
+                                <h3>Email</h3>
+                                <p id="email-text">kaoskonseptech@gmail.com</p>
                             </div>
                             <button class="copy-btn" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
                                 <i class="far fa-copy"></i> Copy
@@ -148,10 +88,10 @@
                         </div>
 
                         <div class="contact-item">
-                            <i class="fab fa-whatsapp" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
+                            <i class="fab fa-whatsapp"></i>
                             <div class="contact-text">
-                                <h3 style="margin: 0; color: var(--text-light);">WhatsApp</h3>
-                                <p id="phone-text" style="margin: 5px 0; color: var(--text-dim);">+234 913 501 2572</p>
+                                <h3>WhatsApp</h3>
+                                <p id="phone-text">+234 913 501 2572</p>
                             </div>
                             <button class="copy-btn" data-copy="+2349135012572" aria-label="Copy phone number">
                                 <i class="far fa-copy"></i> Copy
@@ -159,10 +99,10 @@
                         </div>
 
                         <div class="contact-item">
-                            <i class="fab fa-github" style="color: var(--neon-red); font-size: 1.5rem; margin-right: 15px;"></i>
+                            <i class="fab fa-github"></i>
                             <div class="contact-text">
-                                <h3 style="margin: 0; color: var(--text-light);">GitHub</h3>
-                                <p id="github-text" style="margin: 5px 0; color: var(--text-dim);">github.com/KAOS-CODM</p>
+                                <h3>GitHub</h3>
+                                <p id="github-text">github.com/KAOS-CODM</p>
                             </div>
                             <button class="copy-btn" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
                                 <i class="far fa-copy"></i> Copy
@@ -176,56 +116,48 @@
                 </div>
             </div>
 
-            <div class="section-header" style="margin-top: 80px;">
+            <div class="section-header section-margin-top-large">
                 <h2>Send Me a Message</h2>
                 <p>Fill out the form below and I'll get back to you within 24 hours</p>
             </div>
 
-            <div style="max-width: 600px; margin: 0 auto;">
-                <form id="contactForm" style="background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 15px; border: 1px solid rgba(255, 0, 60, 0.1);">
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; color: var(--text-light);">Name *</label>
-                        <input type="text" id="name" name="name" required 
-                               style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; color: var(--text-light); font-size: 1rem;"
-                               aria-required="true">
-                        <div class="error-message" id="nameError" style="color: var(--neon-red); font-size: 0.9rem; margin-top: 5px; display: none;"></div>
+            <div class="form-wrapper">
+                <form id="contactForm">
+                    <div class="form-field-group">
+                        <label>Name *</label>
+                        <input type="text" id="name" name="name" required aria-required="true">
+                        <div class="error-message" id="nameError"></div>
                     </div>
 
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; color: var(--text-light);">Email *</label>
-                        <input type="email" id="email" name="email" required 
-                               style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; color: var(--text-light); font-size: 1rem;"
-                               aria-required="true">
-                        <div class="error-message" id="emailError" style="color: var(--neon-red); font-size: 0.9rem; margin-top: 5px; display: none;"></div>
+                    <div class="form-field-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" name="email" required aria-required="true">
+                        <div class="error-message" id="emailError"></div>
                     </div>
 
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; color: var(--text-light);">Subject</label>
-                        <input type="text" id="subject" name="subject" 
-                               style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; color: var(--text-light); font-size: 1rem;"
-                               placeholder="Project type or inquiry">
+                    <div class="form-field-group">
+                        <label>Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="Project type or inquiry">
                     </div>
 
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; color: var(--text-light);">Message *</label>
-                        <textarea id="message" name="message" rows="5" required 
-                                  style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; color: var(--text-light); font-size: 1rem; resize: vertical;"
-                                  aria-required="true" placeholder="Tell me about your project..."></textarea>
-                        <div class="error-message" id="messageError" style="color: var(--neon-red); font-size: 0.9rem; margin-top: 5px; display: none;"></div>
+                    <div class="form-field-group">
+                        <label>Message *</label>
+                        <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="Tell me about your project..."></textarea>
+                        <div class="error-message" id="messageError"></div>
                     </div>
 
-                    <button type="submit" id="submitBtn" style="background: var(--neon-red); color: #000; border: none; padding: 15px 30px; border-radius: 5px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: var(--transition); width: 100%;">
+                    <button type="submit" id="submitBtn">
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                     
-                    <div id="formLoading" class="loading-spinner" style="display: none;"></div>
+                    <div id="formLoading" class="loading-spinner hidden"></div>
                 </form>
 
-                <div id="formMessage" style="display: none; text-align: center; margin-top: 20px; padding: 15px; border-radius: 5px; background: rgba(0, 255, 0, 0.1); border: 1px solid #00ff00; color: #00ff00;">
+                <div id="formMessage" class="hidden">
                     <p>Your email client is opening with your message. Please click send to complete the process.</p>
                 </div>
                 
-                <div id="formError" style="display: none; text-align: center; margin-top: 20px; padding: 15px; border-radius: 5px; background: rgba(255, 0, 60, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red);">
+                <div id="formError" class="hidden">
                     <p>There was an error with your submission. Please check the fields above.</p>
                 </div>
             </div>
@@ -240,10 +172,6 @@
         <i class="fas fa-chevron-up"></i>
     </div>
 
-    <div class="back-to-top" id="backToTop">
-        <i class="fas fa-chevron-up"></i>
-    </div>
-
     <!-- Copy feedback element -->
     <div class="copy-feedback" id="copyFeedback">
         <i class="fas fa-check-circle"></i> Copied to clipboard!
@@ -252,221 +180,6 @@
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
-
-    <script>
-        // Copy functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const copyButtons = document.querySelectorAll('.copy-btn');
-            const copyFeedback = document.getElementById('copyFeedback');
-            
-            copyButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const textToCopy = this.getAttribute('data-copy');
-                    
-                    // Use the Clipboard API if available
-                    if (navigator.clipboard && window.isSecureContext) {
-                        navigator.clipboard.writeText(textToCopy)
-                            .then(() => {
-                                showCopySuccess(this);
-                            })
-                            .catch(err => {
-                                console.error('Failed to copy: ', err);
-                                fallbackCopy(textToCopy, this);
-                            });
-                    } else {
-                        // Fallback for older browsers
-                        fallbackCopy(textToCopy, this);
-                    }
-                });
-            });
-            
-            function fallbackCopy(text, button) {
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                textArea.style.position = 'fixed';
-                textArea.style.opacity = '0';
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showCopySuccess(button);
-                    } else {
-                        console.error('Fallback copy failed');
-                    }
-                } catch (err) {
-                    console.error('Fallback copy failed: ', err);
-                }
-                
-                document.body.removeChild(textArea);
-            }
-            
-            function showCopySuccess(button) {
-                // Visual feedback on the button
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                button.classList.add('copied');
-                
-                // Show feedback message
-                copyFeedback.classList.add('show');
-                
-                // Reset button after 2 seconds
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-                
-                // Hide feedback after 3 seconds
-                setTimeout(() => {
-                    copyFeedback.classList.remove('show');
-                }, 3000);
-            }
-        });
-
-        // Enhanced contact form with validation
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Reset previous errors
-            resetErrors();
-            
-            // Validate form
-            if (validateForm()) {
-                // Show loading state
-                showLoading(true);
-                
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value || 'Portfolio Contact';
-                const message = document.getElementById('message').value;
-
-                // Better formatted email
-                const emailSubject = `New Message: ${subject} - From ${name}`;
-                const emailBody = `Hello Isaiah,\n\nYou have received a new message from your portfolio website:\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}\n\n---\nThis message was sent from your portfolio contact form.`;
-
-                // Create mailto link
-                const mailtoLink = `mailto:kaoskonseptech@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-                // Show success message
-                document.getElementById('formMessage').style.display = 'block';
-                document.getElementById('formError').style.display = 'none';
-
-                // Open email client after a short delay
-                setTimeout(() => {
-                    window.location.href = mailtoLink;
-                    showLoading(false);
-                }, 1000);
-
-                // Clear form after 5 seconds
-                setTimeout(() => {
-                    document.getElementById('contactForm').reset();
-                    document.getElementById('formMessage').style.display = 'none';
-                }, 5000);
-            } else {
-                document.getElementById('formError').style.display = 'block';
-            }
-        });
-
-        function validateForm() {
-            let isValid = true;
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
-
-            // Name validation
-            if (name.length < 2) {
-                showError('nameError', 'Please enter your full name');
-                isValid = false;
-            }
-
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('emailError', 'Please enter a valid email address');
-                isValid = false;
-            }
-
-            // Message validation
-            if (message.length < 10) {
-                showError('messageError', 'Please enter a message with at least 10 characters');
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-        function showError(fieldId, message) {
-            const errorElement = document.getElementById(fieldId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-            
-            // Add error styling to input
-            const inputField = document.getElementById(fieldId.replace('Error', ''));
-            inputField.style.borderColor = 'var(--neon-red)';
-            inputField.style.boxShadow = '0 0 5px rgba(255, 0, 60, 0.5)';
-        }
-
-        function resetErrors() {
-            // Reset all error messages
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.style.display = 'none';
-            });
-            
-            // Reset input styles
-            document.querySelectorAll('input, textarea').forEach(field => {
-                field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                field.style.boxShadow = 'none';
-            });
-            
-            // Hide form messages
-            document.getElementById('formError').style.display = 'none';
-            document.getElementById('formMessage').style.display = 'none';
-        }
-
-        function showLoading(show) {
-            const submitBtn = document.getElementById('submitBtn');
-            const loadingSpinner = document.getElementById('formLoading');
-            
-            if (show) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                loadingSpinner.style.display = 'block';
-            } else {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-                loadingSpinner.style.display = 'none';
-            }
-        }
-
-        // Real-time validation
-        document.querySelectorAll('input, textarea').forEach(field => {
-            field.addEventListener('input', () => {
-                const errorId = field.id + 'Error';
-                const errorElement = document.getElementById(errorId);
-                if (errorElement) {
-                    errorElement.style.display = 'none';
-                    field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    field.style.boxShadow = 'none';
-                }
-            });
-        });
-
-        // Back to top functionality
-        const backToTop = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.style.display = 'flex';
-            } else {
-                backToTop.style.display = 'none';
-            }
-        });
-        
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    </script>
+    <script src="js/contact.js"></script>
 </body>
 </html>

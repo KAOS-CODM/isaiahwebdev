@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn more about IsaiahWebDev - Frontend Developer skilled in HTML, CSS, JavaScript, React, and modern web technologies">
+    <meta name="description" content="Learn about IsaiahWebDev, a frontend developer building modern websites, responsive UI experiences, and web apps with HTML, CSS, JavaScript, and React.">
     <meta name="keywords" content="frontend developer, web developer, HTML, CSS, JavaScript, React, responsive design, portfolio, skills">
     <meta name="author" content="IsaiahWebDev">
+    <link rel="canonical" href="https://isaiahwebdev.onrender.com/about">
+    <meta property="og:site_name" content="IsaiahWebDev">
     <meta property="og:title" content="About - IsaiahWebDev | Frontend Developer">
-    <meta property="og:description" content="Professional frontend developer specializing in modern web technologies and user-centered design">
+    <meta property="og:description" content="Learn about IsaiahWebDev, a frontend developer building modern websites, responsive UI experiences, and web apps with HTML, CSS, JavaScript, and React.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://isaiahwebdev.onrender.com/about">
+    <meta property="og:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <meta property="og:image:alt" content="Isaiah WebDev about page">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About - IsaiahWebDev | Frontend Developer">
+    <meta name="twitter:description" content="Learn about IsaiahWebDev, a frontend developer building modern websites, responsive UI experiences, and web apps with HTML, CSS, JavaScript, and React.">
+    <meta name="twitter:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
     <title>About - IsaiahWebDev | Frontend Developer & UI Designer</title>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"About - IsaiahWebDev","url":"https://isaiahwebdev.onrender.com/about","description":"Learn about IsaiahWebDev, a frontend developer building modern websites, responsive UI experiences, and web apps with HTML, CSS, JavaScript, and React.","inLanguage":"en-US"}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="logo/logo.png">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/about.css">
+    <link rel="icon" href="icon/favicon.ico">
 </head>
 <body>
     <nav class="navbar">
@@ -26,6 +38,7 @@
             <a href="about.html" class="nav-link active">About</a>
             <a href="projects.html" class="nav-link">Projects</a>
             <a href="certificates.html" class="nav-link">Certificates</a>
+            <a href="resume.html" class="nav-link">Resume</a>
             <a href="contact.html" class="nav-link">Contact</a>
         </div>
     </nav>
@@ -42,9 +55,6 @@
                     <div class="btn-group">
                         <a href="#skills-detailed" class="btn btn-primary">
                             <i class="fas fa-code"></i> View My Skills
-                        </a>
-                        <a href="docs/resume.pdf" download class="btn">
-                            <i class="fas fa-download"></i> Download Resume
                         </a>
                     </div>
                 </div>
@@ -72,7 +82,7 @@
             </div>
 
             <!-- Detailed Skills Progress from JSON -->
-            <div id="skills-detailed" class="skills-detailed" style="margin-top: 60px;">
+            <div id="skills-detailed" class="skills-detailed">
                 <div class="section-header">
                     <h2>Technical Proficiency</h2>
                     <p>My skill levels across various technologies</p>
@@ -84,23 +94,23 @@
                 </div>
             </div>
 
-            <div class="about-content" style="margin-top: 60px; text-align: center;">
+            <div class="about-content">
                 <div class="section-header">
                     <h2>My Development Journey</h2>
                 </div>
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 30px;">
-                        I started my web development journey with a curiosity about how websites work. 
-                        That curiosity turned into a passion for creating beautiful, functional web experiences 
-                        that users love interacting with. From my first HTML page to complex React applications, 
+                <div class="content-wrapper">
+                    <p class="large-text">
+                        I started my web development journey with a curiosity about how websites work.
+                        That curiosity turned into a passion for creating beautiful, functional web experiences
+                        that users love interacting with. From my first HTML page to complex React applications,
                         I've been constantly learning and evolving.
                     </p>
-                    <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 30px;">
-                        I believe in continuous learning and staying updated with the latest web technologies 
-                        and design trends. My approach combines technical expertise with creative problem-solving 
+                    <p class="large-text">
+                        I believe in continuous learning and staying updated with the latest web technologies
+                        and design trends. My approach combines technical expertise with creative problem-solving
                         to deliver modern, efficient solutions that solve real problems and provide exceptional user experiences.
                     </p>
-                    <div class="btn-group" style="justify-content: center;">
+                    <div class="btn-group center-buttons">
                         <a href="projects.html" class="btn btn-primary">
                             <i class="fas fa-rocket"></i> See My Projects
                         </a>
@@ -124,105 +134,6 @@
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
-    
-    <script>
-        // Load skills data from JSON
-        async function loadSkillsData() {
-            try {
-                const response = await fetch('data/skills.json');
-                const skillsData = await response.json();
-                
-                // Render skill cards
-                renderSkillCards(skillsData.skillCards);
-                
-                // Render detailed skills
-                renderDetailedSkills(skillsData.skillCategories);
-                
-                // Animate skill bars when they come into view
-                setupSkillAnimations();
-                
-            } catch (error) {
-                console.error('Error loading skills data:', error);
-                document.getElementById('skills-cards-container').innerHTML = '<p class="error">Failed to load skills data.</p>';
-                document.getElementById('skills-detailed-container').innerHTML = '<p class="error">Failed to load skills data.</p>';
-            }
-        }
-
-        function renderSkillCards(skillCards) {
-            const container = document.getElementById('skills-cards-container');
-            container.innerHTML = skillCards.map(card => `
-                <div class="skill-card">
-                    <i class="${card.icon}"></i>
-                    <h3>${card.title}</h3>
-                    <p>${card.description}</p>
-                </div>
-            `).join('');
-        }
-
-        function renderDetailedSkills(skillCategories) {
-            const container = document.getElementById('skills-detailed-container');
-            container.innerHTML = skillCategories.map(category => `
-                <div class="skill-category">
-                    <h3><i class="${category.icon}"></i> ${category.name}</h3>
-                    ${category.skills.map(skill => `
-                        <div class="skill-item">
-                            <div class="skill-info">
-                                <span>${skill.name}</span>
-                                <span>${skill.level}%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: ${skill.level}%"></div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-        }
-
-        function setupSkillAnimations() {
-            const observerOptions = {
-                threshold: 0.3,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const progressBar = entry.target;
-                        const targetWidth = progressBar.style.width;
-                        progressBar.style.width = '0%';
-                        
-                        setTimeout(() => {
-                            progressBar.style.width = targetWidth;
-                            progressBar.style.animation = 'skillFill 1.5s ease-out forwards';
-                        }, 100);
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all skill progress bars
-            document.querySelectorAll('.skill-progress').forEach(progress => {
-                observer.observe(progress);
-            });
-        }
-
-        // Back to top functionality
-        const backToTop = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.style.display = 'flex';
-            } else {
-                backToTop.style.display = 'none';
-            }
-        });
-        
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Initialize skills loading
-        loadSkillsData();
-    </script>
+    <script src="js/about.js"></script>
 </body>
 </html>
