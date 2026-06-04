@@ -25,157 +25,159 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/contact.css">
-    <link rel="icon" href="icon/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0//css/all.min.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/contact.css">
+    <link rel="icon" href="/icon/favicon.ico">
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
-        <div class="nav-links">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="projects.html" class="nav-link">Projects</a>
-            <a href="certificates.html" class="nav-link">Certificates</a>
-            <a href="resume.html" class="nav-link">Resume</a>
-            <a href="contact.html" class="nav-link active">Contact</a>
-        </div>
-    </nav>
-    
-    <a href="#contact-content" class="skip-link">Skip to main content</a>
-
-    <section id="contact-hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>GET IN TOUCH</h1>
-                    <h2>Let's Create Something Amazing</h2>
-                    <p>Ready to start your project? I'm available for freelance work, collaborations, and full-time opportunities. Let's bring your ideas to life!</p>
-                    <div class="btn-group">
-                        <a href="#contactForm" class="btn btn-primary">
+    <main>
+        <nav class="navbar">
+            <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="certificates.html" class="nav-link">Certificates</a>
+                <a href="resume.html" class="nav-link">Resume</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+            </div>
+        </nav>
+        
+        <a href="#contact-content" class="skip-link">Skip to main content</a>
+        
+        <section id="contact-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>GET IN TOUCH</h1>
+                        <h2>Let's Create Something Amazing</h2>
+                        <p>Ready to start your project? I'm available for freelance work, collaborations, and full-time opportunities. Let's bring your ideas to life!</p>
+                        <div class="btn-group">
+                            <a href="#contactForm" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </a>
+                        </div>
+                    </div>
+                    <div class="profile-container">
+                        <div class="profile-wrapper">
+                            <img src="images/profile.jpg" alt="Isaiah Profile" class="profile-img">
+                            <div class="glow-effect"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact-content" class="section-padding">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h2>Ready to Start Your Project?</h2>
+                        <p>I'm available for freelance work, collaborations, and full-time opportunities. Whether you need a website, web application, or just want to connect, feel free to reach out!</p>
+                        
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="contact-text">
+                                    <h3>Email</h3>
+                                    <p id="email-text">kaoskonseptech@gmail.com</p>
+                                </div>
+                                <button class="copy-btn" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
+                                    <i class="far fa-copy"></i> Copy
+                                </button>
+                            </div>
+        
+                            <div class="contact-item">
+                                <i class="fab fa-whatsapp"></i>
+                                <div class="contact-text">
+                                    <h3>WhatsApp</h3>
+                                    <p id="phone-text">+234 913 501 2572</p>
+                                </div>
+                                <button class="copy-btn" data-copy="+2349135012572" aria-label="Copy phone number">
+                                    <i class="far fa-copy"></i> Copy
+                                </button>
+                            </div>
+        
+                            <div class="contact-item">
+                                <i class="fab fa-github"></i>
+                                <div class="contact-text">
+                                    <h3>GitHub</h3>
+                                    <p id="github-text">github.com/KAOS-CODM</p>
+                                </div>
+                                <button class="copy-btn" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
+                                    <i class="far fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Empty container to maintain layout balance -->
+                    <div class="profile-container">
+                    </div>
+                </div>
+        
+                <div class="section-header section-margin-top-large">
+                    <h2>Send Me a Message</h2>
+                    <p>Fill out the form below and I'll get back to you within 24 hours</p>
+                </div>
+        
+                <div class="form-wrapper">
+                    <form id="contactForm">
+                        <div class="form-field-group">
+                            <label>Name *</label>
+                            <input type="text" id="name" name="name" required aria-required="true">
+                            <div class="error-message" id="nameError"></div>
+                        </div>
+        
+                        <div class="form-field-group">
+                            <label>Email *</label>
+                            <input type="email" id="email" name="email" required aria-required="true">
+                            <div class="error-message" id="emailError"></div>
+                        </div>
+        
+                        <div class="form-field-group">
+                            <label>Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Project type or inquiry">
+                        </div>
+        
+                        <div class="form-field-group">
+                            <label>Message *</label>
+                            <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="Tell me about your project..."></textarea>
+                            <div class="error-message" id="messageError"></div>
+                        </div>
+        
+                        <button type="submit" id="submitBtn">
                             <i class="fas fa-paper-plane"></i> Send Message
-                        </a>
+                        </button>
+                        
+                        <div id="formLoading" class="loading-spinner hidden"></div>
+                    </form>
+        
+                    <div id="formMessage" class="hidden">
+                        <p>Your email client is opening with your message. Please click send to complete the process.</p>
                     </div>
-                </div>
-                <div class="profile-container">
-                    <div class="profile-wrapper">
-                        <img src="images/profile.jpg" alt="Isaiah Profile" class="profile-img">
-                        <div class="glow-effect"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact-content" class="section-padding">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h2>Ready to Start Your Project?</h2>
-                    <p>I'm available for freelance work, collaborations, and full-time opportunities. Whether you need a website, web application, or just want to connect, feel free to reach out!</p>
                     
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div class="contact-text">
-                                <h3>Email</h3>
-                                <p id="email-text">kaoskonseptech@gmail.com</p>
-                            </div>
-                            <button class="copy-btn" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
-                                <i class="far fa-copy"></i> Copy
-                            </button>
-                        </div>
-
-                        <div class="contact-item">
-                            <i class="fab fa-whatsapp"></i>
-                            <div class="contact-text">
-                                <h3>WhatsApp</h3>
-                                <p id="phone-text">+234 913 501 2572</p>
-                            </div>
-                            <button class="copy-btn" data-copy="+2349135012572" aria-label="Copy phone number">
-                                <i class="far fa-copy"></i> Copy
-                            </button>
-                        </div>
-
-                        <div class="contact-item">
-                            <i class="fab fa-github"></i>
-                            <div class="contact-text">
-                                <h3>GitHub</h3>
-                                <p id="github-text">github.com/KAOS-CODM</p>
-                            </div>
-                            <button class="copy-btn" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
-                                <i class="far fa-copy"></i> Copy
-                            </button>
-                        </div>
+                    <div id="formError" class="hidden">
+                        <p>There was an error with your submission. Please check the fields above.</p>
                     </div>
-                </div>
-
-                <!-- Empty container to maintain layout balance -->
-                <div class="profile-container">
                 </div>
             </div>
-
-            <div class="section-header section-margin-top-large">
-                <h2>Send Me a Message</h2>
-                <p>Fill out the form below and I'll get back to you within 24 hours</p>
-            </div>
-
-            <div class="form-wrapper">
-                <form id="contactForm">
-                    <div class="form-field-group">
-                        <label>Name *</label>
-                        <input type="text" id="name" name="name" required aria-required="true">
-                        <div class="error-message" id="nameError"></div>
-                    </div>
-
-                    <div class="form-field-group">
-                        <label>Email *</label>
-                        <input type="email" id="email" name="email" required aria-required="true">
-                        <div class="error-message" id="emailError"></div>
-                    </div>
-
-                    <div class="form-field-group">
-                        <label>Subject</label>
-                        <input type="text" id="subject" name="subject" placeholder="Project type or inquiry">
-                    </div>
-
-                    <div class="form-field-group">
-                        <label>Message *</label>
-                        <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="Tell me about your project..."></textarea>
-                        <div class="error-message" id="messageError"></div>
-                    </div>
-
-                    <button type="submit" id="submitBtn">
-                        <i class="fas fa-paper-plane"></i> Send Message
-                    </button>
-                    
-                    <div id="formLoading" class="loading-spinner hidden"></div>
-                </form>
-
-                <div id="formMessage" class="hidden">
-                    <p>Your email client is opening with your message. Please click send to complete the process.</p>
-                </div>
-                
-                <div id="formError" class="hidden">
-                    <p>There was an error with your submission. Please check the fields above.</p>
-                </div>
-            </div>
+        </section>
+        
+        <footer id="main-footer">
+            <!-- Footer will be loaded here dynamically -->
+        </footer>
+        
+        <div class="back-to-top" id="backToTop">
+            <i class="fas fa-chevron-up"></i>
         </div>
-    </section>
-
-    <footer id="main-footer">
-        <!-- Footer will be loaded here dynamically -->
-    </footer>
-
-    <div class="back-to-top" id="backToTop">
-        <i class="fas fa-chevron-up"></i>
-    </div>
-
-    <!-- Copy feedback element -->
-    <div class="copy-feedback" id="copyFeedback">
-        <i class="fas fa-check-circle"></i> Copied to clipboard!
-    </div>
+        
+        <!-- Copy feedback element -->
+        <div class="copy-feedback" id="copyFeedback">
+            <i class="fas fa-check-circle"></i> Copied to clipboard!
+        </div>
+    </main>
 
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>

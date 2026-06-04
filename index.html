@@ -27,78 +27,80 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/projects.css">
-    <link rel="icon" href="icon/favicon.ico">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/projects.css">
+    <link rel="icon" href="/icon/favicon.ico">
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
-        <div class="nav-links">
-            <a href="index.html" class="nav-link active">Home</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="projects.html" class="nav-link">Projects</a>
-            <a href="certificates.html" class="nav-link">Certificates</a>
-            <a href="resume.html" class="nav-link">Resume</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-        </div>
-    </nav>
-    <a href="#hero" class="skip-link">Skip to main content</a>
-
-    <section id="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>CODE THE FUTURE WITH ISAIAH</h1>
-                    <h2>Frontend Developer & UI Designer</h2>
-                    <p>I'm a passionate frontend developer skilled in HTML, CSS, JavaScript, and modern web development frameworks. I create responsive, user-friendly websites with cutting-edge design.</p>
-                    <div class="btn-group">
-                        <a href="#projects" class="btn btn-primary">
-                            <i class="fas fa-rocket"></i> View Projects
-                        </a>
-                        <a href="contact.html" class="btn">
-                            <i class="fas fa-paper-plane"></i> Contact Me
-                        </a>
+    <main>
+        <nav class="navbar">
+            <a href="index.html" class="logo">ISAIAH<span>WEB</span>DEV</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="certificates.html" class="nav-link">Certificates</a>
+                <a href="resume.html" class="nav-link">Resume</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </nav>
+        <a href="#hero" class="skip-link">Skip to main content</a>
+        
+        <section id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>CODE THE FUTURE WITH ISAIAH</h1>
+                        <h2>Frontend Developer & UI Designer</h2>
+                        <p>I'm a passionate frontend developer skilled in HTML, CSS, JavaScript, and modern web development frameworks. I create responsive, user-friendly websites with cutting-edge design.</p>
+                        <div class="btn-group">
+                            <a href="#projects" class="btn btn-primary">
+                                <i class="fas fa-rocket"></i> View Projects
+                            </a>
+                            <a href="contact.html" class="btn">
+                                <i class="fas fa-paper-plane"></i> Contact Me
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="profile-container">
-                    <div class="profile-wrapper">
-                        <img src="images/profile.jpg" alt="Isaiah Profile" class="profile-img">
-                        <div class="glow-effect"></div>
+                    <div class="profile-container">
+                        <div class="profile-wrapper">
+                            <img src="images/profile.jpg" alt="Isaiah Profile" class="profile-img">
+                            <div class="glow-effect"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="projects">
-        <div class="container">
-            <div class="section-header">
-                <h2>My Projects</h2>
-                <p>Check out my latest work</p>
+        </section>
+        
+        <section id="projects">
+            <div class="container">
+                <div class="section-header">
+                    <h2>My Projects</h2>
+                    <p>Check out my latest work</p>
+                </div>
+                <div class="projects-container" id="projects-container"></div>
             </div>
-            <div class="projects-container" id="projects-container"></div>
+        </section>
+        
+        <!-- Lightbox -->
+        <div id="lightbox" class="lightbox">
+            <span class="close">&times;</span>
+            <img class="lightbox-img" id="lightbox-img" src="" alt="Expanded Project Image">
+            <div class="nav-btns">
+                <span id="prev-btn">&#10094;</span>
+                <span id="next-btn">&#10095;</span>
+            </div>
         </div>
-    </section>
-
-    <!-- Lightbox -->
-    <div id="lightbox" class="lightbox">
-        <span class="close">&times;</span>
-        <img class="lightbox-img" id="lightbox-img" src="" alt="Expanded Project Image">
-        <div class="nav-btns">
-            <span id="prev-btn">&#10094;</span>
-            <span id="next-btn">&#10095;</span>
+        
+        <footer id="main-footer">
+            <!-- Footer will be loaded here dynamically -->
+        </footer>
+        
+        <div class="back-to-top" id="backToTop">
+            <i class="fas fa-chevron-up"></i>
         </div>
-    </div>
-
-    <footer id="main-footer">
-        <!-- Footer will be loaded here dynamically -->
-    </footer>
-
-    <div class="back-to-top" id="backToTop">
-        <i class="fas fa-chevron-up"></i>
-    </div>
+    </main>
 
     <script src="js/script.js"></script>
     <script src="js/footer-loader.js"></script>
