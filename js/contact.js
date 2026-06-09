@@ -1,29 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     setupCopyButtons();
-    setupForm();
     setupFieldValidation();
     setupBackToTop();
 });
 
+/* =========================
+COPY BUTTONS
+========================= */
 function setupCopyButtons() {
     const copyButtons = document.querySelectorAll('.copy-btn');
     const copyFeedback = document.getElementById('copyFeedback');
     if (!copyButtons.length || !copyFeedback) return;
 
     copyButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', async function () {
             const textToCopy = this.getAttribute('data-copy');
 
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => {
-                        showCopySuccess(this, copyFeedback);
-                    })
-                    .catch(err => {
-                        console.error('Failed to copy: ', err);
-                        fallbackCopy(textToCopy, this, copyFeedback);
-                    });
-            } else {
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                showCopySuccess(this, copyFeedback);
+            } catch (err) {
                 fallbackCopy(textToCopy, this, copyFeedback);
             }
         });
@@ -33,34 +29,28 @@ function setupCopyButtons() {
 function fallbackCopy(text, button, copyFeedback) {
     const textArea = document.createElement('textarea');
     textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.opacity = '0';
     document.body.appendChild(textArea);
-    textArea.focus();
     textArea.select();
 
     try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showCopySuccess(button, copyFeedback);
-        } else {
-            console.error('Fallback copy failed');
-        }
+        document.execCommand('copy');
+        showCopySuccess(button, copyFeedback);
     } catch (err) {
-        console.error('Fallback copy failed: ', err);
+        console.error('Copy failed:', err);
     }
 
     document.body.removeChild(textArea);
 }
 
 function showCopySuccess(button, copyFeedback) {
-    const originalText = button.innerHTML;
+    const original = button.innerHTML;
+
     button.innerHTML = '<i class="fas fa-check"></i> Copied!';
     button.classList.add('copied');
     copyFeedback.classList.add('show');
 
     setTimeout(() => {
-        button.innerHTML = originalText;
+        button.innerHTML = original;
         button.classList.remove('copied');
     }, 2000);
 
@@ -69,142 +59,120 @@ function showCopySuccess(button, copyFeedback) {
     }, 3000);
 }
 
-function setupForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
+/* =========================
+VALIDATION (UI ONLY)
+========================= */
+function setupFieldValidation() {
+    document.querySelectorAll('input, textarea').forEach(field => {
+        field.addEventListener('input', () => {
+            const errorId = field.id + 'Error';
+            const errorElement = document.getElementById(errorId);
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        resetErrors();
+            if (errorElement) {
+                errorElement.classList.add('hidden');
+            }
 
-        if (validateForm()) {
-            showLoading(true);
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value || 'Portfolio Contact';
-            const message = document.getElementById('message').value;
-
-            const emailSubject = `New Message: ${subject} - From ${name}`;
-            const emailBody = `Hello Isaiah,\n\nYou have received a new message from your portfolio website:\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}\n\n---\nThis message was sent from your portfolio contact form.`;
-            const mailtoLink = `mailto:kaoskonseptech@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-            document.getElementById('formMessage').style.display = 'block';
-            document.getElementById('formError').style.display = 'none';
-
-            setTimeout(() => {
-                window.location.href = mailtoLink;
-                showLoading(false);
-            }, 1000);
-
-            setTimeout(() => {
-                form.reset();
-                document.getElementById('formMessage').style.display = 'none';
-            }, 5000);
-        } else {
-            document.getElementById('formError').style.display = 'block';
-        }
+            field.style.borderColor = 'rgba(255,255,255,0.2)';
+            field.style.boxShadow = 'none';
+        });
     });
 }
 
-function validateForm() {
-    let isValid = true;
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
+function showSuccess() {
+    console.log("SUCCESS TRIGGERED");
 
-    if (name.length < 2) {
-        showError('nameError', 'Please enter your full name');
-        isValid = false;
+    if (successBox) {
+        successBox.classList.remove('hidden');
+        successBox.style.display = 'block';
+        successBox.style.opacity = '1';
+        successBox.style.visibility = 'visible';
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showError('emailError', 'Please enter a valid email address');
-        isValid = false;
+    if (errorBox) {
+        errorBox.classList.add('hidden');
     }
 
-    if (message.length < 10) {
-        showError('messageError', 'Please enter a message with at least 10 characters');
-        isValid = false;
-    }
-
-    return isValid;
+    setTimeout(() => {
+        form.reset();
+        successBox.classList.add('hidden');
+    }, 8000);
 }
 
 function showError(fieldId, message) {
     const errorElement = document.getElementById(fieldId);
-    if (!errorElement) return;
-
-    errorElement.textContent = message;
-    errorElement.style.display = 'block';
-
     const inputField = document.getElementById(fieldId.replace('Error', ''));
+
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+    }
+
     if (inputField) {
-        inputField.style.borderColor = 'var(--neon-red)';
+        inputField.style.borderColor = 'var(--color-neon-red)';
         inputField.style.boxShadow = '0 0 5px rgba(255, 0, 60, 0.5)';
     }
 }
 
 function resetErrors() {
-    document.querySelectorAll('.error-message').forEach(error => {
-        error.style.display = 'none';
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
     });
 
     document.querySelectorAll('input, textarea').forEach(field => {
-        field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        field.style.borderColor = 'rgba(255,255,255,0.2)';
         field.style.boxShadow = 'none';
     });
 
     const formError = document.getElementById('formError');
     const formMessage = document.getElementById('formMessage');
-    if (formError) formError.style.display = 'none';
-    if (formMessage) formMessage.style.display = 'none';
+
+    if (formError) formError.classList.add('hidden');
+    if (formMessage) formMessage.classList.add('hidden');
 }
 
-function showLoading(show) {
-    const submitBtn = document.getElementById('submitBtn');
-    const loadingSpinner = document.getElementById('formLoading');
-    if (!submitBtn || !loadingSpinner) return;
+/* Expose for EmailJS script */
+window.showError = showError;
+window.resetErrors = resetErrors;
 
-    if (show) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        loadingSpinner.style.display = 'block';
-    } else {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-        loadingSpinner.style.display = 'none';
+/* =========================
+VALIDATION FUNCTION (USED BY EMAILJS)
+========================= */
+window.validateForm = function () {
+    const name = document.getElementById('name')?.value.trim() || '';
+    const email = document.getElementById('email')?.value.trim() || '';
+    const message = document.getElementById('message')?.value.trim() || '';
+
+    if (name.length < 2) {
+        showError('nameError', 'Please enter your full name');
+        return false;
     }
-}
 
-function setupFieldValidation() {
-    document.querySelectorAll('input, textarea').forEach(field => {
-        field.addEventListener('input', () => {
-            const errorId = `${field.id}Error`;
-            const errorElement = document.getElementById(errorId);
-            if (errorElement) {
-                errorElement.style.display = 'none';
-                field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                field.style.boxShadow = 'none';
-            }
-        });
-    });
-}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showError('emailError', 'Please enter a valid email');
+        return false;
+    }
 
+    if (message.length < 10) {
+        showError('messageError', 'Message must be at least 10 characters');
+        return false;
+    }
+
+    return true;
+};
+
+/* =========================
+BACK TO TOP
+========================= */
 function setupBackToTop() {
-    const backToTop = document.getElementById('backToTop');
-    if (!backToTop) return;
+    const btn = document.getElementById('backToTop');
+    if (!btn) return;
 
     window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTop.style.display = 'flex';
-        } else {
-            backToTop.style.display = 'none';
-        }
+        btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
     });
 
-    backToTop.addEventListener('click', () => {
+    btn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }

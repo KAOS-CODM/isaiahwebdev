@@ -1,65 +1,82 @@
-# 🌐 Isaiah Adelowo — Portfolio Website
+# 🌐 IsaiahWebDev — Portfolio Website
 
-Welcome to my personal portfolio! 🚀  
-This site represents my journey as a web developer, showcasing my skills, creativity, and growth in building clean, functional, and user-friendly web interfaces.
+Welcome to the IsaiahWebDev portfolio! 🚀
+This repository contains a responsive, multi-page frontend portfolio built with HTML, CSS, JavaScript, and JSON-driven content.
 
-🔗 **Live Demo:** [Visit Portfolio](https://kaos-codm.github.io/isaiahwebdev-portfolio/)
+🔗 **Live Demo:** https://isaiahwebdev.onrender.com/
 
 ---
 
 ## 📌 About This Project
 
-This portfolio is designed as a multi-page showcase of who I am and what I do, featuring a modern dark theme with neon accents.
+This portfolio showcases IsaiahWebDev as a frontend developer and UI designer using a modern dark theme, neon accents, and dynamic content loading.
 
 It includes:
-- A professional introduction and hero section
-- Detailed about page with skills and background
-- Dynamic project showcase (auto-updated from JSON)
-- Certificates and achievements section
-- Contact information with social links
+- A home page with hero section and featured projects
+- An about page with skills, experience, and profile details
+- A projects page driven by `data/projects.json`
+- A certificates page using `data/certificates.json`
+- A resume page with downloadable details
+- A contact page with EmailJS contact form integration
+- A reusable footer loaded by `js/footer-loader.js`
+- A lightbox gallery for project images on the main page
 
-The portfolio is built to be easily expandable, so new works can be added seamlessly without modifying the core structure.
+The site is designed to be easy to update by editing JSON content and adding images, without changing the core HTML structure.
 
 ---
 
 ## 🛠️ Built With
-- **HTML5** – Semantic structure and accessibility
-- **CSS3** – Responsive design, animations, and modern layouts
-- **JavaScript (Vanilla)** – Interactivity, dynamic rendering, and DOM manipulation
-- **JSON** – Data-driven content for projects, skills, and certificates
-- **GitHub Pages** – Hosting and deployment
-- **Font Awesome** – Icons and visual elements
+- **HTML5** – Semantic page structure and accessibility support
+- **CSS3** – Responsive layout and modern animations
+- **Tailwind CSS v4** – Utility-driven styling compiled into `css/styles.css`
+- **JavaScript (Vanilla)** – Dynamic rendering, UI interactions, and content loading
+- **JSON** – Data-driven project, skills, certificate, and footer content
+- **Font Awesome** – Iconography and UI embellishments
+- **EmailJS** – Contact form email delivery
 
 ---
 
 ## 📂 Project Structure
 ```
-isaiahwebdev-portfolio/
-├── README.md              # Documentation
-├── index.html             # Home page
-├── about.html             # About page
-├── projects.html          # Projects page
-├── certificates.html      # Certificates page
-├── contact.html           # Contact page
-├── resume.html            # Resume page
+isaiahwebdev/
+├── README.md
+├── LICENSE.md
+├── TODO.md
+├── index.html
+├── about.html
+├── projects.html
+├── certificates.html
+├── resume.html
+├── contact.html
 ├── css/
-│   └── style.css          # Main stylesheet
+│   └── styles.css
 ├── js/
-│   ├── script.js          # Main JavaScript
-│   ├── project.js         # Project handling
-│   ├── footer-loader.js   # Footer loading
-│   └── hero-final-fix.js  # Hero animations
+│   ├── about.js
+│   ├── certificates.js
+│   ├── contact.js
+│   ├── emailjs-contact.js
+│   ├── footer-loader.js
+│   ├── hero-final-fix.js
+│   ├── project.js
+│   ├── projects-lightbox.js
+│   └── projects-page.js
 ├── data/
-│   ├── projects.json      # Project data
-│   ├── skills.json        # Skills data
-│   ├── certificates.json  # Certificates data
-│   └── footer.json        # Footer data
-├── images/                # Project images and assets
-├── logo/                  # Logo files
-├── docs/                  # Additional documents
-├── firebase.json          # Firebase config
-├── robots.txt             # SEO
-└── sitemap.xml            # SEO
+│   ├── projects.json
+│   ├── skills.json
+│   ├── certificates.json
+│   └── footer.json
+├── images/
+├── assets/
+│   └── fontawesome-free-5.15.4-web/
+├── icon/
+│   └── favicon.ico
+├── docs/
+├── tailwind-workspace/
+│   ├── input.css
+│   ├── package.json
+│   └── tailwind.config.js
+├── robots.txt
+└── sitemap.xml
 ```
 
 ---
@@ -68,59 +85,71 @@ isaiahwebdev-portfolio/
 
 ### Prerequisites
 - A modern web browser
-- Basic understanding of HTML/CSS/JS (for customization)
+- Node.js and npm (optional, only required for Tailwind CSS builds)
+- Basic HTML/CSS/JavaScript knowledge for customization
 
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/KAOS-CODM/isaiahwebdev-portfolio.git
+   git clone https://github.com/KAOS-CODM/isaiahwebdev.git
    ```
-2. Navigate to the project directory:
+2. Change into the project directory:
    ```bash
-   cd isaiahwebdev-portfolio
+   cd isaiahwebdev
    ```
-3. Open `index.html` in your browser or serve locally.
+3. Open `index.html` in your browser, or serve the site with a local web server.
 
-### Customization
-- Edit `data/projects.json` to add new projects
-- Modify `css/style.css` for styling changes
-- Update `data/skills.json` for skills
-- Add images to `images/` folder
+### Optional Tailwind Build
+If you want to regenerate `css/styles.css` from the Tailwind source:
+
+1. Install dependencies in `tailwind-workspace`:
+   ```bash
+   cd tailwind-workspace
+   npm install
+   ```
+2. Build the stylesheet:
+   ```bash
+   npm run build
+   ```
 
 ---
 
-## 👨‍💻 About Me
+## ✨ Customization
+- Add new projects in `data/projects.json`
+- Update certificates in `data/certificates.json`
+- Edit skill categories in `data/skills.json`
+- Add or replace images under the `images/` folder
+- Customize styling via `tailwind-workspace/input.css` and rebuild to `css/styles.css`
+- Update footer content in `data/footer.json`
 
-I'm Isaiah Adelowo, a Computer Science student passionate about web programming and creating digital experiences that matter.
+---
 
-### I focus on:
-- Frontend development with modern technologies
-- Responsive and accessible web design
-- User-centered UI/UX principles
-- Clean, maintainable code
+## 👨‍💻 About IsaiahWebDev
 
-### Skills
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+), React
-- **Tools:** Git, VS Code, Figma, Chrome DevTools
-- **Design:** UI/UX principles, wireframing, prototyping
+IsaiahWebDev is a frontend developer focused on building modern, responsive websites with strong UI/UX design.
+
+### Key focus areas
+- Frontend development with HTML, CSS, and JavaScript
+- Responsive and accessible web interfaces
+- Data-driven content rendering from JSON
+- Clean code structure and maintainable design
 
 ---
 
 ## 📞 Contact
 
 - **Email:** kaoskonseptech@gmail.com
-- **Fiverr:** https://www.fiverr.com/isaiahwebdev
-- **GitHub:** [https://github.com/KAOS-CODM](https://github.com/KAOS-CODM)
-- **Portfolio:** [https://kaos-codm.github.io/isaiahwebdev-portfolio/](https://kaos-codm.github.io/isaiahwebdev-portfolio/)
+- **GitHub:** https://github.com/KAOS-CODM
+- **Portfolio:** https://isaiahwebdev.onrender.com/
 
 ---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This repository is open source under the [MIT License](LICENSE.md).
 
 ---
 
-⭐ If you like this project, please give it a star on GitHub!
+⭐ If you enjoy this project, please give it a star on GitHub!
 
-*Built with ❤️ by Isaiah Adelowo*
+*Built with ❤️ by IsaiahWebDev*

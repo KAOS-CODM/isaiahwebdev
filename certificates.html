@@ -22,9 +22,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0//css/all.min.css">
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/projects.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="icon" href="/icon/favicon.ico">
 </head>
 <body>
@@ -65,7 +64,7 @@
             </div>
         </section>
         
-        <section id="certificates" class="section-padding">
+        <section id="certificates" class="bg-card-bg border border-neon-red/15 rounded-2xl p-[clamp(20px,4vw,30px)] transition-smooth duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10">
             <div class="container">
                 <div class="projects-container" id="certificates-container">
                     <!-- Certificates will be loaded here dynamically -->
@@ -80,13 +79,28 @@
         </section>
         
         <!-- Lightbox -->
-        <div id="lightbox" class="lightbox">
-            <span class="close">&times;</span>
-            <img class="lightbox-img" id="lightbox-img" src="" alt="Expanded Certificate Image">
-            <div class="nav-btns">
-                <span id="prev-btn">&#10094;</span>
-                <span id="next-btn">&#10095;</span>
-            </div>
+        <div
+          id="lightbox"
+          class="hidden fixed inset-0 z-5000 bg-black/80 flex items-center justify-center p-5"
+        >
+          <span
+            id="close-lightbox"
+            class="absolute top-5 right-5 text-white text-3xl cursor-pointer font-bold transition-transform hover:scale-110"
+          >
+            &times;
+          </span>
+        
+          <img
+              id="lightbox-img"
+              class="mx-auto max-w-[90vw] max-h-[80vh] object-contain rounded-xl shadow-[0_0_30px_rgba(255,225,225,0.3)]"
+              src=""
+              alt="Expanded Certificate Image"
+            />
+        
+          <div class="absolute top-1/2 w-full flex justify-between px-7.5 -translate-y-1/2 pointer-events-none">
+            <span id="prev-btn" class="pointer-events-auto cursor-pointer text-white text-4xl">&#10094;</span>
+            <span id="next-btn" class="pointer-events-auto cursor-pointer text-white text-4xl">&#10095;</span>
+          </div>
         </div>
         
         <footer id="main-footer">

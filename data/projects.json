@@ -2,7 +2,7 @@
     {
         "title": "Recipe Submission Website",
         "description": "A full-stack recipe submission platform with user authentication, comment sections, admin dashboards, and advanced search functionality.",
-        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
+        "technologies": ["HTML", "CSS", "JavaScript", "NODEJS"],
         "site": "https://praroz.onrender.com",
         "github": "https://github.com/KAOS-CODM/PRAROZ.git",
         "images": [
@@ -21,9 +21,9 @@
         ]
     },
     {
-        "title": "Fintech Multiputpose Website",
+        "title": "Fintech Multipurpose Website",
         "description": "A fintech website with a sleek design, featuring a landing page, user dashboard, admin page, profile page etc. It includes user authentication, dynamic content rendering, and responsive design. It is built using HTML, CSS, JavaScript, and Node.js.",
-        "technologies": ["HTML", "CSS", "JavaScript", "Node.js"],
+        "technologies": ["HTML", "CSS", "JavaScript", "NODEJS"],
         "site": "https://kaossub.onrender.com",
         "github": "https://github.com/KAOS-CODM/kaossub.git",
         "images": [

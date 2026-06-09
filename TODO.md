@@ -1,0 +1,5 @@
+- [x] Inspect `tailwind-workspace/input.css` for missing/invalid responsive rules
+- [x] Fix mobile layout for hero sections (make `.hero-content` single-column on small screens)
+- [x] Fix invalid `padding-top: auto` usage in `@media (max-width: 480px)`
+- [x] Add mobile overflow-safety base rules (images/long text/link wrapping) without changing existing look
+- [x] Re-check that no other page relies on styles that would be affected by these changes

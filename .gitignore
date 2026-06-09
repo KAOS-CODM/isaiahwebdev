@@ -41,6 +41,7 @@ Thumbs.db
 webfonts/
 
 # Temporary scripts
+*.txt
 *.sh
 !check-seo.sh  # Keep if you want this o
 

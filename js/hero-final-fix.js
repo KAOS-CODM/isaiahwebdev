@@ -1,6 +1,6 @@
 // Nuclear option - ensure hero sections are below navbar
 document.addEventListener('DOMContentLoaded', function() {
-    const heroSections = document.querySelectorAll('#hero, #about-hero, #certificates-hero, #contact-hero, #projects-hero');
+    const heroSections = document.querySelectorAll('#hero, #about-hero, #certificates-hero, #contact-hero, #projects-hero, #resume-hero');
     const navbar = document.querySelector('.navbar');
     
     if (navbar && heroSections.length > 0) {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Also fix on window resize
 window.addEventListener('resize', function() {
-    const heroSections = document.querySelectorAll('#hero, #about-hero, #certificates-hero, #contact-hero, #projects-hero');
+    const heroSections = document.querySelectorAll('#hero, #about-hero, #certificates-hero, #contact-hero, #projects-hero, #resume-hero');
     const navbar = document.querySelector('.navbar');
     
     if (navbar && heroSections.length > 0) {

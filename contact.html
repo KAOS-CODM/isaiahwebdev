@@ -25,9 +25,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0//css/all.min.css">
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/contact.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-5.15.4-web/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="icon" href="/icon/favicon.ico">
 </head>
 <body>
@@ -76,36 +75,35 @@
                         <h2>Ready to Start Your Project?</h2>
                         <p>I'm available for freelance work, collaborations, and full-time opportunities. Whether you need a website, web application, or just want to connect, feel free to reach out!</p>
                         
-                        <div class="contact-info">
-                            <div class="contact-item">
-                                <i class="fas fa-envelope"></i>
-                                <div class="contact-text">
+                        <div class="m-10">
+                            <div class="flex items-center mb-5 p-4 rounded-lg background-ease bg-[rgba(255,255,255,0.03)] border border-solid border-card-bg hover:bg-[rgba(255,255,255,0.05)] md:flex-col md:items-start">
+                                <i class="fas fa-envelope text-neon-red text-2xl mr-4 min-w-8.5"></i>
+                                <div class="grow">
                                     <h3>Email</h3>
-                                    <p id="email-text">kaoskonseptech@gmail.com</p>
+                                    <p class="m-1 text-text-dim" id="email-text">kaoskonseptech@gmail.com</p>
                                 </div>
-                                <button class="copy-btn" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
+                                <button class="copy-btn bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] text-text-light p-1 rounded-sm cursor-pointer ml-4 text-[0.8rem] transition-ease hover:bg-[rgba(255,0,60,0.2)] hover:text-neon-red md:ml-0 md:mt-2.5 md:self-end" data-copy="kaoskonseptech@gmail.com" aria-label="Copy email address">
                                     <i class="far fa-copy"></i> Copy
                                 </button>
                             </div>
         
-                            <div class="contact-item">
-                                <i class="fab fa-whatsapp"></i>
-                                <div class="contact-text">
-                                    <h3>WhatsApp</h3>
-                                    <p id="phone-text">+234 913 501 2572</p>
+                            <div class="flex items-center mb-5 p-4 rounded-lg background-ease bg-[rgba(255,255,255,0.03)] border border-solid border-card-bg hover:bg-[rgba(255,255,255,0.05)] md:flex-col md:items-start">
+                                <i class="fab fa-whatsapp text-neon-red text-2xl mr-4 min-w-8.5"></i>
+                                <div class="grow">
+                                    <p class="m-1 text-text-dim" id="phone-text">+234 913 501 2572</p>
                                 </div>
-                                <button class="copy-btn" data-copy="+2349135012572" aria-label="Copy phone number">
+                                <button class="copy-btn bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] text-text-light p-1 rounded-sm cursor-pointer ml-4 text-[0.8rem] transition-ease hover:bg-[rgba(255,0,60,0.2)] hover:text-neon-red md:ml-0 md:mt-2.5 md:self-end" data-copy="+2349135012572" aria-label="Copy phone number">
                                     <i class="far fa-copy"></i> Copy
                                 </button>
                             </div>
         
-                            <div class="contact-item">
-                                <i class="fab fa-github"></i>
-                                <div class="contact-text">
+                            <div class="flex items-center mb-5 p-4 rounded-lg background-ease bg-[rgba(255,255,255,0.03)] border border-solid border-card-bg hover:bg-[rgba(255,255,255,0.05)] md:flex-col md:items-start">
+                                <i class="fab fa-github text-neon-red text-2xl mr-4 min-w-8.5"></i>
+                                <div class="grow">
                                     <h3>GitHub</h3>
-                                    <p id="github-text">github.com/KAOS-CODM</p>
+                                    <a class="m-1 text-text-dim" id="github-text" href="https://github.com/KAOS-CODM" target="_blank" rel="noopener noreferrer">github.com/KAOS-CODM</a>
                                 </div>
-                                <button class="copy-btn" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
+                                <button class="copy-btn bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] text-text-light p-1 rounded-sm cursor-pointer ml-4 text-[0.8rem] transition-ease hover:bg-[rgba(255,0,60,0.2)] hover:text-neon-red md:ml-0 md:mt-2.5 md:self-end" data-copy="https://github.com/KAOS-CODM" aria-label="Copy GitHub URL">
                                     <i class="far fa-copy"></i> Copy
                                 </button>
                             </div>
@@ -122,43 +120,43 @@
                     <p>Fill out the form below and I'll get back to you within 24 hours</p>
                 </div>
         
-                <div class="form-wrapper">
-                    <form id="contactForm">
-                        <div class="form-field-group">
-                            <label>Name *</label>
-                            <input type="text" id="name" name="name" required aria-required="true">
-                            <div class="error-message" id="nameError"></div>
+                <div class="max-w-150 m-0">
+                    <form id="contactForm" class="bg-card-bg p-10 rounded-2xl border border-solid border-[rgba(255,0,60,0.15)] backdrop-blur-[10px]">
+                        <div class="mb-5">
+                            <label for="name" class="block mb-2 text-text-light :focus:outline-none focus:text-neon-red focus:shadow-[10px] focus:shadow-[rgba(255,0,60,0.3)] focus:bg-[rgba(255,255,255,0.15)]">Name *</label>
+                            <input class="w-full p-3 bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] rounded-xl text-text-light text-2xl font-exo transition-smooth" type="text" id="name" name="name" required aria-required="true">
+                            <div class="error-message text-neon-red text-2xl mt-1 hidden" id="nameError"></div>
                         </div>
         
-                        <div class="form-field-group">
-                            <label>Email *</label>
-                            <input type="email" id="email" name="email" required aria-required="true">
-                            <div class="error-message" id="emailError"></div>
+                        <div class="mb-5">
+                            <label for="email" class="block mb-2 text-text-light :focus:outline-none focus:text-neon-red focus:shadow-[10px] focus:shadow-[rgba(255,0,60,0.3)] focus:bg-[rgba(255,255,255,0.15)]">Email *</label>
+                            <input class="w-full p-3 bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] rounded-xl text-text-light text-2xl font-exo transition-smooth" type="email" id="email" name="email" required aria-required="true">
+                            <div class="error-message text-neon-red text-2xl mt-1 hidden" id="emailError"></div>
                         </div>
         
-                        <div class="form-field-group">
-                            <label>Subject</label>
-                            <input type="text" id="subject" name="subject" placeholder="Project type or inquiry">
+                        <div class="mb-5">
+                            <label for="subject" class="block mb-2 text-text-light focus:outline-none focus:text-neon-red focus:shadow-[10px] focus:shadow-[rgba(255,0,60,0.3)] focus:bg-[rgba(255,255,255,0.15)]">Subject</label>
+                            <input class="input w-full p-3 bg-card-bg border border-solid border-[rgba(255,255,255,0.2)] rounded-xl text-text-light text-2xl font-exo transition-smooth" type="text" id="subject" name="subject" placeholder="Project type or inquiry">
                         </div>
         
-                        <div class="form-field-group">
-                            <label>Message *</label>
-                            <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="Tell me about your project..."></textarea>
-                            <div class="error-message" id="messageError"></div>
+                        <div class="mb-5">
+                            <label for="message" class="block mb-2 text-text-light focus:outline-none focus:text-neon-red focus:shadow-[10px] focus:shadow-[rgba(255,0,60,0.3)] focus:bg-[rgba(255,255,255,0.15)] ">Message *</label>
+                            <textarea class="border border-solid block mb-2 text-text-light focus:outline-none focus:shadow-[10px] focus:shadow-[rgba(255,0,60,0.3)] focus:bg-[rgba(255,255,255,0.15)]" id="message" name="message" rows="5" required aria-required="true" placeholder="Tell me about your project..."></textarea>
+                            <div class="error-message text-neon-red text-2xl mt-1 hidden" id="messageError"></div>
                         </div>
         
-                        <button type="submit" id="submitBtn">
+                        <button class="bg-neon-red text-black border-none rounded-2xl py-4 px-8 text-2xl font-medium cursor-pointer transition-smooth w-full  hover:bg-transparent hover:text-neon-red hover:border-2 hover:border-solid hover:border-neon-red" type="submit"  id="submitBtn">
                             <i class="fas fa-paper-plane"></i> Send Message
                         </button>
                         
                         <div id="formLoading" class="loading-spinner hidden"></div>
                     </form>
         
-                    <div id="formMessage" class="hidden">
+                    <div id="formMessage" class="hidden" aria-live="polite" aria-atomic="true">
                         <p>Your email client is opening with your message. Please click send to complete the process.</p>
                     </div>
-                    
-                    <div id="formError" class="hidden">
+
+                    <div id="formError" class="hidden" aria-live="polite" aria-atomic="true">
                         <p>There was an error with your submission. Please check the fields above.</p>
                     </div>
                 </div>
@@ -174,7 +172,7 @@
         </div>
         
         <!-- Copy feedback element -->
-        <div class="copy-feedback" id="copyFeedback">
+        <div class="fixed bottom-5 right-5 bg-[rgba(0,0,0,0.8)] text-white py-3 px-5 rounded-[5px] shadow-[4px] shadow-[rgba(0,0,0,0.3)] z-1000 opacity-0 translate-y-5 transition-ease" id="copyFeedback">
             <i class="fas fa-check-circle"></i> Copied to clipboard!
         </div>
     </main>
@@ -183,5 +181,6 @@
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
     <script src="js/contact.js"></script>
+    <script src="js/emailjs-contact.js"></script>
 </body>
 </html>
