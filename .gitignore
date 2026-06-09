@@ -37,8 +37,6 @@ readme1.md
 .DS_Store
 Thumbs.db
 
-# We don't need webfonts directory (using CDN)
-webfonts/
 
 # Temporary scripts
 *.txt
