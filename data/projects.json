@@ -6,18 +6,26 @@
         "site": "https://praroz.onrender.com",
         "github": "https://github.com/KAOS-CODM/PRAROZ.git",
         "images": [
-        {
-            "src": "images/recipe/recipe-submission1.PNG",
-            "alt": "Recipe submission page with form and menu"
-        },
-        {
-            "src": "images/recipe/recipe-submission2.PNG",
-            "alt": "Recipe list and search results"
-        },
-        {
-            "src": "images/recipe/recipe-submission3.PNG",
-            "alt": "Recipe details view with comments"
-        }
+            {
+                "src": "images/recipe/praroz-homepage.jpeg",
+                "alt": "Praroz Homepage with form and menu"
+            },
+            {
+                "src": "images/recipe/praroz-about.jpeg",
+                "alt": "Praroz About page with team information"
+            },
+            {
+                "src": "images/recipe/praroz-contact.jpeg",
+                "alt": "Praroz Contact page with form"
+            },
+            {
+                "src": "images/recipe/popular.jpeg",
+                "alt": "Praroz Popular recipes page"
+            },
+            {
+                "src": "images/recipe/categories.png",
+                "alt": "Praroz Categories browse page"
+            }
         ]
     },
     {
@@ -42,6 +50,36 @@
             {
                 "src": "images/kaossub/kaossub-history.jpeg",
                 "alt": "Transaction history page"
+            }
+        ]
+    },
+    {
+        "title": "Kaostech Corporate Website",
+        "description": "A modern corporate website developed for a technology startup, featuring a professional landing page, user authentication, customer dashboard, admin panel, user profile management, and dynamic content rendering. Built with a responsive architecture using HTML, CSS, JavaScript, and Node.js to showcase scalable full-stack web application development.",
+        "technologies": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Node.js"
+        ],
+        "site": "https://kaostech.onrender.com",
+        "github": "https://github.com/KAOS-CODM/kaostech.git",
+        "images": [
+            {
+            "src": "images/kaostech/homepage.png",
+            "alt": "Kaostech Homepage with navigation bar"
+            },
+            {
+            "src": "images/kaostech/blog-hero.png",
+            "alt": "Kaostech Blog page with blog posts"
+            },
+            {
+            "src": "images/kaostech/blog.png",
+            "alt": "Kaostech Blog page with blog posts"
+            },
+            {
+            "src": "images/kaostech/qoute.png",
+            "alt": "Kaostech Quote page with quote form"
             }
         ]
     }

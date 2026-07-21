@@ -19,6 +19,12 @@
             "url": "mailto:kaoskonseptech@gmail.com",
             "icon": "fas fa-envelope",
             "ariaLabel": "Send Email"
+        },
+        {
+            "platform": "X (Twitter)",
+            "url": "https://x.com/De_Ice1",
+            "icon": "fab fa-x-twitter",
+            "ariaLabel": "Contact on Twitter"
         }
     ],
     "copyright": "&copy; 2025 IsaiahWebDev Portfolio. All rights reserved."

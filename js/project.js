@@ -87,7 +87,6 @@ function displayProjects(projects) {
                     >
                         <i class="fab fa-github"></i> Source Code
                     </a>
-
                 </div>
             </div>
         `;

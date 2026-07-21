@@ -1,0 +1,15 @@
+[  
+    {
+        "title":"freeCodeCamp Issued Frontend Development",
+        "images": [
+            {
+                "src": "#",
+                "alt": "Frontend Development"
+            }
+        ],
+        "issuer":"freeCodeCamp",
+        "date":"2026",
+        "description":"Frontend",
+        "credentialUrl":""
+    }
+]
