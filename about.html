@@ -46,7 +46,7 @@
         
         <a href="#about-details" class="skip-link">Skip to main content</a>
         
-        <section id="about-hero">
+        <section id="about-hero" data-reveal="up">
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text">
@@ -71,32 +71,32 @@
         
         <section id="about-details">
             <div class="container">
-                <div class="section-header">
+                <div class="section-header" data-reveal="up">
                     <h2>My Skills & Expertise</h2>
                     <p>Technologies and tools I work with</p>
                 </div>
                 
                 <!-- Skills Grid from JSON -->
-                <div class="grid grid-cols-[repeat(auto-fit,minmax(clamp(250px,30vw,300px),1fr))] gap-[clamp(20px,4vw,30px)] mt-[clamp(30px,6vw,40px)] rounded-b-2xl md:grid-cols-1 md:gap-5 md:mt-7.5" id="skills-cards-container">
+                <div class="grid grid-cols-[repeat(auto-fit,minmax(clamp(250px,30vw,300px),1fr))] gap-[clamp(20px,4vw,30px)] mt-[clamp(30px,6vw,40px)] rounded-b-2xl md:grid-cols-1 md:gap-5 md:mt-7.5" id="skills-cards-container" data-reveal="up">
                     <!-- Skills cards will be loaded here dynamically -->
                     <div class="loading-spinner"></div>
                 </div>
         
                 <!-- Detailed Skills Progress from JSON -->
                 <div id="skills-detailed" class="mt-6-">
-                    <div class="section-header">
+                    <div class="section-header" data-reveal="up">
                         <h2>Technical Proficiency</h2>
                         <p>My skill levels across various technologies</p>
                     </div>
                     
-                    <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 max-w-full m-0" id="skills-detailed-container">
+                    <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 max-w-full m-0" id="skills-detailed-container" data-reveal="up">
                         <!-- Skills details will be loaded here dynamically -->
                         <div class="loading-spinner"></div>
                     </div>
                 </div>
         
                 <div class="mt-15 text-center">
-                    <div class="section-header">
+                    <div class="section-header" data-reveal="up">
                         <h2>My Development Journey</h2>
                     </div>
                     <div class="content-wrapper">
@@ -133,6 +133,8 @@
         </div>
     </main>
     <script src="js/script.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/top.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
     <script src="js/about.js"></script>

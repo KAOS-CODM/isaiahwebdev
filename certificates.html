@@ -41,7 +41,7 @@
         </nav>
         <a href="#certificates" class="skip-link">Skip to main content</a>
         
-        <section id="certificates-hero">
+        <section id="certificates-hero" data-reveal="up">
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text">
@@ -64,7 +64,7 @@
             </div>
         </section>
         
-        <section id="certificates" class="bg-card-bg border border-neon-red/15 rounded-2xl p-[clamp(20px,4vw,30px)] transition-smooth duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10">
+        <section id="certificates" class="bg-card-bg border border-neon-red/15 rounded-2xl p-[clamp(20px,4vw,30px)] transition-smooth duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10" data-reveal="up">
             <div class="container">
                 <div class="projects-container" id="certificates-container">
                     <!-- Certificates will be loaded here dynamically -->
@@ -81,7 +81,7 @@
         <!-- Lightbox -->
         <div
           id="lightbox"
-          class="hidden fixed inset-0 z-5000 bg-black/80 flex items-center justify-center p-5"
+          class="hidden fixed inset-0 z-5000 bg-black/80 items-center justify-center p-5"
         >
           <span
             id="close-lightbox"
@@ -113,6 +113,8 @@
     </main>
 
     <script src="js/script.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/top.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
     <script src="js/certificates.js"></script>
