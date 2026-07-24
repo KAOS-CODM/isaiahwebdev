@@ -51,7 +51,7 @@
                     <div class="hero-text">
                         <h1>MY PROJECTS</h1>
                         <h2>Explore My Latest Work</h2>
-                        <p>Discover my portfolio of web development projects, showcasing modern design, responsive layouts, and cutting-edge technologies.</p>
+                        <p>Every project I build starts with a real problem and ends with a solution that's fast, accessible, and a pleasure to use. From full-stack platforms to polished landing pages, each one reflects my commitment to clean code and thoughtful design.</p>
                         <div class="btn-group">
                             <a href="#projects" class="btn btn-primary">
                                 <i class="fas fa-rocket"></i> View Projects
@@ -70,61 +70,170 @@
         
         <section id="projects" class="section-padding" data-reveal="up">
             <div class="container">
+        
                 <div class="section-header">
-                    <h2>My Projects</h2>
-                    <p>Handcrafted with modern technologies</p>
+                    <h2>Featured Projects</h2>
+                    <p>Real-world websites and applications built with modern technologies.</p>
                 </div>
+        
+                <div class="content-wrapper text-center mb-12">
+                    <p class="large-text">
+                        Every project begins with understanding the problem before writing a single line of code.
+                        I focus on building fast, responsive, and user-friendly websites that combine modern
+                        design with clean, maintainable code. Whether it's a business website, a portfolio,
+                        an administrative dashboard, or a full-stack application, my goal is always to deliver
+                        a solution that performs as well as it looks.
+                    </p>
+                </div>
+        
                 <div
                     id="projects-container-full"
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[clamp(15px,3vw,20px)] p-[clamp(15px,3vw,20px)] empty:before:content-['Loading\ projects...'] empty:before:block empty:before:text-center empty:before:p-10 empty:before:text-text-dim">
+                    class="grid grid-cols-[repeat(auto-fit,minmax(clamp(280px,30vw,350px),1fr))] gap-[clamp(15px,3vw,20px)] p-[clamp(15px,3vw,20px)] empty:before:content-['Loading\ projects...'] empty:before:block empty:before:text-center empty:before:p-10 empty:before:text-text-dim">
+                    <!-- Projects injected here -->
                 </div>
+        
+                <div class="content-wrapper text-center mt-16">
+                    <p class="large-text">
+                        Every project in this portfolio reflects my commitment to writing clean code,
+                        creating intuitive user experiences, and building responsive interfaces that
+                        work seamlessly across desktops, tablets, and mobile devices. I continuously
+                        improve my workflow by adopting modern technologies and best practices to
+                        deliver reliable, scalable, and maintainable web solutions.
+                    </p>
+        
+                    <p class="text-text-dim mb-8">
+                        If you're looking for a developer who values performance, accessibility,
+                        and thoughtful design, I'd love to hear about your project.
+                    </p>
+        
+                    <div class="btn-group center-buttons">
+                        <a href="contact.html" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Start a Project
+                        </a>
+        
+                        <a href="resume.html" class="btn">
+                            <i class="fas fa-file-alt"></i>
+                            View Resume
+                        </a>
+                    </div>
+                </div>
+        
             </div>
         </section>
         
-        <!-- Lightbox -->
+        <!-- Project Details Modal -->
         <div
-            id="lightbox"
-            class="fixed inset-0 z-5000 hidden items-center justify-center bg-black/80 p-5"
+            id="project-modal"
+            class="fixed inset-0 z-5000 hidden items-center justify-center bg-black/80 p-4 sm:p-5 md:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-hidden="true"
+            aria-labelledby="modal-title"
         >
-            <!-- Close Button -->
-            <button
-                id="close-lightbox"
-                type="button"
-                aria-label="Close image"
-                class="absolute top-5 right-5 flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-3xl font-bold text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black"
-            >
-                &times;
-            </button>
-        
-            <!-- Expanded Image -->
-            <img
-                id="lightbox-img"
-                src=""
-                alt="Expanded Project Image"
-                class="mx-auto max-h-[80vh] max-w-[90vw] rounded-xl object-contain shadow-[0_0_30px_rgba(255,0,60,0.3)]"
-            />
-        
-            <!-- Navigation -->
+            <!-- Backdrop (click to close) -->
+            <div id="modal-backdrop" class="absolute inset-0"></div>
+
+            <!-- Modal Content -->
             <div
-                class="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-8"
+                id="modal-content"
+                class="relative z-10 flex w-full max-w-225 flex-col bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl backdrop-blur-[10px] shadow-[0_0_40px_rgba(255,0,60,0.3)] max-h-[90vh] overflow-y-auto"
             >
+                <!-- Close Button -->
                 <button
-                    id="prev-btn"
+                    id="modal-close"
                     type="button"
-                    aria-label="Previous image"
-                    class="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-3xl text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black"
+                    aria-label="Close project details"
+                    class="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-2xl font-bold text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black focus:outline-none focus:shadow-[0_0_10px_rgba(255,0,60,0.5)]"
                 >
-                    &#10094;
+                    &times;
                 </button>
-        
-                <button
-                    id="next-btn"
-                    type="button"
-                    aria-label="Next image"
-                    class="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-3xl text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black"
-                >
-                    &#10095;
-                </button>
+
+                <!-- Image Section -->
+                <div class="relative w-full bg-black/30 rounded-t-2xl overflow-hidden">
+                    <img
+                        id="modal-image"
+                        src=""
+                        alt="Project screenshot"
+                        loading="lazy"
+                        decoding="async"
+                        class="mx-auto max-h-[55vh] w-full object-contain"
+                    />
+
+                    <!-- Image Counter -->
+                    <span
+                        id="modal-image-count"
+                        class="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/60 text-white text-[0.8rem] font-medium backdrop-blur-sm hidden"
+                    ></span>
+
+                    <!-- Previous / Next Controls -->
+                    <div
+                        id="modal-controls"
+                        class="absolute w-full inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-2 sm:px-4 hidden"
+                    >
+                        <button
+                            id="modal-prev"
+                            type="button"
+                            aria-label="Previous screenshot"
+                            class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/50 text-xl sm:text-3xl text-gray-500 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black focus:outline-none focus:shadow-[0_0_10px_rgba(255,0,60,0.5)]"
+                        >
+                            &#10094;
+                        </button>
+                        <button
+                            id="modal-next"
+                            type="button"
+                            aria-label="Next screenshot"
+                            class="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/50 text-xl sm:text-3xl text-gray-500 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-neon-red hover:text-black focus:outline-none focus:shadow-[0_0_10px_rgba(255,0,60,0.5)]"
+                        >
+                            &#10095;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Details Section -->
+                <div class="p-5 sm:p-6 md:p-8 text-left">
+                    <!-- Title -->
+                    <h3
+                        id="modal-title"
+                        class="text-text-light font-orbitron text-[clamp(1.3rem,3vw,1.8rem)] mb-3"
+                    ></h3>
+
+                    <!-- Description -->
+                    <p
+                        id="modal-description"
+                        class="text-text-dim text-[clamp(0.9rem,1.5vw,1rem)] mb-4 leading-relaxed"
+                    ></p>
+
+                    <!-- Technologies -->
+                    <p
+                        id="modal-technologies"
+                        class="text-text-dim text-[0.9rem] mb-5"
+                    ></p>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3 sm:gap-4">
+                        <a
+                            id="modal-live"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-primary inline-flex items-center gap-2"
+                        >
+                            <i class="fas fa-external-link-alt"></i>
+                            Live Demo
+                        </a>
+                        <a
+                            id="modal-github"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn inline-flex items-center gap-2"
+                        >
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
        
@@ -142,7 +251,7 @@
     <script src="js/top.js"></script>
     <script src="js/footer-loader.js"></script>
     <script src="js/hero-final-fix.js"></script>
-    <script src="js/projects-lightbox.js"></script>
+    <script src="js/projects-modal.js"></script>
     <script src="js/projects-page.js"></script>
 </body>
 </html>

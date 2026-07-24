@@ -9,6 +9,123 @@ async function loadProjects() {
         if (!projectsContainer) return;
 
         if (!data.length) {
+            projectsContainer.innerHTML =
+                `<p class="no-projects">No projects available at the moment.</p>`;
+            return;
+        }
+
+        // Display only the featured project on the homepage
+        const featuredProjects = data.slice(0, 1);
+
+        displayProjects(featuredProjects);
+
+        // Initialize the shared lightbox with the displayed projects
+        if (typeof window.initProjectsLightbox === "function") {
+            window.initProjectsLightbox(featuredProjects);
+        }
+
+    } catch (error) {
+        console.error("Error loading projects:", error);
+
+        if (projectsContainer) {
+            projectsContainer.innerHTML =
+                `<p class="error">Failed to load projects. Please try again later.</p>`;
+        }
+    }
+}
+
+function getImageSrc(image) {
+    return image?.src ?? image ?? "";
+}
+
+function getImageAlt(image, fallback) {
+    return image?.alt ?? fallback;
+}
+
+// Render projects
+function displayProjects(projects) {
+    if (!projectsContainer) return;
+
+    projectsContainer.innerHTML = projects.map((project, index) => {
+        const firstImage = project.images?.[0] ?? {};
+
+        return `
+            <div
+                class="bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl p-[clamp(20px,4vw,30px)] transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10"
+                data-index="${index}"
+            >
+
+                <h3 class="text-text-light font-orbitron mb-[clamp(10px,2vw,15px)] text-[clamp(1.3rem,3vw,1.6rem)]">
+                    ${project.title}
+                </h3>
+
+                <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
+                    <img
+                        src="${getImageSrc(firstImage)}"
+                        alt="${getImageAlt(firstImage, `${project.title} Thumbnail`)}"
+                        class="thumb w-full h-full object-cover cursor-pointer transition-smooth duration-300 hover:scale-105"
+                        loading="lazy"
+                    >
+                </div>
+
+                <p class="text-text-dim mb-2.5">
+                    ${project.description}
+                </p>
+
+                ${
+                    project.technologies
+                        ? `
+                            <p>
+                                <strong>Technologies:</strong>
+                                ${project.technologies.join(", ")}
+                            </p>
+                          `
+                        : ""
+                }
+
+                <div class="flex justify-center gap-[clamp(10px,2vw,15px)] mt-[clamp(15px,3vw,20px)]">
+
+                    <a
+                        href="${project.site}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col"
+                    >
+                        <i class="fas fa-external-link-alt"></i>
+                        Live Demo
+                    </a>
+
+                    <a
+                        href="${project.github}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col"
+                    >
+                        <i class="fab fa-github"></i>
+                        Source Code
+                    </a>
+
+                </div>
+
+            </div>
+        `;
+    }).join("");
+}
+
+// Initialize
+loadProjects();
+
+/*const projectsContainer = document.getElementById("projects-container");
+
+// Load projects
+async function loadProjects() {
+    try {
+        const response = await fetch("data/projects.json");
+        const data = await response.json();
+
+        if (!projectsContainer) return;
+
+        if (!data.length) {
             projectsContainer.innerHTML = `<p class="no-projects">No projects available at the moment.</p>`;
             return;
         }
@@ -96,3 +213,4 @@ function displayProjects(projects) {
 // Init
 loadProjects();
 
+*/

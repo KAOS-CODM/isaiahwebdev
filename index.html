@@ -51,7 +51,7 @@
                     <div class="hero-text">
                         <h1>CODE THE FUTURE WITH ISAIAH</h1>
                         <h2>Frontend Developer & UI Designer</h2>
-                        <p>I'm a passionate frontend developer skilled in HTML, CSS, JavaScript, and modern web development frameworks. I create responsive, user-friendly websites with cutting-edge design.</p>
+                        <p>I'm a Computer Science student and freelance frontend developer who believes great code is both functional and beautiful. I specialize in crafting responsive, accessible, and performant web experiences using HTML, CSS, JavaScript, and modern frameworks. Every project I build follows clean architecture principles and puts the user experience first — because technology only matters when people can actually use it.</p><p>I'm a Computer Science student and freelance frontend developer who believes great code is both functional and beautiful. I specialize in crafting responsive, accessible, and performant web experiences using HTML, CSS, JavaScript, and modern frameworks. Every project I build follows clean architecture principles and puts the user experience first — because technology only matters when people can actually use it.</p>
                         <div class="btn-group">
                             <a href="#projects" class="btn btn-primary">
                                 <i class="fas fa-rocket"></i> View Projects
@@ -83,63 +83,56 @@
                 Featured Projects
               </h2>
               <p class="text-text-dim mb-2.5">
-                Check out my latest work
+                Real-world solutions built with clean code and modern technologies
               </p>
             </div>
         
             <div
               id="projects-container"
-              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(15px,3vw,20px)] p-[clamp(15px,3vw,20px)] empty:before:content-['Loading\ projects...'] empty:before:block empty:before:text-center empty:before:p-10 empty:before:text-text-dim">
-            </div>
+              class="grid grid-cols-[repeat(auto-fit,minmax(clamp(280px,30vw,350px),1fr))] gap-[clamp(15px,3vw,20px)] p-[clamp(15px,3vw,20px)] empty:before:content-['Loading\ projects...'] empty:before:block empty:before:text-center empty:before:p-10 empty:before:text-text-dim"
+            ></div>
         
           </div>
         </section>
         
         <!-- Lightbox -->
         <div
-          id="lightbox"
-          class="fixed inset-0 z-5000 hidden items-center justify-center bg-black/80 p-5"
+            id="lightbox"
+            class="hidden fixed inset-0 z-5000 bg-black/80 items-center justify-center"
         >
-          <!-- Close Button -->
-          <button
-            id="close-lightbox"
-            type="button"
-            aria-label="Close image"
-            class="absolute top-5 right-5 flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-3xl text-white backdrop-blur transition-all duration-300 hover:bg-neon-red hover:text-black hover:scale-110 cursor-pointer"
-          >
-            &times;
-          </button>
         
-          <!-- Image -->
-          <img
-            id="lightbox-img"
-            src=""
-            alt="Expanded Project Image"
-            class="mx-auto max-w-[90vw] max-h-[80vh] object-contain rounded-xl shadow-[0_0_30px_rgba(255,0,60,0.3)]"
-          />
-        
-          <!-- Navigation -->
-          <div
-            class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-8 pointer-events-none"
-          >
-            <button
-              id="prev-btn"
-              type="button"
-              aria-label="Previous image"
-              class="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-white text-3xl backdrop-blur transition-all duration-300 hover:bg-neon-red hover:text-black hover:scale-110 cursor-pointer"
+            <span
+                id="close-lightbox"
+                class="absolute top-5 right-5 z-20 text-white text-3xl cursor-pointer font-bold"
             >
-              &#10094;
-            </button>
+                &times;
+            </span>
         
-            <button
-              id="next-btn"
-              type="button"
-              aria-label="Next image"
-              class="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-white text-3xl backdrop-blur transition-all duration-300 hover:bg-neon-red hover:text-black hover:scale-110 cursor-pointer"
-            >
-              &#10095;
-            </button>
-          </div>
+            <img
+                id="lightbox-img"
+                src=""
+                alt="Expanded Project Image"
+                class="max-w-[90vw] max-h-[80vh] object-contain rounded-xl shadow-[0_0_30px_rgba(255,225,225,0.3)]"
+            />
+        
+            <div class="absolute w-full inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-8 pointer-events-none">
+        
+                <span
+                    id="prev-btn"
+                    class="pointer-events-auto cursor-pointer text-white text-4xl"
+                >
+                    &#10094;
+                </span>
+        
+                <span
+                    id="next-btn"
+                    class="pointer-events-auto cursor-pointer text-white text-4xl"
+                >
+                    &#10095;
+                </span>
+        
+            </div>
+        
         </div>
         
         <footer id="main-footer">
