@@ -639,6 +639,13 @@
       word-break: break-word;
   }
 
+  .social-icon {
+      width: 1.1em;
+      height: 1.1em;
+      object-fit: contain;
+  }
+  
+
   
   @media (max-width: 1024px) {
       .nav-links {

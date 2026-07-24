@@ -5,26 +5,44 @@
         {
             "platform": "GitHub",
             "url": "https://www.github.com/KAOS-CODM",
+            "iconType": "fontawesome",
             "icon": "fab fa-github",
             "ariaLabel": "GitHub Profile"
         },
         {
             "platform": "WhatsApp",
             "url": "https://wa.me/+2349135012572",
+            "iconType": "fontawesome",
             "icon": "fab fa-whatsapp",
             "ariaLabel": "Contact on WhatsApp"
         },
         {
             "platform": "Email",
             "url": "mailto:kaoskonseptech@gmail.com",
+            "iconType": "fontawesome",
             "icon": "fas fa-envelope",
             "ariaLabel": "Send Email"
         },
         {
             "platform": "X (Twitter)",
             "url": "https://x.com/De_Ice1",
+            "iconType": "fontawesome",
             "icon": "fab fa-x-twitter",
             "ariaLabel": "Contact on Twitter"
+        },
+        {
+            "platform": "Fiverr",
+            "url": "https://fiverr.com/isaiahwebdev",
+            "iconType": "image",
+            "icon": "assets/icons/fiverr.svg",
+            "ariaLabel": "Connect with me on Fiverr"
+        },
+        {
+            "platform": "LinkedIn",
+            "url": "https://linkedin.com/in/isaiah-adelowo-311927360",
+            "iconType": "fontawesome",
+            "icon": "fab fa-linkedin",
+            "ariaLabel": "Connect with me on LinkedIn"
         }
     ],
     "copyright": "&copy; 2025 IsaiahWebDev Portfolio. All rights reserved."

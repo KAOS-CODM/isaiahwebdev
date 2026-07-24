@@ -13,8 +13,18 @@ async function loadFooter() {
                         <p class="footer-text">${footerData.tagline}</p>
                         <div class="social-links">
                             ${footerData.socialLinks.map(link => `
-                                <a href="${link.url}" class="social-link" aria-label="${link.ariaLabel}">
-                                    <i class="${link.icon}"></i>
+                                <a href="${link.url}"
+                                   class="social-link"
+                                   aria-label="${link.ariaLabel}"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                        
+                                    ${
+                                        link.iconType === "image"
+                                            ? `<img src="${link.icon}" alt="${link.platform}" class="social-icon">`
+                                            : `<i class="${link.icon}"></i>`
+                                    }
+                        
                                 </a>
                             `).join('')}
                         </div>
