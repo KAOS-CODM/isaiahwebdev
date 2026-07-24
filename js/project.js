@@ -13,7 +13,7 @@ async function loadProjects() {
             return;
         }
 
-        displayProjects(data);
+        displayProjects(data.slice(0, 3));
 
         // Use shared lightbox logic (created in js/projects-lightbox.js)
         if (typeof window.initProjectsLightbox === "function") {
@@ -51,11 +51,11 @@ function displayProjects(projects) {
                     ${project.title}
                 </h3>
 
-                <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] max-h-62.5">
+                <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
                     <img
                         src="${getImageSrc(firstImage)}"
                         alt="${getImageAlt(firstImage, project.title + ' Thumbnail')}"
-                        class="thumb w-full h-auto cursor-pointer shadow-[0_5px_15px_rgba(0,0,0,0.1)] transition-smooth duration-300 hover:scale-105 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]"
+                        class="thumb w-full h-full object-cover cursor-pointer transition-smooth duration-300 hover:scale-105"
                         loading="lazy"
                     >
                 </div>
