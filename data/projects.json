@@ -36,6 +36,10 @@
         "github": "https://github.com/KAOS-CODM/kaossub.git",
         "images": [
             {
+                "src": "images/kaossub/kaossub-history.jpeg",
+                "alt": "Transaction history page"
+            },
+            {
                 "src": "images/kaossub/kaossub-dashboard.jpeg",
                 "alt": "Fintech dashboard overview with account summary"
             },
@@ -46,10 +50,6 @@
             {
                 "src": "images/kaossub/kaossub-deposit.jpeg",
                 "alt": "Deposit screen for adding funds"
-            },
-            {
-                "src": "images/kaossub/kaossub-history.jpeg",
-                "alt": "Transaction history page"
             }
         ]
     },
