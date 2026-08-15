@@ -21,13 +21,18 @@ final_verification.sh
 check_clean_state.sh
 safe_cleanup.sh
 
-# Documentation (keep README.md, remove others)
+# Documentation (keep README.md and SEO optimization guides, remove others)
 RENDER_DEPLOYMENT.md
 DEPLOYMENT_CHECKLIST.md
 PROJECT_IMPROVEMENTS.md
 GITHUB_SETUP_GUIDE.md
 SSH_DEPLOYMENT_GUIDE.md
 seo_report.md
+
+# SEO Optimization Documentation (KEEP - Important reference)
+!SEO_VALIDATION_CHECKLIST.md
+!CHANGES_SUMMARY.md
+!QUICK_REFERENCE.md
 
 # Test files
 test-simple.html

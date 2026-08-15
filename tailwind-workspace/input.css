@@ -188,7 +188,7 @@
   
   h1, h2 {
       font-family: "Orbitron", sans-serif;
-      font-weight: 200;
+      font-weight: 100;
       line-height: 1.2;
       text-transform: uppercase;
   }
@@ -213,7 +213,7 @@
   }
   
   .hero-text h1 {
-      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-size: clamp(1rem, 3vw, 1.5rem);
       margin-bottom: clamp(15px, 3vw, 25px);
       background: linear-gradient(90deg, #ffffff, var(--color-neon-red), var(--color-neon-pink));
       -webkit-background-clip: text;
@@ -223,14 +223,14 @@
   }
   
   .hero-text h2 {
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-size: clamp(0.5rem, 2vw, 1rem);
       font-weight: 400;
       margin-bottom: clamp(20px, 4vw, 35px);
       color: var(--color-text-dim);
   }
   
   .hero-text p {
-      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-size: clamp(0.5rem, 2vw, 1rem);
       max-width: 600px;
       margin-bottom: clamp(25px, 5vw, 40px);
   }

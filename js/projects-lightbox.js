@@ -10,7 +10,8 @@
     const state = {
         group: [],
         index: 0,
-        initialized: false
+        initialized: false,
+        focusedElement: null
     };
 
     function $(id) {
@@ -77,15 +78,26 @@
         }
 
         function openLightbox() {
+            // Store focused element to restore later
+            state.focusedElement = document.activeElement;
+            
             lightbox.classList.remove("hidden");
             lightbox.classList.add("flex");
             document.body.style.overflow = "hidden";
+            
+            // Set focus to close button for accessibility
+            closeBtn?.focus();
         }
 
         function closeLightbox() {
             lightbox.classList.add("hidden");
             lightbox.classList.remove("flex");
             document.body.style.overflow = originalOverflow;
+            
+            // Restore focus to previously focused element
+            if (state.focusedElement) {
+                state.focusedElement.focus();
+            }
         }
 
         function showPrevImage() {

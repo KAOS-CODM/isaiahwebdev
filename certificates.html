@@ -3,22 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
-    <meta name="keywords" content="web development certifications, frontend developer qualifications, programming certificates, professional development">
+    <meta name="description" content="Certifications and professional credentials of Isaiah Adelowo: Frontend development, JavaScript, React, UI/UX design, and modern web technologies. Demonstrating expertise and commitment to continuous learning.">
     <meta name="author" content="IsaiahWebDev">
-    <link rel="canonical" href="https://isaiahwebdev.onrender.com/certificates">
+    <link rel="canonical" href="https://isaiahwebdev.onrender.com/certificates.html">
     <meta property="og:site_name" content="IsaiahWebDev">
     <meta property="og:title" content="Certifications | IsaiahWebDev">
-    <meta property="og:description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
+    <meta property="og:description" content="Professional certifications and credentials of Isaiah Adelowo: Frontend development, JavaScript, React, web design. Showcasing continuous learning and expertise in modern web technologies.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://isaiahwebdev.onrender.com/certificates">
-    <meta property="og:image" content="https://isaiahwebdev.onrender.com/images/image.png">
-    <meta property="og:image:alt" content="Isaiah WebDev certifications page">
+    <meta property="og:url" content="https://isaiahwebdev.onrender.com/certificates.html">
+    <meta property="og:locale" content="en_NG">
+    <meta property="og:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
+    <meta property="og:image:alt" content="Isaiah Adelowo - Professional Certifications">
+    <meta property="og:image:width" content="500">
+    <meta property="og:image:height" content="500">
+    <meta property="og:image:type" content="image/jpeg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Certifications | IsaiahWebDev">
-    <meta name="twitter:description" content="View IsaiahWebDev's professional certifications in frontend development, JavaScript, React, and modern web technologies.">
-    <meta name="twitter:image" content="https://isaiahwebdev.onrender.com/images/image.png">
+    <meta name="twitter:description" content="Professional certifications in frontend development, JavaScript, React, UI/UX design. Proof of expertise and commitment to continuous learning in modern web technologies.">
+    <meta name="twitter:image" content="https://isaiahwebdev.onrender.com/images/profile.jpg">
     <title>Certifications | IsaiahWebDev</title>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://isaiahwebdev.onrender.com/certificates.html#webpage",
+        "name": "Certifications - IsaiahWebDev",
+        "url": "https://isaiahwebdev.onrender.com/certificates.html",
+        "description": "Professional certifications and credentials in frontend development, JavaScript, React, and modern web technologies demonstrating expertise and commitment to continuous learning.",
+        "inLanguage": "en-US",
+        "author": {
+            "@id": "https://isaiahwebdev.onrender.com/#isaiah-adelowo"
+        },
+        "isPartOf": {
+            "@id": "https://isaiahwebdev.onrender.com/#website"
+        }
+    }
+    </script>
+
+    <!-- BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "@id": "https://isaiahwebdev.onrender.com/certificates.html#breadcrumb",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://isaiahwebdev.onrender.com/index.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Certificates",
+                "item": "https://isaiahwebdev.onrender.com/certificates.html"
+            }
+        ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -56,7 +99,7 @@
                     </div>
                     <div class="profile-container">
                         <div class="profile-wrapper">
-                            <img src="images/profile.jpg" alt="Certifications Overview" class="profile-img">
+                            <img src="images/profile.jpg" alt="Certifications Overview" width="300" height="300" class="profile-img">
                             <div class="glow-effect"></div>
                         </div>
                     </div>
@@ -72,23 +115,28 @@
         
                 <div class="centered-content section-margin-top-large">
                     <p class="section-note">
-                        Certificates validate knowledge, but real expertise comes from building. Each credential here represents a foundation — the real learning happens when I apply those skills to ship actual products, debug real issues, and optimize for real users. I'm committed to adding more certifications as I continue growing.
+                        Certificates validate knowledge, but real expertise comes from building. Each credential here represents a foundation - the real learning happens when I apply those skills to ship actual products, debug real issues, and optimize for real users. I'm committed to adding more certifications as I continue growing.
                     </p>
                 </div>
             </div>
         </section>
         
-        <!-- Lightbox -->
+        <!-- Lightbox with Accessibility Features -->
         <div
           id="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Certificate image lightbox"
           class="hidden fixed inset-0 z-5000 bg-black/80 items-center justify-center p-5"
         >
-          <span
+          <button
             id="close-lightbox"
-            class="absolute top-5 right-5 text-white text-3xl cursor-pointer font-bold transition-transform hover:scale-110"
+            aria-label="Close lightbox"
+            type="button"
+            class="absolute top-5 right-5 text-white text-3xl cursor-pointer font-bold transition-transform hover:scale-110 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white rounded"
           >
             &times;
-          </span>
+          </button>
         
           <img
               id="lightbox-img"
@@ -98,8 +146,8 @@
             />
         
           <div class="absolute top-1/2 w-full flex justify-between px-7.5 -translate-y-1/2 pointer-events-none">
-            <span id="prev-btn" class="pointer-events-auto cursor-pointer text-white text-4xl">&#10094;</span>
-            <span id="next-btn" class="pointer-events-auto cursor-pointer text-white text-4xl">&#10095;</span>
+            <button id="prev-btn" aria-label="Previous image" type="button" class="pointer-events-auto cursor-pointer text-white text-4xl hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white rounded p-2">&#10094;</button>
+            <button id="next-btn" aria-label="Next image" type="button" class="pointer-events-auto cursor-pointer text-white text-4xl hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white rounded p-2">&#10095;</button>
           </div>
         </div>
         
