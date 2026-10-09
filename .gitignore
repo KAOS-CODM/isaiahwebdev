@@ -56,3 +56,8 @@ css/
 
 #Files that are to be exempted from ignore
 !css/styles.css
+
+# Gate 0 API — secrets and dependencies (names only in repo)
+.env
+.env.*
+api/node_modules/

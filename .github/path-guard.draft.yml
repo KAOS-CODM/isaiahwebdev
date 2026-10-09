@@ -1,0 +1,12 @@
+# DRAFT ONLY — must be renamed to .yml and tested before enforcement.
+# Gate 0: do NOT enable as a required branch-protection check.
+# Intended rule (Gate 2): fail any publish commit touching application, secret,
+# or workflow paths. Content paths allowed: projects/**, sitemap.xml,
+# projects.html (index fragment region), redirects.json.
+name: path-guard (DRAFT)
+on: [pull_request]
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "draft placeholder — implement path assertions before enabling"
