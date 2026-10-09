@@ -2,16 +2,33 @@
 
 ## Vercel (staging)
 
-* Create project from `KAOS-CODM/isaiahwebdev`, **Root Directory = `api`**.
-* Draft `vercel.json` (to be placed at `api/vercel.json` at implementation time):
-  ```json
-  {
-    "$schema": "https://openapi.vercel.sh/vercel.json",
-    "ignoreCommand": "git diff --quiet HEAD^ HEAD -- api/ admin/"
-  }
-  ```
-  Effect: content-only commits touching the static portfolio skip Vercel builds.
-* Environment: staging only — `MONGODB_URI` (staging DB), `SESSION_PEPPER`, `PUBLIC_SITE_URL` (staging URL).
+* Create project from `KAOS-CODM/isaiahwebdev`, branch `staging`,
+  **Root Directory = repository root** (default — do NOT set it to `api/`).
+  With repo-root context the file routes map as intended:
+  `api/health.js` → `/api/health`,
+  `api/admin/publish/sweep.js` → `/api/admin/publish/sweep`,
+  `api/admin/index.html` → `/api/admin/`.
+* **Node runtime:** `api/package.json` is not the project-root manifest, so its
+  `engines` field does not govern the deployment. Set the Node.js version
+  explicitly in the Vercel dashboard (Project Settings → General → Node.js
+  Version) to a currently supported LTS, and verify the selected version in the
+  deployment's Build & Function logs before accepting staging.
+* **Install/build:** Gate 0 declares zero dependencies (no root `package.json`,
+  no lockfile), so the install step is a no-op and no build command is needed.
+  Do not add a build command for Gate 0.
+* **Ignore Command:** none configured for Gate 0. (The earlier draft command is
+  withdrawn: its paths assumed a different working directory. Reintroduce one
+  only with repo-root-relative paths once staging builds are observed.)
+* **Static files:** this deployment also serves a duplicate copy of the static
+  portfolio from the repo root. That copy is staging-only and informational —
+  production remains on Render (`main` branch).
+* Environment: staging only — `MONGODB_URI` (staging DB URI),
+  `SESSION_PEPPER` (reserved, unused by Gate 0 code),
+  `PUBLIC_SITE_URL` (staging deployment URL). Never production secrets.
+* **Health check:** `GET /api/health` reports application/configuration state
+  only (`db: "unconfigured"` vs `"not-checked"` reflects whether `MONGODB_URI`
+  is set). It does not open a connection and does not verify live MongoDB
+  connectivity; live DB checks arrive with Gate 1+.
 
 ## Render (staging)
 
