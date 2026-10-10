@@ -3,9 +3,9 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
-const health = require('../health');
-const sweep = require('../admin/publish/sweep');
-const apiNotFound = require('../[...all]');
+const health = require('../../api/health');
+const sweep = require('../../api/admin/publish/sweep');
+const apiNotFound = require('../../api/[...all]');
 
 function stubRes() {
   const headers = new Map();

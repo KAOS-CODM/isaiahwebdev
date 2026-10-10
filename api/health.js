@@ -8,8 +8,8 @@
  * "not-checked" once configured (live checks arrive with Gate 1+).
  */
 
-const { applyApiHeaders } = require('./lib/security');
-const { badMethod } = require('./lib/errors');
+const { applyApiHeaders } = require('../server/lib/security');
+const { badMethod } = require('../server/lib/errors');
 
 module.exports = async function health(req, res) {
   applyApiHeaders(res);

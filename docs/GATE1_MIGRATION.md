@@ -16,13 +16,13 @@ prints the connection string.
 
 ```powershell
 # 1. First run — creates missing collections/indexes (expect ok:true)
-npm run migrate --prefix api
+npm run migrate
 
 # 2. Second run — must report empty createdCollections/createdIndexes
-npm run migrate --prefix api
+npm run migrate
 
 # 3. Re-run the unit suite (no live database required)
-npm test --prefix api
+npm test
 ```
 
 Before step 1, confirm the URI's database segment reads `portfolio_staging`
@@ -33,7 +33,7 @@ elsewhere. If the URI is blank or malformed, the command exits `2` with a
 
 ## What it does
 
-`api/lib/migrate.js` (`ensureSchema(db)`) creates the collections and indexes
+`server/lib/migrate.js` (`ensureSchema(db)`) creates the collections and indexes
 the CMS needs, and nothing else:
 
 * `RateLimit` + TTL index `ttl_expiresAt` (login rate-limit buckets).
@@ -50,8 +50,8 @@ the CMS needs, and nothing else:
   points that handle at `portfolio_staging` via the database name in
   `MONGODB_URI`. The mechanism never selects or switches databases, so it
   cannot touch production data as long as the URI is staging (verify step 2).
-* **No HTTP surface:** runs as CLI (`npm run migrate --prefix api`,
-  `api/scripts/migrate.js`) because no admin authentication exists yet.
+* **No HTTP surface:** runs as CLI (`npm run migrate`,
+  `server/scripts/migrate.js`) because no admin authentication exists yet.
   Exit codes: 0 ok, 2 configuration error, 1 operational failure. Output is a
   JSON report; connection strings are never printed.
 

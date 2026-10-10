@@ -9,13 +9,13 @@
  * stable and returns an explicit 501 instead of an ambiguous 404.
  */
 
-const { applyApiHeaders } = require('../../lib/security');
-const { notImplemented } = require('../../lib/errors');
+const { applyApiHeaders } = require('../../../server/lib/security');
+const { notImplemented } = require('../../../server/lib/errors');
 
 module.exports = async function sweep(req, res) {
   applyApiHeaders(res);
   if (req.method !== 'POST') {
-    const { badMethod } = require('../../lib/errors');
+    const { badMethod } = require('../../../server/lib/errors');
     badMethod(res, ['POST']);
     return;
   }

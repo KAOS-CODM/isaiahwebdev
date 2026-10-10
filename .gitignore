@@ -61,3 +61,4 @@ css/
 .env
 .env.*
 api/node_modules/
+node_modules/

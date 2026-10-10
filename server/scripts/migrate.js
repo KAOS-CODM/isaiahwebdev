@@ -5,7 +5,7 @@
  *
  *   MONGODB_URI="mongodb+srv://.../portfolio_staging?..." node scripts/migrate.js
  *
- * Package-root note: run from `api/` (e.g. `npm run migrate --prefix api`).
+ * Package-root note: run from the repository root (e.g. `npm run migrate`).
  * Exit codes: 0 ok, 2 configuration error, 1 operational failure.
  * Prints a JSON report; never prints the connection string.
  */

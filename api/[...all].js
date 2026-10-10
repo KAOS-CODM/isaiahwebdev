@@ -7,8 +7,8 @@
  * unmatched `/api/*` paths so clients never receive the platform-default body.
  */
 
-const { applyApiHeaders } = require('./lib/security');
-const { notFound } = require('./lib/errors');
+const { applyApiHeaders } = require('../server/lib/security');
+const { notFound } = require('../server/lib/errors');
 
 module.exports = async function apiNotFound(req, res) {
   applyApiHeaders(res);
