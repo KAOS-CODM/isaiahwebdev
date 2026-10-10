@@ -22,6 +22,16 @@ const REQUIRED_COLLECTIONS = Object.freeze({
       { keys: { status: 1, updatedAt: 1 }, options: { name: 'idx_status_updatedAt' } },
     ],
   },
+  Admin: {
+    indexes: [{ keys: { username: 1 }, options: { unique: true, name: 'uniq_username' } }],
+  },
+  Session: {
+    indexes: [
+      { keys: { tokenHash: 1 }, options: { unique: true, name: 'uniq_tokenHash' } },
+      { keys: { adminId: 1 }, options: { name: 'idx_adminId' } },
+      { keys: { expiresAt: 1 }, options: { expireAfterSeconds: 0, name: 'ttl_expiresAt' } },
+    ],
+  },
 });
 
 async function ensureSchema(db) {

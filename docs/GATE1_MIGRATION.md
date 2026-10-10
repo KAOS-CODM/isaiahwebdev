@@ -55,6 +55,22 @@ the CMS needs, and nothing else:
   Exit codes: 0 ok, 2 configuration error, 1 operational failure. Output is a
   JSON report; connection strings are never printed.
 
+## First-administrator bootstrap (Gate 2 Phase 1)
+
+One-time local setup, run from the repository root:
+
+```powershell
+$env:ADMIN_SETUP_TOKEN = '<one-time-secret-you-choose>'
+node --env-file=api/.env server/scripts/create-admin.js
+Remove-Item Env:ADMIN_SETUP_TOKEN
+```
+
+The script prompts for the setup token, username, and password (twice, no
+echo) on an interactive terminal, refuses if an administrator already exists,
+and prints only a fixed `{ ok: true }` or coded failure — never secrets.
+Remove `ADMIN_SETUP_TOKEN` from the environment afterward; set it in Vercel
+only if a future staging bootstrap is ever needed, then remove it again.
+
 ## Staging verification steps (dashboard actions by owner)
 
 1. Set staging `MONGODB_URI` (database `portfolio_staging`) in Vercel staging env.

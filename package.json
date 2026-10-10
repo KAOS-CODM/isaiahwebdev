@@ -5,7 +5,7 @@
   "description": "Staging API foundation for the isaiahwebdev portfolio CMS (Gate 0). Vercel Functions, no framework.",
   "type": "commonjs",
   "scripts": {
-    "test": "node --test server/test/rate-limit.test.js server/test/db.test.js server/test/http.test.js server/test/mongo.test.js server/test/migrate.test.js",
+    "test": "node --test server/test/rate-limit.test.js server/test/db.test.js server/test/http.test.js server/test/mongo.test.js server/test/migrate.test.js server/test/auth.test.js",
     "migrate": "node --env-file=api/.env server/scripts/migrate.js"
   },
   "engines": {
@@ -13,6 +13,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "bcrypt": "6.0.0",
     "mongodb": "6.21.0"
   }
 }

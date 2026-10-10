@@ -37,10 +37,13 @@ describe('schema initialization', () => {
   it('creates missing collections and indexes on first run', async () => {
     const db = fakeDb();
     const report = await ensureSchema(db);
-    assert.deepEqual(report.createdCollections.sort(), ['PublishJob', 'RateLimit']);
-    assert.equal(report.createdIndexes.length, 3);
+    assert.deepEqual(report.createdCollections.sort(), ['Admin', 'PublishJob', 'RateLimit', 'Session']);
+    assert.equal(report.createdIndexes.length, 7);
     assert.ok(report.createdIndexes.includes('RateLimit.ttl_expiresAt'));
     assert.ok(report.createdIndexes.includes('PublishJob.uniq_idempotencyKey'));
+    assert.ok(report.createdIndexes.includes('Admin.uniq_username'));
+    assert.ok(report.createdIndexes.includes('Session.uniq_tokenHash'));
+    assert.ok(report.createdIndexes.includes('Session.ttl_expiresAt'));
   });
 
   it('is repeatable: second run changes nothing', async () => {
@@ -49,7 +52,7 @@ describe('schema initialization', () => {
     const second = await ensureSchema(db);
     assert.deepEqual(second.createdCollections, []);
     assert.deepEqual(second.createdIndexes, []);
-    assert.deepEqual(second.existingCollections.sort(), ['PublishJob', 'RateLimit']);
+    assert.deepEqual(second.existingCollections.sort(), ['Admin', 'PublishJob', 'RateLimit', 'Session']);
   });
 
   it('never drops collections or deletes documents', async () => {
@@ -59,7 +62,8 @@ describe('schema initialization', () => {
     assert.deepEqual(db.calls.dropCollection, []);
     assert.deepEqual(db.calls.deleteMany, []);
     assert.deepEqual(db.calls.deleteOne, []);
-    assert.deepEqual(db.calls.createCollection, ['PublishJob']);
+    assert.ok(!db.calls.createCollection.includes('RateLimit'));
+    assert.ok(db.calls.createCollection.includes('PublishJob'));
   });
 
   it('adds only indexes that are missing', async () => {
