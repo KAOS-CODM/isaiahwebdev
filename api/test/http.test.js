@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 
 const health = require('../health');
 const sweep = require('../admin/publish/sweep');
+const apiNotFound = require('../[...all]');
 
 function stubRes() {
   const headers = new Map();
@@ -58,5 +59,19 @@ describe('POST /api/admin/publish/sweep', () => {
     const res = stubRes();
     await sweep({ method: 'GET' }, res);
     assert.equal(res.statusCode, 405);
+  });
+});
+
+describe('catch-all /api/* unknown routes', () => {
+  it('returns JSON 404 with safe shape for any method', async () => {
+    for (const method of ['GET', 'POST', 'PUT', 'DELETE']) {
+      const res = stubRes();
+      await apiNotFound({ method }, res);
+      assert.equal(res.statusCode, 404);
+      const body = JSON.parse(res.body);
+      assert.equal(body.error.code, 'NOT_FOUND');
+      assert.equal(res.getHeader('x-content-type-options'), 'nosniff');
+      assert.equal(res.getHeader('cache-control'), 'no-store');
+    }
   });
 });
