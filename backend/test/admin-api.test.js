@@ -3,7 +3,7 @@ const assert = require('node:assert');
 
 const auth = require('../src/lib/admin-auth.js');
 const { resetLoginRateLimit, resetSetupRateLimit } = require('../src/lib/rate-limit.js');
-const { setDb } = require('../src/lib/db-handle.js');
+const { setDb, getDb } = require('../src/lib/db-handle.js');
 const { createServer } = require('../src/index.js');
 
 /**
@@ -593,6 +593,260 @@ test('project CRUD, publish/unpublish and preview work end to end', async () => 
 
     const gone = await request(baseUrl, '/api/admin/projects/cms-managed-project', { token });
     assert.strictEqual(gone.response.status, 404);
+  });
+});
+
+test('structured project fields round-trip through create, edit and the public API', async () => {
+  await withServer(async (baseUrl) => {
+    const token = (await login(baseUrl)).body.token;
+
+    const created = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: {
+        title: 'Structured Project',
+        shortDescription: 'A terse summary',
+        category: 'Web application',
+        problemStatement: 'Users needed a thing',
+        solution: 'We built a thing',
+        keyFeatures: ['Offline support', 'Fast search'],
+        technologies: ['Node.js', 'MongoDB'],
+        role: 'Lead developer',
+        developmentStatus: 'in-progress',
+        liveUrl: 'https://example.com/app',
+        githubUrl: 'https://github.com/example/app',
+        images: [{ src: 'https://cdn.example.com/a.png', alt: 'Dashboard' }],
+      },
+    });
+
+    assert.strictEqual(created.response.status, 201);
+    const createdProject = created.body.project;
+    assert.strictEqual(createdProject.shortDescription, 'A terse summary');
+    // The legacy alias is kept in sync for older consumers.
+    assert.strictEqual(createdProject.description, 'A terse summary');
+    assert.strictEqual(createdProject.category, 'Web application');
+    assert.strictEqual(createdProject.problemStatement, 'Users needed a thing');
+    assert.deepStrictEqual(createdProject.keyFeatures, ['Offline support', 'Fast search']);
+    assert.strictEqual(createdProject.role, 'Lead developer');
+    assert.strictEqual(createdProject.developmentStatus, 'in-progress');
+    assert.strictEqual(createdProject.liveUrl, 'https://example.com/app');
+    assert.strictEqual(createdProject.site, 'https://example.com/app');
+    assert.strictEqual(createdProject.githubUrl, 'https://github.com/example/app');
+    assert.deepStrictEqual(createdProject.images, [
+      { src: 'https://cdn.example.com/a.png', alt: 'Dashboard' },
+    ]);
+
+    // Editing updates the supplied fields and preserves the rest.
+    const edited = await request(baseUrl, '/api/admin/projects/structured-project', {
+      method: 'PUT',
+      token,
+      body: { developmentStatus: 'completed', category: 'Portfolio', keyFeatures: ['One'] },
+    });
+    assert.strictEqual(edited.response.status, 200);
+    assert.strictEqual(edited.body.project.developmentStatus, 'completed');
+    assert.strictEqual(edited.body.project.category, 'Portfolio');
+    assert.deepStrictEqual(edited.body.project.keyFeatures, ['One']);
+    assert.strictEqual(edited.body.project.shortDescription, 'A terse summary');
+
+    // Publish, then confirm the structured fields reach the public API.
+    const published = await request(baseUrl, '/api/admin/projects/structured-project/publish', {
+      method: 'POST',
+      token,
+      body: {},
+    });
+    assert.strictEqual(published.response.status, 200);
+
+    const publicList = await request(baseUrl, '/api/content/projects');
+    const publishedProject = publicList.body.projects.find((p) => p.slug === 'structured-project');
+    assert.ok(publishedProject);
+    assert.strictEqual(publishedProject.shortDescription, 'A terse summary');
+    assert.strictEqual(publishedProject.category, 'Portfolio');
+    assert.strictEqual(publishedProject.developmentStatus, 'completed');
+    assert.strictEqual(publishedProject.liveUrl, 'https://example.com/app');
+    assert.deepStrictEqual(publishedProject.technologies, ['Node.js', 'MongoDB']);
+
+    // The server-rendered detail page shows the case-study sections.
+    const page = await request(baseUrl, '/projects/structured-project');
+    assert.strictEqual(page.response.status, 200);
+    assert.ok(page.body.includes('Problem statement'));
+    assert.ok(page.body.includes('Users needed a thing'));
+    assert.ok(page.body.includes('Solution'));
+    assert.ok(page.body.includes('Key features'));
+    assert.ok(page.body.includes('One'));
+    assert.ok(page.body.includes('Lead developer'));
+  });
+});
+
+test('project validation rejects malformed structured fields with 400', async () => {
+  await withServer(async (baseUrl) => {
+    const token = (await login(baseUrl)).body.token;
+
+    const badStatus = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'x', developmentStatus: 'finished' },
+    });
+    assert.strictEqual(badStatus.response.status, 400);
+    assert.strictEqual(badStatus.body.error.code, 'VALIDATION_ERROR');
+
+    const badUrl = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'x', liveUrl: 'javascript:alert(1)' },
+    });
+    assert.strictEqual(badUrl.response.status, 400);
+
+    const badFeatures = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'x', keyFeatures: 'not an array' },
+    });
+    assert.strictEqual(badFeatures.response.status, 400);
+
+    const tooManyFeatures = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'x', keyFeatures: Array.from({ length: 51 }, (_, i) => `f${i}`) },
+    });
+    assert.strictEqual(tooManyFeatures.response.status, 400);
+
+    const badImage = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'x', images: [{ src: '' }] },
+    });
+    assert.strictEqual(badImage.response.status, 400);
+
+    const emptyStatusAllowed = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'Allowed Empty Status', developmentStatus: '' },
+    });
+    assert.strictEqual(emptyStatusAllowed.response.status, 201);
+    assert.strictEqual(emptyStatusAllowed.body.project.developmentStatus, '');
+  });
+});
+
+test('development status never controls public visibility', async () => {
+  await withServer(async (baseUrl) => {
+    const token = (await login(baseUrl)).body.token;
+
+    // Published while still in progress -> visible.
+    const live = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'In Progress Live', status: 'published', developmentStatus: 'in-progress' },
+    });
+    assert.strictEqual(live.response.status, 201);
+
+    // Draft while marked completed -> hidden.
+    const hidden = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'Completed Draft', status: 'draft', developmentStatus: 'completed' },
+    });
+    assert.strictEqual(hidden.response.status, 201);
+
+    const publicList = await request(baseUrl, '/api/content/projects');
+    const slugs = publicList.body.projects.map((p) => p.slug);
+    assert.ok(slugs.includes('in-progress-live'));
+    assert.ok(!slugs.includes('completed-draft'));
+
+    assert.strictEqual((await request(baseUrl, '/projects/in-progress-live')).response.status, 200);
+    assert.strictEqual((await request(baseUrl, '/projects/completed-draft')).response.status, 404);
+  });
+});
+
+test('legacy field names are accepted and normalized into the canonical shape', async () => {
+  await withServer(async (baseUrl) => {
+    const token = (await login(baseUrl)).body.token;
+
+    const created = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: {
+        title: 'Legacy Names',
+        description: 'legacy blurb',
+        problem: 'legacy problem',
+        site: 'https://legacy.example.com',
+        github: 'https://github.com/legacy/repo',
+      },
+    });
+
+    assert.strictEqual(created.response.status, 201);
+    const project = created.body.project;
+    assert.strictEqual(project.shortDescription, 'legacy blurb');
+    assert.strictEqual(project.description, 'legacy blurb');
+    assert.strictEqual(project.problemStatement, 'legacy problem');
+    assert.strictEqual(project.liveUrl, 'https://legacy.example.com');
+    assert.strictEqual(project.githubUrl, 'https://github.com/legacy/repo');
+  });
+});
+
+test('clearing a short description is not repopulated from a legacy summary', async () => {
+  await withServer(async (baseUrl) => {
+    const token = (await login(baseUrl)).body.token;
+
+    const created = await request(baseUrl, '/api/admin/projects', {
+      method: 'POST',
+      token,
+      body: { title: 'Legacy Summary', summary: 'only a legacy summary' },
+    });
+    assert.strictEqual(created.response.status, 201);
+    // The legacy summary is folded into the canonical short description on read.
+    assert.strictEqual(created.body.project.shortDescription, 'only a legacy summary');
+
+    const cleared = await request(baseUrl, '/api/admin/projects/legacy-summary', {
+      method: 'PUT',
+      token,
+      body: { shortDescription: '' },
+    });
+    assert.strictEqual(cleared.response.status, 200);
+    assert.strictEqual(cleared.body.project.shortDescription, '');
+    assert.strictEqual(cleared.body.project.description, '');
+  });
+});
+
+test('documents written before the new fields existed still load and render', async () => {
+  await withServer(async (baseUrl) => {
+    const db = getDb();
+    await db.collection('projects').insertOne({
+      slug: 'legacy-document',
+      title: 'Legacy Document',
+      description: 'an older blurb',
+      technologies: ['PHP'],
+      images: [],
+      site: 'https://old.example.com',
+      github: 'https://github.com/old/repo',
+      status: 'published',
+      featured: false,
+      order: 1,
+      summary: 'an older summary',
+      problem: 'the original problem',
+      problemSignificance: 'why it mattered',
+      solution: 'the original solution',
+      keyFeatures: ['old feature'],
+      challenges: 'old challenge',
+      tradeoffs: 'old tradeoff',
+      outcomes: ['old outcome'],
+      lessonsLearned: 'old lesson',
+    });
+
+    const publicList = await request(baseUrl, '/api/content/projects');
+    const project = publicList.body.projects.find((p) => p.slug === 'legacy-document');
+    assert.ok(project);
+    assert.strictEqual(project.shortDescription, 'an older blurb');
+    assert.strictEqual(project.problemStatement, 'the original problem');
+    assert.strictEqual(project.liveUrl, 'https://old.example.com');
+    assert.strictEqual(project.githubUrl, 'https://github.com/old/repo');
+    assert.strictEqual(project.developmentStatus, '');
+    assert.strictEqual(project.category, '');
+
+    const page = await request(baseUrl, '/projects/legacy-document');
+    assert.strictEqual(page.response.status, 200);
+    assert.ok(page.body.includes('the original problem'));
+    assert.ok(page.body.includes('the original solution'));
+    assert.ok(page.body.includes('old lesson'));
   });
 });
 

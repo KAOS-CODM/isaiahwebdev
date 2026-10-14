@@ -7,9 +7,15 @@
  * refresh keeps you signed in without storing anything in JS or web storage. On
  * load the UI asks the API whether the session cookie is still valid; logging
  * out asks the server to clear the cookie.
+ *
+ * The editor is organised into the same sections as the project schema: basic
+ * information, project details, technical information, links, images and
+ * publishing settings. Key features, technologies and images use repeatable
+ * controls; image URLs are entered by hand until Cloudinary uploads arrive in a
+ * later milestone.
  */
 
-import { createAdminApi, AdminApiError } from './admin-api.js';
+import { createAdminApi } from './admin-api.js';
 import { resolveApiBase } from './api-config.js';
 
 const api = createAdminApi();
@@ -17,57 +23,208 @@ const api = createAdminApi();
 const el = (id) => document.getElementById(id);
 
 const dom = {
-  configError: document.getElementById('config-error'),
-  configMessage: document.getElementById('config-error-message'),
-  setupView: document.getElementById('setup-view'),
-  setupForm: document.getElementById('setup-form'),
-  setupButton: document.getElementById('setup-button'),
-  setupMessage: document.getElementById('setup-message'),
-  loginView: document.getElementById('login-view'),
-  loginForm: document.getElementById('login-form'),
-  loginButton: document.getElementById('login-button'),
-  loginMessage: document.getElementById('login-message'),
-  logoutButton: document.getElementById('logout-button'),
-  dashboardView: document.getElementById('dashboard-view'),
-  newButton: document.getElementById('new-project-button'),
-  refreshButton: document.getElementById('refresh-button'),
-  statusMessage: document.getElementById('status-message'),
-  rows: document.getElementById('project-rows'),
-  emptyMessage: document.getElementById('empty-message'),
-  editorView: document.getElementById('editor-view'),
-  editorTitle: document.getElementById('editor-title'),
-  form: document.getElementById('project-form'),
-  saveButton: document.getElementById('save-button'),
-  cancelButton: document.getElementById('cancel-button'),
+  configError: el('config-error'),
+  configMessage: el('config-error-message'),
+  setupView: el('setup-view'),
+  setupForm: el('setup-form'),
+  setupButton: el('setup-button'),
+  setupMessage: el('setup-message'),
+  loginView: el('login-view'),
+  loginForm: el('login-form'),
+  loginButton: el('login-button'),
+  loginMessage: el('login-message'),
+  logoutButton: el('logout-button'),
+  dashboardView: el('dashboard-view'),
+  newButton: el('new-project-button'),
+  refreshButton: el('refresh-button'),
+  statusMessage: el('status-message'),
+  rows: el('project-rows'),
+  emptyMessage: el('empty-message'),
+  editorView: el('editor-view'),
+  editorTitle: el('editor-title'),
+  editorMessage: el('editor-message'),
+  form: el('project-form'),
+  saveButton: el('save-button'),
+  cancelButton: el('cancel-button'),
+  featuresEditor: el('key-features-editor'),
+  technologiesEditor: el('technologies-editor'),
+  imagesEditor: el('images-editor'),
+  addFeatureButton: el('add-feature-button'),
+  addTechnologyButton: el('add-technology-button'),
+  addImageButton: el('add-image-button'),
 };
 
 let editingSlug = null;
 
 function value(id) {
-  const el = document.getElementById(id);
-  return el ? el.value : '';
+  const element = el(id);
+  return element ? element.value : '';
 }
 
 function checked(id) {
-  const el = document.getElementById(id);
-  return Boolean(el && el.checked);
+  const element = el(id);
+  return Boolean(element && element.checked);
 }
 
-function setMessage(el, text, kind) {
-  if (!el) return;
-  el.textContent = text || '';
-  el.classList.remove('error', 'ok');
-  if (kind) el.classList.add(kind);
+function setValue(id, val) {
+  const element = el(id);
+  if (element) element.value = val == null ? '' : String(val);
+}
+
+function setChecked(id, val) {
+  const element = el(id);
+  if (element) element.checked = Boolean(val);
+}
+
+function setMessage(node, text, kind) {
+  if (!node) return;
+  node.textContent = text || '';
+  node.classList.remove('error', 'ok');
+  if (kind) node.classList.add(kind);
 }
 
 function clearFields(ids) {
-  for (const id of ids) {
-    const field = document.getElementById(id);
-    if (field) field.value = '';
-  }
+  ids.forEach((id) => setValue(id, ''));
 }
 
+function clearFieldError(id) {
+  const node = el(id);
+  if (node) node.classList.remove('field-error');
+}
+
+// ---------------------------------------------------------------------------
+// Repeatable controls (key features, technologies, images)
+// ---------------------------------------------------------------------------
+
+function makeInput(value, placeholder) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = value == null ? '' : String(value);
+  if (placeholder) input.placeholder = placeholder;
+  return input;
+}
+
+function makeButton(label, className, onClick) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = label;
+  if (className) button.className = className;
+  button.addEventListener('click', onClick);
+  return button;
+}
+
+function addListRow(container, value = '') {
+  if (!container) return;
+  const row = document.createElement('div');
+  row.className = 'list-row';
+  const input = makeInput(value, '');
+  input.setAttribute('aria-label', 'Entry');
+  row.append(input, makeButton('Remove', 'secondary', () => row.remove()));
+  container.appendChild(row);
+}
+
+function renderList(container, values) {
+  if (!container) return;
+  container.textContent = '';
+  const list = Array.isArray(values) ? values.filter((entry) => typeof entry === 'string') : [];
+  if (list.length === 0) addListRow(container, '');
+  else list.forEach((entry) => addListRow(container, entry));
+}
+
+function readList(container) {
+  if (!container) return [];
+  return Array.from(container.querySelectorAll('input'))
+    .map((input) => input.value.trim())
+    .filter(Boolean);
+}
+
+function updateImagePreview(preview, url) {
+  const src = String(url || '').trim();
+  preview.textContent = '';
+  if (!src) {
+    preview.className = 'image-preview placeholder';
+    preview.textContent = 'No preview';
+    return;
+  }
+  const img = document.createElement('img');
+  img.alt = 'Image preview';
+  img.loading = 'lazy';
+  img.addEventListener('error', () => {
+    preview.textContent = '';
+    preview.className = 'image-preview placeholder';
+    preview.textContent = 'No preview';
+  });
+  img.src = src;
+  preview.className = 'image-preview';
+  preview.appendChild(img);
+}
+
+function labelledField(labelText, input) {
+  const wrap = document.createElement('div');
+  const label = document.createElement('label');
+  label.textContent = labelText;
+  label.appendChild(input);
+  wrap.appendChild(label);
+  return wrap;
+}
+
+function addImageRow(image = {}) {
+  if (!dom.imagesEditor) return;
+  const source = typeof image === 'string' ? { src: image, alt: '' } : image;
+
+  const row = document.createElement('div');
+  row.className = 'image-row';
+
+  const preview = document.createElement('div');
+  preview.className = 'image-preview placeholder';
+  preview.textContent = 'No preview';
+
+  const srcInput = makeInput(source.src || '', 'https://res.cloudinary.com/.../image.jpg');
+  const altInput = makeInput(source.alt || '', 'Describe the image for screen readers');
+
+  srcInput.addEventListener('input', () => updateImagePreview(preview, srcInput.value));
+  updateImagePreview(preview, srcInput.value);
+
+  const actions = document.createElement('div');
+  actions.className = 'row-actions inline';
+  actions.appendChild(makeButton('Remove image', 'secondary', () => row.remove()));
+
+  const fields = document.createElement('div');
+  fields.className = 'image-fields';
+  fields.append(
+    labelledField('Image URL', srcInput),
+    labelledField('Alt text', altInput),
+    actions
+  );
+
+  row.append(preview, fields);
+  dom.imagesEditor.appendChild(row);
+}
+
+function renderImages(images) {
+  if (!dom.imagesEditor) return;
+  dom.imagesEditor.textContent = '';
+  if (Array.isArray(images)) images.forEach((image) => addImageRow(image));
+}
+
+function readImages() {
+  if (!dom.imagesEditor) return [];
+  return Array.from(dom.imagesEditor.querySelectorAll('.image-row'))
+    .map((row) => {
+      const inputs = row.querySelectorAll('input');
+      const src = inputs[0] ? inputs[0].value.trim() : '';
+      const alt = inputs[1] ? inputs[1].value.trim() : '';
+      return src ? { src, alt } : null;
+    })
+    .filter(Boolean);
+}
+
+// ---------------------------------------------------------------------------
+// Views
+// ---------------------------------------------------------------------------
+
 function showSetup() {
+  dom.configError.hidden = true;
   dom.setupView.hidden = false;
   dom.loginView.hidden = true;
   dom.dashboardView.hidden = true;
@@ -94,60 +251,53 @@ function showDashboard() {
 function showEditor(project) {
   editingSlug = project ? project.slug : null;
   dom.editorTitle.textContent = project ? `Edit “${project.title}”` : 'New project';
+  setMessage(dom.editorMessage, '');
+  clearFieldError('field-title');
 
-  document.getElementById('field-title').value = project ? project.title : '';
-  document.getElementById('field-slug').value = project ? project.slug : '';
-  document.getElementById('field-status').value = project ? project.status : 'draft';
-  document.getElementById('field-featured').checked = project ? project.featured === true : false;
-  document.getElementById('field-order').value =
-    project && Number.isFinite(project.order) ? String(project.order) : '';
-  document.getElementById('field-description').value = project ? project.description || '' : '';
-  document.getElementById('field-technologies').value = project
-    ? (project.technologies || []).join(', ')
-    : '';
-  document.getElementById('field-images').value = project
-    ? (project.images || [])
-        .map((image) => (typeof image === 'string' ? image : `${image.src}${image.alt ? ` | ${image.alt}` : ''}`))
-        .join('\n')
-    : '';
-  document.getElementById('field-site').value = project ? project.site || '' : '';
-  document.getElementById('field-github').value = project ? project.github || '' : '';
+  setValue('field-title', project ? project.title : '');
+  setValue('field-slug', project ? project.slug : '');
+  setValue('field-category', project ? project.category : '');
+  setValue('field-shortDescription', project ? project.shortDescription || project.description : '');
+  setValue('field-problemStatement', project ? project.problemStatement || project.problem : '');
+  setValue('field-solution', project ? project.solution : '');
+  setValue('field-role', project ? project.role : '');
+  setValue('field-developmentStatus', project ? project.developmentStatus : '');
+  setValue('field-liveUrl', project ? project.liveUrl || project.site : '');
+  setValue('field-githubUrl', project ? project.githubUrl || project.github : '');
+  setValue('field-status', project ? project.status : 'draft');
+  setValue('field-order', project && Number.isFinite(Number(project.order)) ? String(project.order) : '');
+  setChecked('field-featured', Boolean(project && project.featured === true));
 
-  setMessage(dom.statusMessage, '');
+  renderList(dom.featuresEditor, project ? project.keyFeatures : []);
+  renderList(dom.technologiesEditor, project ? project.technologies : []);
+  renderImages(project ? project.images : []);
+
   dom.setupView.hidden = true;
   dom.loginView.hidden = true;
   dom.dashboardView.hidden = false;
   dom.editorView.hidden = false;
-  document.getElementById('field-title').focus();
+
+  const titleField = el('field-title');
+  if (titleField) titleField.focus();
 }
 
 /** Build the API payload from the editor form. */
 function collectPayload() {
-  const images = value('field-images')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [src, ...rest] = line.split('|');
-      const trimmedSrc = src.trim();
-      const alt = rest.join('|').trim();
-      return alt ? { src: trimmedSrc, alt } : trimmedSrc;
-    });
-
-  const technologies = value('field-technologies')
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
-
   const payload = {
     title: value('field-title').trim(),
+    shortDescription: value('field-shortDescription').trim(),
+    category: value('field-category').trim(),
+    problemStatement: value('field-problemStatement').trim(),
+    solution: value('field-solution').trim(),
+    keyFeatures: readList(dom.featuresEditor),
+    technologies: readList(dom.technologiesEditor),
+    role: value('field-role').trim(),
+    developmentStatus: value('field-developmentStatus'),
+    liveUrl: value('field-liveUrl').trim(),
+    githubUrl: value('field-githubUrl').trim(),
+    images: readImages(),
     status: value('field-status'),
     featured: checked('field-featured'),
-    description: value('field-description').trim(),
-    technologies,
-    images,
-    site: value('field-site').trim(),
-    github: value('field-github').trim(),
   };
 
   const slug = value('field-slug').trim();
@@ -267,40 +417,25 @@ async function previewProject(slug) {
 
 /** Map an error to a message, dropping the session on authentication failures. */
 function handleError(error) {
-  const status = error && error.status;
-  if (status === 401) {
+  if (error && error.status === 401) {
     showLogin();
-    setMessage(dom.loginMessage, 'Your session has ended. Please sign in again.', 'error');
+    setMessage(dom.loginMessage, error.message || 'Your session expired. Please sign in again.', 'error');
     return;
   }
-  const message = error && error.message ? error.message : 'Something went wrong';
-  setMessage(dom.statusMessage, message, 'error');
-  setMessage(dom.loginMessage, message, 'error');
+  setMessage(dom.statusMessage, error && error.message ? error.message : 'Request failed', 'error');
 }
 
 function wireEvents() {
   dom.setupForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     setMessage(dom.setupMessage, '');
-    const username = value('setup-username').trim();
-    const password = value('setup-password');
-    if (password !== value('setup-password-confirm')) {
-      setMessage(dom.setupMessage, 'The passwords do not match.', 'error');
-      return;
-    }
-
     dom.setupButton.disabled = true;
     try {
-      await api.setup(username, password);
+      await api.setup(value('setup-username').trim(), value('setup-password'));
       clearFields(['setup-username', 'setup-password', 'setup-password-confirm']);
       showDashboard();
       await loadProjects();
     } catch (error) {
-      if (error && (error.code === 'SETUP_CLOSED' || error.status === 409)) {
-        setMessage(dom.setupMessage, 'Administrator setup is already complete. Please sign in.', 'error');
-        showLogin();
-        return;
-      }
       setMessage(dom.setupMessage, error && error.message ? error.message : 'Setup failed', 'error');
     } finally {
       dom.setupButton.disabled = false;
@@ -327,8 +462,8 @@ function wireEvents() {
     try {
       await api.logout();
     } catch {
-      // Best-effort: the cookie is cleared server-side; if the call fails the
-      // user still lands on the sign-in view.
+      // Best-effort: the cookie is cleared server-side; the user still sees the
+      // signed-out view even if the request fails.
     }
     showLogin();
     setMessage(dom.loginMessage, 'Signed out.', 'ok');
@@ -337,16 +472,29 @@ function wireEvents() {
   dom.newButton.addEventListener('click', () => showEditor(null));
   dom.refreshButton.addEventListener('click', loadProjects);
 
+  dom.addFeatureButton.addEventListener('click', () => addListRow(dom.featuresEditor, ''));
+  dom.addTechnologyButton.addEventListener('click', () => addListRow(dom.technologiesEditor, ''));
+  dom.addImageButton.addEventListener('click', () => addImageRow({}));
+
   dom.cancelButton.addEventListener('click', () => {
+    editingSlug = null;
     dom.editorView.hidden = true;
     setMessage(dom.statusMessage, '');
   });
 
   dom.form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    setMessage(dom.editorMessage, '');
+    clearFieldError('field-title');
+
     const payload = collectPayload();
     if (!payload.title) {
-      setMessage(dom.statusMessage, 'A title is required.', 'error');
+      const titleField = el('field-title');
+      if (titleField) {
+        titleField.classList.add('field-error');
+        titleField.focus();
+      }
+      setMessage(dom.editorMessage, 'A title is required.', 'error');
       return;
     }
 
@@ -363,7 +511,11 @@ function wireEvents() {
       dom.editorView.hidden = true;
       await loadProjects();
     } catch (error) {
-      handleError(error);
+      if (error && error.status === 401) {
+        handleError(error);
+      } else {
+        setMessage(dom.editorMessage, error && error.message ? error.message : 'Save failed', 'error');
+      }
     } finally {
       dom.saveButton.disabled = false;
     }
@@ -406,12 +558,11 @@ function init() {
     dom.configError.hidden = false;
     setMessage(
       dom.configMessage,
-      'No API base URL is configured. Set window.PORTFOLIO_API_BASE in admin.html to the deployed API origin.',
+      'No API base could be resolved. Set window.PORTFOLIO_API_BASE to the deployed API origin.',
       'error'
     );
     return;
   }
-
   api.setBase(base);
   wireEvents();
   resolveView();

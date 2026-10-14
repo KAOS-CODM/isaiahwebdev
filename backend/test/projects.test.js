@@ -57,14 +57,23 @@ test('COLLECTION_NAME is exported', () => {
   assert.strictEqual(COLLECTION_NAME, 'projects');
 });
 
-test('toApiProject exposes the public fields including slug/status/featured', () => {
+test('toApiProject exposes the public fields including structured case-study data', () => {
   const api = toApiProject({
     slug: 'demo',
     title: 'Demo',
+    shortDescription: 'Desc',
     description: 'Desc',
+    category: 'Web',
+    problemStatement: 'The problem',
+    solution: 'The solution',
+    keyFeatures: ['Fast'],
     technologies: ['CSS'],
+    role: 'Lead',
+    developmentStatus: 'completed',
+    liveUrl: 'https://example.com',
     site: 'https://example.com',
-    github: '',
+    githubUrl: 'https://github.com/example/repo',
+    github: 'https://github.com/example/repo',
     images: [{ src: '/a.png', alt: '' }],
     status: 'published',
     featured: true,
@@ -74,10 +83,19 @@ test('toApiProject exposes the public fields including slug/status/featured', ()
   assert.deepStrictEqual(api, {
     slug: 'demo',
     title: 'Demo',
+    shortDescription: 'Desc',
     description: 'Desc',
+    category: 'Web',
+    problemStatement: 'The problem',
+    solution: 'The solution',
+    keyFeatures: ['Fast'],
     technologies: ['CSS'],
+    role: 'Lead',
+    developmentStatus: 'completed',
+    liveUrl: 'https://example.com',
     site: 'https://example.com',
-    github: '',
+    githubUrl: 'https://github.com/example/repo',
+    github: 'https://github.com/example/repo',
     images: [{ src: '/a.png', alt: '' }],
     status: 'published',
     featured: true,

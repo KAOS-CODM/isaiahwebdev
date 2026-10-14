@@ -7,6 +7,8 @@ import {
   escapeHtml,
   normalizeProject,
   normalizeProjects,
+  normalizeDevelopmentStatus,
+  DEVELOPMENT_STATUSES,
   publishedProjects,
   featuredProjects,
   projectPagePath,
@@ -78,6 +80,85 @@ test('normalizeProject accepts string and object images', () => {
     { src: '/a.png', alt: '' },
     { src: '/b.png', alt: 'B' },
   ]);
+});
+
+test('normalizeProject preserves an image publicId for future uploads', () => {
+  const project = normalizeProject({
+    title: 'Cloudinary',
+    description: 'x',
+    images: [{ src: 'https://res.cloudinary.com/demo/image/upload/a.jpg', alt: 'A', publicId: 'p/a' }],
+  });
+  assert.deepEqual(project.images, [
+    {
+      src: 'https://res.cloudinary.com/demo/image/upload/a.jpg',
+      alt: 'A',
+      publicId: 'p/a',
+    },
+  ]);
+});
+
+test('normalizeDevelopmentStatus only accepts the known lifecycle states', () => {
+  assert.deepEqual(DEVELOPMENT_STATUSES, ['in-progress', 'completed', 'archived']);
+  assert.equal(normalizeDevelopmentStatus('COMPLETED'), 'completed');
+  assert.equal(normalizeDevelopmentStatus('in-progress'), 'in-progress');
+  assert.equal(normalizeDevelopmentStatus('archived'), 'archived');
+  assert.equal(normalizeDevelopmentStatus('finished'), '');
+  assert.equal(normalizeDevelopmentStatus(''), '');
+  assert.equal(normalizeDevelopmentStatus(undefined), '');
+});
+
+test('normalizeProject maps the structured fields and legacy aliases', () => {
+  const project = normalizeProject({
+    title: 'Structured',
+    shortDescription: 'Terse summary',
+    category: 'Web application',
+    problemStatement: 'The problem',
+    solution: 'The solution',
+    keyFeatures: ['One', 'Two'],
+    technologies: ['Node.js'],
+    role: 'Lead developer',
+    developmentStatus: 'completed',
+    liveUrl: 'https://example.com/app',
+    githubUrl: 'https://github.com/example/app',
+  });
+
+  assert.equal(project.shortDescription, 'Terse summary');
+  assert.equal(project.description, 'Terse summary');
+  assert.equal(project.category, 'Web application');
+  assert.equal(project.problemStatement, 'The problem');
+  assert.deepEqual(project.keyFeatures, ['One', 'Two']);
+  assert.equal(project.role, 'Lead developer');
+  assert.equal(project.developmentStatus, 'completed');
+  assert.equal(project.liveUrl, 'https://example.com/app');
+  assert.equal(project.site, 'https://example.com/app');
+  assert.equal(project.githubUrl, 'https://github.com/example/app');
+  assert.equal(project.github, 'https://github.com/example/app');
+});
+
+test('normalizeProject reads legacy field names into the canonical shape', () => {
+  const project = normalizeProject({
+    title: 'Legacy',
+    description: 'legacy blurb',
+    problem: 'legacy problem',
+    site: 'https://legacy.example.com',
+    github: 'https://github.com/legacy/repo',
+  });
+
+  assert.equal(project.shortDescription, 'legacy blurb');
+  assert.equal(project.problemStatement, 'legacy problem');
+  assert.equal(project.liveUrl, 'https://legacy.example.com');
+  assert.equal(project.githubUrl, 'https://github.com/legacy/repo');
+  assert.equal(project.developmentStatus, '');
+  assert.equal(project.category, '');
+});
+
+test('development status never affects publication filtering', () => {
+  const projects = normalizeProjects([
+    { title: 'In Progress Live', status: 'published', developmentStatus: 'in-progress' },
+    { title: 'Completed Draft', status: 'draft', developmentStatus: 'completed' },
+  ]);
+  const published = publishedProjects(projects).map((p) => p.slug);
+  assert.deepEqual(published, ['in-progress-live']);
 });
 
 test('normalizeProjects drops unusable entries and de-duplicates slugs', () => {

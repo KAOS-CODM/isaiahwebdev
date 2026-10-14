@@ -23,6 +23,8 @@ function renderCard(project) {
     const href = projectPagePath(project.slug);
     const title = escapeHtml(project.title);
     const alt = escapeHtml(getImageAlt(firstImage, `${project.title} Thumbnail`));
+    const category = escapeHtml(project.category || '');
+    const description = escapeHtml(project.shortDescription || project.description || '');
 
     return `
         <article class="project-card bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl overflow-hidden transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10">
@@ -37,9 +39,16 @@ function renderCard(project) {
                 </div>
 
                 <div class="p-[clamp(12px,2vw,20px)]">
+                    ${category
+                        ? `<span class="inline-block mb-2 px-2 py-[2px] rounded-full border border-[rgba(255,0,60,0.35)] text-neon-red text-[0.7rem] uppercase tracking-wide">${category}</span>`
+                        : ''}
                     <h3 class="text-text-light font-orbitron text-[clamp(1rem,2.5vw,1.3rem)] mb-1">
                         ${title}
                     </h3>
+                    ${description
+                        ? `<p class="text-text-dim text-[0.9rem] mb-3">${description}</p>`
+                        : ''
+                    }
                     <span class="inline-flex items-center gap-1 text-neon-red text-[0.8rem] font-medium transition-all duration-300 hover:gap-2">
                         View Details <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i>
                     </span>

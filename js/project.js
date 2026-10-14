@@ -23,13 +23,21 @@ function renderFeatured(project) {
     const firstImage = project.images?.[0] ?? {};
     const href = projectPagePath(project.slug);
     const title = escapeHtml(project.title);
-    const description = escapeHtml(project.description);
+    const description = escapeHtml(project.shortDescription || project.description);
+    const category = escapeHtml(project.category || '');
+    const liveUrl = project.liveUrl || project.site;
+    const githubUrl = project.githubUrl || project.github;
 
     return `
         <article class="bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl p-[clamp(20px,4vw,30px)] transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10">
             <h3 class="text-text-light font-orbitron mb-[clamp(10px,2vw,15px)] text-[clamp(1.3rem,3vw,1.6rem)]">
                 <a href="${href}">${title}</a>
             </h3>
+
+            ${category
+                ? `<p class="mb-2.5"><span class="inline-block px-3 py-0.5 border border-[rgba(255,0,60,0.35)] rounded-full text-neon-red text-[0.8rem]">${category}</span></p>`
+                : ''
+            }
 
             <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
                 <img
@@ -55,16 +63,16 @@ function renderFeatured(project) {
                     View Project
                 </a>
 
-                ${project.site
-                    ? `<a href="${escapeHtml(project.site)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
+                ${liveUrl
+                    ? `<a href="${escapeHtml(liveUrl)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
                             <i class="fas fa-external-link-alt"></i>
                             Live Demo
                        </a>`
                     : ''
                 }
 
-                ${project.github
-                    ? `<a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
+                ${githubUrl
+                    ? `<a href="${escapeHtml(githubUrl)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
                             <i class="fab fa-github"></i>
                             Source Code
                        </a>`

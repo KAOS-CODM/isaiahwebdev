@@ -156,6 +156,84 @@ test('buildProjectPage escapes HTML in project data', async () => {
   assert.ok(html.includes('&quot;quote&quot; &amp; &lt;b&gt;bold&lt;/b&gt;'));
 });
 
+test('buildProjectPage renders the structured case-study sections and badges', async () => {
+  const { escapeHtml } = await schemaPromise;
+  const project = {
+    ...PUBLISHED_PROJECT,
+    shortDescription: 'Terse summary for cards',
+    category: 'Web application',
+    problemStatement: 'The original problem',
+    solution: 'The delivered solution',
+    keyFeatures: ['Offline support', 'Keyboard shortcuts'],
+    role: 'Lead developer',
+    developmentStatus: 'in-progress',
+    liveUrl: 'https://example.com/app',
+    githubUrl: 'https://github.com/example/app',
+  };
+  const html = buildProjectPage(project, { escapeHtml, siteUrl: SITE_URL });
+
+  assert.ok(html.includes('Terse summary for cards'));
+  assert.ok(html.includes('Web application'));
+  assert.ok(html.includes('In Progress'));
+  assert.ok(html.includes('Problem statement'));
+  assert.ok(html.includes('The original problem'));
+  assert.ok(html.includes('The delivered solution'));
+  assert.ok(html.includes('Key features'));
+  assert.ok(html.includes('Offline support'));
+  assert.ok(html.includes('Keyboard shortcuts'));
+  assert.ok(html.includes('Lead developer'));
+  // Current link field names drive the links and the JSON-LD.
+  assert.ok(html.includes('href="https://example.com/app"'));
+  assert.ok(html.includes('href="https://github.com/example/app"'));
+
+  const [softwareApp] = jsonLdBlocks(html).map((block) => JSON.parse(block));
+  assert.strictEqual(softwareApp.url, 'https://example.com/app');
+  assert.strictEqual(softwareApp.codeRepository, 'https://github.com/example/app');
+});
+
+test('buildProjectPage omits case-study headings when their data is absent', async () => {
+  const { escapeHtml } = await schemaPromise;
+  const html = buildProjectPage(
+    { slug: 'sparse', title: 'Sparse', description: 'Just a blurb', technologies: [], images: [] },
+    { escapeHtml, siteUrl: SITE_URL }
+  );
+
+  assert.ok(!html.includes('Problem statement'));
+  assert.ok(!html.includes('Key features'));
+  assert.ok(!html.includes('My role'));
+  assert.ok(!html.includes('project-meta'));
+});
+
+test('buildProjectPage still renders legacy case-study fields', async () => {
+  const { escapeHtml } = await schemaPromise;
+  const project = {
+    slug: 'legacy',
+    title: 'Legacy',
+    description: 'blurb',
+    technologies: [],
+    images: [],
+    summary: 'the summary',
+    problem: 'the original problem',
+    problemSignificance: 'why it matters',
+    solution: 'the original solution',
+    keyFeatures: ['a feature'],
+    challenges: 'the challenge',
+    tradeoffs: 'the tradeoff',
+    outcomes: ['an outcome'],
+    lessonsLearned: 'the lesson',
+  };
+  const html = buildProjectPage(project, { escapeHtml, siteUrl: SITE_URL });
+
+  assert.ok(html.includes('the original problem'));
+  assert.ok(html.includes('Why it matters'));
+  assert.ok(html.includes('the original solution'));
+  assert.ok(html.includes('a feature'));
+  assert.ok(html.includes('the challenge'));
+  assert.ok(html.includes('the tradeoff'));
+  assert.ok(html.includes('an outcome'));
+  assert.ok(html.includes('the lesson'));
+});
+
 test('safeJsonLd cannot break out of the script element', () => {
   const serialized = safeJsonLd({ name: '</script><script>alert(1)</script>' });
   assert.ok(!serialized.includes('</script>'));

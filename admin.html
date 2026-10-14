@@ -68,18 +68,80 @@
       button:disabled { opacity: 0.5; cursor: not-allowed; }
       .toolbar { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
       table { width: 100%; border-collapse: collapse; }
-      th, td { text-align: left; padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-      th { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
-      td.actions { text-align: right; white-space: nowrap; }
-      td.actions button { padding: 0.3rem 0.55rem; font-size: 0.8rem; margin-left: 0.25rem; }
-      .pill { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; border: 1px solid var(--border); }
+      thead th { text-align: left; }
+      td, th { padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+      .pill { display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px; font-size: 0.78rem; border: 1px solid var(--border); }
       .pill.published { color: var(--ok); border-color: var(--ok); }
       .pill.draft { color: var(--muted); }
-      .message { min-height: 1.2rem; font-size: 0.9rem; }
+      td.actions { text-align: right; white-space: nowrap; }
+      td.actions button { padding: 0.35rem 0.6rem; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+      td.actions button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+      .message { min-height: 1.1rem; margin: 0.4rem 0 0; font-size: 0.85rem; }
       .message.error { color: var(--danger); }
       .message.ok { color: var(--ok); }
       .muted { color: var(--muted); font-size: 0.85rem; }
       .form-actions { display: flex; gap: 0.6rem; margin-top: 1rem; }
+
+      /* Editor sections */
+      fieldset.editor-section {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.9rem 1rem 1.1rem;
+        margin: 0 0 1rem;
+        background: var(--surface-2);
+      }
+      fieldset.editor-section legend {
+        padding: 0 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: var(--text);
+      }
+      .hint { color: var(--muted); font-size: 0.78rem; margin: 0.2rem 0 0; }
+      .list-editor { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.35rem; }
+      .list-row { display: flex; gap: 0.5rem; align-items: center; }
+      .list-row input { flex: 1; }
+      .list-row button { flex: none; }
+      .row-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+      button.add-button { background: var(--surface-2); color: var(--accent); border: 1px dashed var(--border); }
+      .image-row {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 0.85rem;
+        align-items: start;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-bottom: 0.6rem;
+        background: var(--surface-2);
+      }
+      .image-fields { display: flex; flex-direction: column; gap: 0.55rem; }
+      .image-preview {
+        width: 110px;
+        height: 82px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #0b0d11;
+        overflow: hidden;
+      }
+      .image-preview.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 0.72rem;
+        text-align: center;
+        padding: 0.4rem;
+      }
+      .image-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .row-actions.inline { justify-content: flex-end; }
+      .field-error { border-color: var(--danger) !important; }
+
+      @media (max-width: 640px) {
+        .grid { grid-template-columns: 1fr; }
+        .image-row { grid-template-columns: 1fr; }
+        .image-preview { width: 100%; height: 160px; }
+      }
       [hidden] { display: none !important; }
     </style>
     <script>
@@ -175,52 +237,130 @@
 
       <section id="editor-view" hidden>
         <h2 id="editor-title">New project</h2>
-        <form id="project-form">
-          <div class="grid">
-            <div class="full">
-              <label for="field-title">Title *</label>
-              <input id="field-title" name="title" type="text" required />
+        <form id="project-form" novalidate>
+          <fieldset class="editor-section">
+            <legend>Basic information</legend>
+            <div class="grid">
+              <div class="full">
+                <label for="field-title">Title *</label>
+                <input id="field-title" name="title" type="text" maxlength="200" required />
+                <p class="hint">Required. Used for the page title and, when no slug is given, the URL.</p>
+              </div>
+              <div>
+                <label for="field-slug">Slug (optional)</label>
+                <input id="field-slug" name="slug" type="text" placeholder="derived from the title" />
+              </div>
+              <div>
+                <label for="field-category">Category</label>
+                <input id="field-category" name="category" type="text" maxlength="100" placeholder="Web application" />
+              </div>
+              <div class="full">
+                <label for="field-shortDescription">Short description</label>
+                <textarea id="field-shortDescription" name="shortDescription" maxlength="600"
+                  placeholder="A one or two sentence summary shown on cards and in search results."></textarea>
+              </div>
             </div>
-            <div>
-              <label for="field-slug">Slug (optional)</label>
-              <input id="field-slug" name="slug" type="text" placeholder="derived from the title" />
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Project details</legend>
+            <div class="grid">
+              <div class="full">
+                <label for="field-problemStatement">Problem statement</label>
+                <textarea id="field-problemStatement" name="problemStatement"
+                  placeholder="What problem does this project address?"></textarea>
+              </div>
+              <div class="full">
+                <label for="field-solution">Solution</label>
+                <textarea id="field-solution" name="solution"
+                  placeholder="How did you solve it?"></textarea>
+              </div>
+              <div class="full">
+                <label>Key features</label>
+                <p class="hint">Add one feature per row.</p>
+                <div class="list-editor" id="key-features-editor"></div>
+                <div class="row-actions">
+                  <button type="button" id="add-feature-button" class="add-button">+ Add feature</button>
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="field-status">Status</label>
-              <select id="field-status" name="status">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Technical information</legend>
+            <div class="grid">
+              <div class="full">
+                <label>Technologies</label>
+                <p class="hint">Add one technology per row.</p>
+                <div class="list-editor" id="technologies-editor"></div>
+                <div class="row-actions">
+                  <button type="button" id="add-technology-button" class="add-button">+ Add technology</button>
+                </div>
+              </div>
+              <div>
+                <label for="field-role">My role</label>
+                <input id="field-role" name="role" type="text" maxlength="120" placeholder="Lead developer" />
+              </div>
+              <div>
+                <label for="field-developmentStatus">Development status</label>
+                <select id="field-developmentStatus" name="developmentStatus">
+                  <option value="">Not set</option>
+                  <option value="in-progress">In progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="archived">Archived</option>
+                </select>
+                <p class="hint">Separate from the publication status. A published project can still be in progress.</p>
+              </div>
             </div>
-            <div>
-              <label for="field-order">Order</label>
-              <input id="field-order" name="order" type="number" step="1" />
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Project links</legend>
+            <div class="grid">
+              <div>
+                <label for="field-liveUrl">Live project URL</label>
+                <input id="field-liveUrl" name="liveUrl" type="url" maxlength="2048" placeholder="https://example.com" />
+              </div>
+              <div>
+                <label for="field-githubUrl">GitHub URL</label>
+                <input id="field-githubUrl" name="githubUrl" type="url" maxlength="2048" placeholder="https://github.com/user/repo" />
+              </div>
             </div>
-            <div class="checkbox">
-              <input id="field-featured" name="featured" type="checkbox" />
-              <label for="field-featured">Featured</label>
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Project images</legend>
+            <p class="hint">
+              Add one image URL at a time and give each image descriptive alt text. Uploads are
+              planned for a later milestone, so paste hosted image URLs for now.
+            </p>
+            <div id="images-editor"></div>
+            <div class="row-actions">
+              <button type="button" id="add-image-button" class="add-button">+ Add image</button>
             </div>
-            <div class="full">
-              <label for="field-description">Description</label>
-              <textarea id="field-description" name="description"></textarea>
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Publishing settings</legend>
+            <div class="grid">
+              <div>
+                <label for="field-status">Publication status</label>
+                <select id="field-status" name="status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </div>
+              <div>
+                <label for="field-order">Order</label>
+                <input id="field-order" name="order" type="number" step="1" />
+              </div>
+              <div class="checkbox">
+                <input id="field-featured" name="featured" type="checkbox" />
+                <label for="field-featured">Featured</label>
+              </div>
             </div>
-            <div class="full">
-              <label for="field-technologies">Technologies (comma separated)</label>
-              <input id="field-technologies" name="technologies" type="text" placeholder="HTML, CSS, JavaScript" />
-            </div>
-            <div class="full">
-              <label for="field-images">Images (one per line: <code>url | alt text</code>)</label>
-              <textarea id="field-images" name="images" placeholder="https://res.cloudinary.com/.../image.png | Screenshot"></textarea>
-            </div>
-            <div>
-              <label for="field-site">Live site URL</label>
-              <input id="field-site" name="site" type="url" placeholder="https://example.com" />
-            </div>
-            <div>
-              <label for="field-github">GitHub URL</label>
-              <input id="field-github" name="github" type="url" placeholder="https://github.com/user/repo" />
-            </div>
-          </div>
+          </fieldset>
+
           <div class="form-actions">
             <button type="submit" id="save-button">Save</button>
             <button type="button" id="cancel-button" class="secondary">Cancel</button>

@@ -12,7 +12,8 @@ Project governance and safety rules for the IsaiahWebDev portfolio CMS project.
 - **CORS policy**: The API must enforce an explicit CORS allowlist for approved frontend origins. Do not use wildcard origins in production.
 - **Database**: MongoDB Atlas for CMS content storage.
 - **Admin dashboard**: A private dashboard for the owner to manage portfolio content remotely.
-- **Media management**: Cloudinary may be introduced in a later approved milestone.
+- **Media management**: Cloudinary may be introduced in a later approved milestone. Until then project images are referenced by URL only (with optional alt text and a reserved `publicId`); the editor must not present a fake upload control.
+- **Structured project content (2026-10-14, M6 Phase B)**: Project records use one shared schema (`js/projects-schema.js`) so the admin editor, the public API, the listing and the server-rendered detail pages cannot drift apart. New structured fields are canonical, but legacy field names remain accepted on read and write so older documents keep loading; updates must never overwrite existing content with empty values. Publication visibility depends only on `status` (`draft`/`published`); `developmentStatus` (`in-progress`/`completed`/`archived`) is display-only. Existing records, including the Site Scout project, must be preserved.
 - **Preservation**: Existing routes, content, design, metadata, SEO, and deployment behavior must remain intact unless a change is explicitly approved.
 - **No assumptions**: Do not assume a custom domain, paid service tier, specific authentication mechanism, or any other unconfirmed requirement.
 

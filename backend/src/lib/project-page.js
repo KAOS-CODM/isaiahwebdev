@@ -68,6 +68,57 @@ function asList(value) {
   return value.filter((item) => typeof item === 'string' && item.trim() !== '').map((item) => item.trim());
 }
 
+/** Human-readable labels for the development lifecycle states. */
+const DEVELOPMENT_STATUS_LABELS = {
+  'in-progress': 'In Progress',
+  completed: 'Completed',
+  archived: 'Archived',
+};
+
+/** The card/hero blurb, preferring the current field over the legacy names. */
+function projectSummary(project) {
+  return asText(project.shortDescription) || asText(project.description) || asText(project.summary);
+}
+
+/** The live demo URL, preferring the current field name. */
+function liveUrlOf(project) {
+  return asText(project.liveUrl) || asText(project.site);
+}
+
+/** The repository URL, preferring the current field name. */
+function githubUrlOf(project) {
+  return asText(project.githubUrl) || asText(project.github);
+}
+
+/**
+ * Category and development-status badges shown under the project title.
+ * Development status is display-only and never affects publication, which is
+ * decided upstream by `status`.
+ * @param {object} project
+ * @param {(value: unknown) => string} escapeHtml
+ * @returns {string}
+ */
+function renderProjectMeta(project, escapeHtml) {
+  const parts = [];
+
+  const category = asText(project.category);
+  if (category) {
+    parts.push(
+      `<span class="project-meta-badge" style="display:inline-block;padding:2px 10px;border:1px solid rgba(255,0,60,0.35);border-radius:999px;font-size:0.8rem;color:#ff5c7a;">${escapeHtml(category)}</span>`
+    );
+  }
+
+  const developmentStatus = asText(project.developmentStatus).toLowerCase();
+  if (DEVELOPMENT_STATUS_LABELS[developmentStatus]) {
+    parts.push(
+      `<span class="project-meta-badge" style="display:inline-block;padding:2px 10px;border:1px solid rgba(255,255,255,0.2);border-radius:999px;font-size:0.8rem;color:#c9ccd3;">${escapeHtml(DEVELOPMENT_STATUS_LABELS[developmentStatus])}</span>`
+    );
+  }
+
+  if (!parts.length) return '';
+  return `<div class="project-meta" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 0.75rem;">${parts.join('')}</div>`;
+}
+
 /**
  * The canonical (crawlable) URL for a project page.
  * @param {string} siteUrl
@@ -126,17 +177,19 @@ function renderGallery(project, escapeHtml) {
 
 function renderLinks(project, escapeHtml) {
   const links = [];
+  const liveUrl = liveUrlOf(project);
+  const githubUrl = githubUrlOf(project);
 
-  if (project.site) {
+  if (liveUrl) {
     links.push(`
-          <a href="${escapeHtml(project.site)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          <a href="${escapeHtml(liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
             <i class="fas fa-external-link-alt" aria-hidden="true"></i> Live Demo
           </a>`);
   }
 
-  if (project.github) {
+  if (githubUrl) {
     links.push(`
-          <a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer" class="btn">
+          <a href="${escapeHtml(githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn">
             <i class="fab fa-github" aria-hidden="true"></i> Source Code
           </a>`);
   }
@@ -156,34 +209,34 @@ function renderCaseStudy(project, escapeHtml) {
   const blocks = [];
 
   const summary = asText(project.summary);
-  if (summary && summary !== asText(project.description)) {
+  const shortDescription = projectSummary(project);
+  if (summary && summary !== shortDescription) {
     blocks.push(`<p class="large-text">${escapeHtml(summary)}</p>`);
   }
 
   const sections = [
-    ['The problem', asText(project.problem)],
-    ['Why it matters', asText(project.problemSignificance)],
-    ['The solution', asText(project.solution)],
-    ['Challenges', asText(project.challenges)],
-    ['Trade-offs', asText(project.tradeoffs)],
-    ['Lessons learned', asText(project.lessonsLearned)],
+    { heading: 'Problem statement', body: asText(project.problemStatement) || asText(project.problem) },
+    { heading: 'Solution', body: asText(project.solution) },
+    { heading: 'Key features', items: asList(project.keyFeatures) },
+    { heading: 'My role', body: asText(project.role) },
+    // Legacy long-form content, preserved for records created before this milestone.
+    { heading: 'Why it matters', body: asText(project.problemSignificance) },
+    { heading: 'Challenges', body: asText(project.challenges) },
+    { heading: 'Trade-offs', body: asText(project.tradeoffs) },
+    { heading: 'Lessons learned', body: asText(project.lessonsLearned) },
+    { heading: 'Outcomes', items: asList(project.outcomes) },
   ];
 
-  for (const [heading, body] of sections) {
-    if (body) blocks.push(`<h2>${escapeHtml(heading)}</h2>\n        <p class="text-text-dim">${escapeHtml(body)}</p>`);
-  }
-
-  const listSections = [
-    ['Key features', asList(project.keyFeatures)],
-    ['Outcomes', asList(project.outcomes)],
-  ];
-
-  for (const [heading, items] of listSections) {
-    if (items.length) {
+  for (const section of sections) {
+    if (section.items && section.items.length) {
       blocks.push(
-        `<h2>${escapeHtml(heading)}</h2>\n        <ul class="text-text-dim">${items
+        `<h2>${escapeHtml(section.heading)}</h2>\n        <ul class="text-text-dim">${section.items
           .map((item) => `\n          <li>${escapeHtml(item)}</li>`)
           .join('')}\n        </ul>`
+      );
+    } else if (section.body) {
+      blocks.push(
+        `<h2>${escapeHtml(section.heading)}</h2>\n        <p class="text-text-dim">${escapeHtml(section.body)}</p>`
       );
     }
   }
@@ -204,7 +257,10 @@ function renderCaseStudy(project, escapeHtml) {
 function buildProjectPage(project, { escapeHtml, siteUrl }) {
   const canonical = canonicalUrl(siteUrl, project.slug);
   const pageTitle = `${project.title} | IsaiahWebDev Portfolio`;
-  const description = asText(project.description) || `${project.title} — a project by Isaiah Adelowo.`;
+  const liveUrl = liveUrlOf(project);
+  const githubUrl = githubUrlOf(project);
+  const description =
+    projectSummary(project) || `${project.title} — a project by Isaiah Adelowo.`;
   const technologies = asList(project.technologies);
   const firstImage = normalizeImages(project.images)[0];
   const ogImage = firstImage ? toAbsolute(siteUrl, firstImage.src) : `${siteUrl}/images/profile.jpg`;
@@ -220,8 +276,8 @@ function buildProjectPage(project, { escapeHtml, siteUrl }) {
     applicationCategory: 'WebApplication',
     operatingSystem: 'Web',
   };
-  if (project.site) softwareApp.url = project.site;
-  if (project.github) softwareApp.codeRepository = project.github;
+  if (liveUrl) softwareApp.url = liveUrl;
+  if (githubUrl) softwareApp.codeRepository = githubUrl;
   if (firstImage) softwareApp.image = ogImage;
   if (technologies.length) softwareApp.programmingLanguage = technologies;
 
@@ -304,6 +360,7 @@ ${safeJsonLd(breadcrumb)}
                 </div>
                 <div class="section-header">
                     <h1 id="project-title">${title}</h1>
+                    ${renderProjectMeta(project, escapeHtml)}
                     <p id="project-description">${escDescription}</p>
                 </div>
             </div>
@@ -392,6 +449,8 @@ module.exports = {
   canonicalUrl,
   normalizeImages,
   renderGallery,
+  renderCaseStudy,
+  renderProjectMeta,
   safeJsonLd,
   toRootRelative,
 };

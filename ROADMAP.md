@@ -166,14 +166,16 @@ Each milestone is **Proposed** — not automatically approved. Writing this road
   - Validate inputs server-side and client-side.
   - Provide clear success and error states.
   - Protect all administrative API operations with auth from Milestone 5.
+  - **Phase B**: surface the structured project fields (title, slug, short description, category, problem statement, solution, key features, technologies, role, development status, live/GitHub links, and multiple images with alt text) through a sectioned editor with repeatable controls, and render them on a public case-study detail page.
 - **Acceptance criteria**:
   - Owner can create, edit, and delete projects via dashboard.
   - Changes reflected in API immediately.
   - Invalid input rejected with helpful messages.
   - Unauthorized access blocked.
   - Dashboard not publicly discoverable or accessible.
+  - **Phase B**: new fields validate and round-trip; publication visibility is governed only by `status` (never `developmentStatus`); documents written before Phase B still load and render; existing content is never overwritten with empty values.
 - **Dependencies**: Milestones 3 and 5 complete.
-- **Status**: Implemented (Phase A) — pending review. See decision log 2026-10-14.
+- **Status**: Implemented (Phase A) and expanded (Phase B: structured project schema, sectioned admin editor, structured public case-study pages) — pending review. See decision log 2026-10-14.
 
 ---
 
@@ -218,12 +220,12 @@ Each milestone is **Proposed** — not automatically approved. Writing this road
 
 | Field | Value |
 |-------|-------|
-| **Current milestone** | 5–6 — Admin authentication and dashboard (Phase A) |
-| **Current status** | Implemented (Phase A) — awaiting review |
-| **Completed work** | Milestones 1–4b (API foundation, DB, read-only content API, frontend integration with fallback and server-rendered `/projects/<slug>`); unified local static serving. Phase A admin: database-backed single-admin setup + username/password login, project CRUD, publish/unpublish, authenticated previews, admin UI, unique slug index |
+| **Current milestone** | 5–6 — Admin authentication and dashboard (Phase A + Phase B) |
+| **Current status** | Implemented (Phase A completed; Phase B adds the structured project schema, sectioned editor and structured public case-study pages) — awaiting review |
+| **Completed work** | Milestones 1–4b (API foundation, DB, read-only content API, frontend integration with fallback and server-rendered `/projects/<slug>`); unified local static serving. Phase A admin: database-backed single-admin setup + username/password login, project CRUD, publish/unpublish, authenticated previews, admin UI, unique slug index. Phase B: canonical structured project fields (`shortDescription`, `category`, `problemStatement`, `solution`, `keyFeatures`, `technologies`, `role`, `developmentStatus`, `liveUrl`, `githubUrl`, per-image URL + alt), legacy read/write mapping (`description`/`summary`, `problem`, `site`, `github`), server-side validation with URL/size/array limits, sectioned admin editor with repeatable controls and image previews, structured public case-study rendering, and an old-schema compatibility test |
 | **Open blockers/decisions** | Cloudinary (M7) requires explicit cost/account approval; production deployment (M8) not authorized |
-| **Next proposed action** | Review the Phase A implementation and results |
-| **Implementation authorization** | **Phase A only** was authorized; no other milestone implementation is authorized |
+| **Next proposed action** | Review the Phase B implementation and results |
+| **Implementation authorization** | **Phase A and Phase B** were authorized; no other milestone implementation is authorized |
 
 ---
 
@@ -236,8 +238,9 @@ A local Git checkpoint was taken to preserve the current working version before 
 | **Base commit (pre-checkpoint)** | `d01843d286da18ad9c3a9ad35cc34e3bf6718797` |
 | **Checkpoint commit** | Recorded in `git log` after this commit; it is not embedded here because a commit cannot contain its own hash |
 | **Purpose** | Preserve the working local version: static frontend and backend running together; database-backed single-admin cookie sessions that persist across page refreshes and server restarts; the admin dashboard supporting project creation and management; the existing Site Scout draft |
-| **Test status (verified 2026-10-14)** | Backend `node --test --test-concurrency=1` → 140 pass / 0 fail; repo root `node --test --test-concurrency=1` → 175 pass / 0 fail (the root run also discovers the backend tests; there is no root `package.json`, so the root suite is not run via `npm test`) |
-| **Next milestone** | M6 Phase B — expand the project schema, the admin editor, and the public project-detail pages. Cloudinary uploads (M7) remain a subsequent milestone. |
+| **Test status (verified 2026-10-14)** | Backend `node --test --test-concurrency=1` → 149 pass / 0 fail; repo root `node --test --test-concurrency=1` → 189 pass / 0 fail (the root run also discovers the backend tests; there is no root `package.json`, so the root suite is not run via `npm test`); root-frontend-only `node --test "tests/**/*.test.mjs"` → 40 pass / 0 fail |
+| **Next milestone** | M6 Phase B was implemented and is pending review. Cloudinary uploads (M7) remain a subsequent milestone and still require explicit cost/account approval. |
+| **Phase B live smoke test (read-only, 2026-10-14)** | Local server on an alternate port: `GET /api/content/projects` → 200 with the single published `site-scout` project carrying the structured fields; `GET /projects/site-scout` → 200 with "Problem statement", "Key features", meta badges, canonical link and JSON-LD; `GET /admin` → 200 with the sectioned editor. The live `portfolio_staging.projects` document was inspected read-only and left untouched. |
 
 ---
 
@@ -264,7 +267,11 @@ A local Git checkpoint was taken to preserve the current working version before 
 | 2026-10-14 | Login attempts are rate limited in memory (5 per 15 minutes per client address) | Slows brute-force attempts without new infrastructure; per-instance state is an accepted Phase A limitation |
 | 2026-10-14 | Duplicate project slugs are rejected with `409 Conflict`; a unique index (`slug_unique`) is created on `projects.slug` | Prevents ambiguous public URLs; verified safe because the collection did not previously exist |
 | 2026-10-14 | Admin UI (`admin.html`, `js/admin-api.js`, `js/admin.js`) is part of the static frontend; the production backend stays API-only | Keeps the cross-origin boundary explicit and avoids serving admin pages from the API service |
-| 2026-10-14 | Public read-only `GET /api/content/projects` accepts requests with no `Origin` header; the CORS allowlist still governs cross-origin responses | Same-origin browser fetches omit `Origin`, so the endpoint would otherwise be unreachable and the listing would silently fall back to static JSON; scoped to this public read-only endpoint only | the CORS allowlist still governs cross-origin responses | Same-origin browser fetches omit `Origin`, so the endpoint would otherwise be unreachable and the listing would silently fall back to static JSON; scoped to this public read-only endpoint only |
+| 2026-10-14 | Public read-only `GET /api/content/projects` accepts requests with no `Origin` header; the CORS allowlist still governs cross-origin responses | Same-origin browser fetches omit `Origin`, so the endpoint would otherwise be unreachable and the listing would silently fall back to static JSON; scoped to this public read-only endpoint only |
+| 2026-10-14 | M6 Phase B adopts canonical structured project field names (`shortDescription`, `category`, `problemStatement`, `solution`, `keyFeatures`, `technologies`, `role`, `developmentStatus`, `liveUrl`, `githubUrl`) while accepting the legacy names (`description`/`summary`, `problem`, `site`, `github`) on read and write, and keeps the legacy long-form fields (`summary`, `problemSignificance`, `challenges`, `tradeoffs`, `outcomes`, `lessonsLearned`) in the normalized document | Lets the editor write the new shape without wiping content from older documents (including the existing Site Scout record), keeps every prior document readable, and gives new calls a single canonical name for each concept |
+| 2026-10-14 | `developmentStatus` (`in-progress`/`completed`/`archived`) is a display-only lifecycle field, completely separate from the publication `status` (`draft`/`published`) | A project may be publicly visible while still in progress, and a completed project may stay a private draft; public visibility must depend only on `status` |
+| 2026-10-14 | Project images remain URL-only in Phase B, each with descriptive alt text and an optional `publicId` passthrough; no upload control is built | Avoids a premature Cloudinary commitment while keeping the stored image shape compatible with a later upload milestone and preserving existing image data |
+| 2026-10-14 | Admin writes are validated server-side with explicit URL, string-length and array-size limits; updates never overwrite existing content with empty values | Prevents malformed or oversized payloads and protects existing content from being silently cleared |
 
 ---
 
