@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileWrapper = document.querySelector('.profile-wrapper');
     const particleCount = 30;
 
+    // Pages without a profile hero (e.g. generated project pages) skip particles.
+    if (!profileWrapper) return;
+
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.classList.add('particle');

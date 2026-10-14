@@ -1,216 +1,110 @@
-const projectsContainer = document.getElementById("projects-container");
+/**
+ * project.js
+ * Renders the featured project on the homepage.
+ * Data comes from the shared loader (API first, /data/projects.json fallback).
+ * The project title, "View Project" button and card link navigate to the
+ * dedicated project page; the thumbnail keeps the existing image lightbox.
+ */
 
-// Load projects
-async function loadProjects() {
-    try {
-        const response = await fetch("data/projects.json");
-        const data = await response.json();
+import { loadProjects } from './api-config.js';
+import { escapeHtml, featuredProjects, projectPagePath } from './projects-schema.js';
 
-        if (!projectsContainer) return;
-
-        if (!data.length) {
-            projectsContainer.innerHTML =
-                `<p class="no-projects">No projects available at the moment.</p>`;
-            return;
-        }
-
-        // Display only the featured project on the homepage
-        const featuredProjects = data.slice(0, 1);
-
-        displayProjects(featuredProjects);
-
-        // Initialize the shared lightbox with the displayed projects
-        if (typeof window.initProjectsLightbox === "function") {
-            window.initProjectsLightbox(featuredProjects);
-        }
-
-    } catch (error) {
-        console.error("Error loading projects:", error);
-
-        if (projectsContainer) {
-            projectsContainer.innerHTML =
-                `<p class="error">Failed to load projects. Please try again later.</p>`;
-        }
-    }
-}
+const projectsContainer = document.getElementById('projects-container');
 
 function getImageSrc(image) {
-    return image?.src ?? image ?? "";
+    return image?.src ?? image ?? '';
 }
 
 function getImageAlt(image, fallback) {
     return image?.alt ?? fallback;
 }
 
-// Render projects
+function renderFeatured(project) {
+    const firstImage = project.images?.[0] ?? {};
+    const href = projectPagePath(project.slug);
+    const title = escapeHtml(project.title);
+    const description = escapeHtml(project.description);
+
+    return `
+        <article class="bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl p-[clamp(20px,4vw,30px)] transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10">
+            <h3 class="text-text-light font-orbitron mb-[clamp(10px,2vw,15px)] text-[clamp(1.3rem,3vw,1.6rem)]">
+                <a href="${href}">${title}</a>
+            </h3>
+
+            <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
+                <img
+                    src="${escapeHtml(getImageSrc(firstImage))}"
+                    alt="${escapeHtml(getImageAlt(firstImage, `${project.title} Thumbnail`))}"
+                    class="thumb w-full h-full object-cover cursor-pointer transition-smooth duration-300 hover:scale-105"
+                    loading="lazy"
+                >
+            </div>
+
+            <p class="text-text-dim mb-2.5">
+                ${description}
+            </p>
+
+            ${project.technologies.length
+                ? `<p><strong>Technologies:</strong> ${escapeHtml(project.technologies.join(', '))}</p>`
+                : ''
+            }
+
+            <div class="flex justify-center gap-[clamp(10px,2vw,15px)] mt-[clamp(15px,3vw,20px)]">
+                <a href="${href}" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
+                    <i class="fas fa-arrow-right"></i>
+                    View Project
+                </a>
+
+                ${project.site
+                    ? `<a href="${escapeHtml(project.site)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
+                            <i class="fas fa-external-link-alt"></i>
+                            Live Demo
+                       </a>`
+                    : ''
+                }
+
+                ${project.github
+                    ? `<a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer" class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col">
+                            <i class="fab fa-github"></i>
+                            Source Code
+                       </a>`
+                    : ''
+                }
+            </div>
+        </article>
+    `;
+}
+
 function displayProjects(projects) {
     if (!projectsContainer) return;
 
-    projectsContainer.innerHTML = projects.map((project, index) => {
-        const firstImage = project.images?.[0] ?? {};
+    projectsContainer.innerHTML = projects.map(renderFeatured).join('');
 
-        return `
-            <div
-                class="bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl p-[clamp(20px,4vw,30px)] transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10"
-                data-index="${index}"
-            >
-
-                <h3 class="text-text-light font-orbitron mb-[clamp(10px,2vw,15px)] text-[clamp(1.3rem,3vw,1.6rem)]">
-                    ${project.title}
-                </h3>
-
-                <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
-                    <img
-                        src="${getImageSrc(firstImage)}"
-                        alt="${getImageAlt(firstImage, `${project.title} Thumbnail`)}"
-                        class="thumb w-full h-full object-cover cursor-pointer transition-smooth duration-300 hover:scale-105"
-                        loading="lazy"
-                    >
-                </div>
-
-                <p class="text-text-dim mb-2.5">
-                    ${project.description}
-                </p>
-
-                ${
-                    project.technologies
-                        ? `
-                            <p>
-                                <strong>Technologies:</strong>
-                                ${project.technologies.join(", ")}
-                            </p>
-                          `
-                        : ""
-                }
-
-                <div class="flex justify-center gap-[clamp(10px,2vw,15px)] mt-[clamp(15px,3vw,20px)]">
-
-                    <a
-                        href="${project.site}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col"
-                    >
-                        <i class="fas fa-external-link-alt"></i>
-                        Live Demo
-                    </a>
-
-                    <a
-                        href="${project.github}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="project-link flex gap-[clamp(10px,2vw,15px)] sm:flex-col"
-                    >
-                        <i class="fab fa-github"></i>
-                        Source Code
-                    </a>
-
-                </div>
-
-            </div>
-        `;
-    }).join("");
-}
-
-// Initialize
-loadProjects();
-
-/*const projectsContainer = document.getElementById("projects-container");
-
-// Load projects
-async function loadProjects() {
-    try {
-        const response = await fetch("data/projects.json");
-        const data = await response.json();
-
-        if (!projectsContainer) return;
-
-        if (!data.length) {
-            projectsContainer.innerHTML = `<p class="no-projects">No projects available at the moment.</p>`;
-            return;
-        }
-
-        displayProjects(data.slice(0, 3));
-
-        // Use shared lightbox logic (created in js/projects-lightbox.js)
-        if (typeof window.initProjectsLightbox === "function") {
-            window.initProjectsLightbox(data);
-        }
-
-    } catch (error) {
-        console.error("Error loading projects:", error);
-        if (projectsContainer) {
-            projectsContainer.innerHTML = `<p class="error">Failed to load projects. Please try again later.</p>`;
-        }
+    // Keep the existing image lightbox for the displayed thumbnails.
+    if (typeof window.initProjectsLightbox === 'function') {
+        window.initProjectsLightbox(projects);
     }
 }
 
-function getImageSrc(image) {
-    return image?.src ?? image ?? "";
-}
-
-function getImageAlt(image, fallback) {
-    return image?.alt ?? fallback;
-}
-
-// Render projects
-function displayProjects(projects) {
+async function init() {
     if (!projectsContainer) return;
 
-    projectsContainer.innerHTML = projects.map((project, index) => {
-        const firstImage = project.images?.[0] ?? {};
+    try {
+        const { projects } = await loadProjects();
+        const featured = featuredProjects(projects).slice(0, 1);
 
-        return `
-            <div class="bg-card-bg border border-[rgba(255,0,60,0.15)] rounded-2xl p-[clamp(20px,4vw,30px)] transition-all duration-300 backdrop-blur-[10px] text-center hover:-translate-y-1 hover:border-neon-red hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)] hover:bg-white/10"
-                 data-index="${index}">
+        if (!featured.length) {
+            projectsContainer.innerHTML =
+                '<p class="no-projects">No featured project available at the moment.</p>';
+            return;
+        }
 
-                <h3 class="text-text-light font-orbitron mb-[clamp(10px,2vw,15px)] text-[clamp(1.3rem,3vw,1.6rem)]">
-                    ${project.title}
-                </h3>
-
-                <div class="mb-[clamp(10px,2vw,15px)] overflow-hidden rounded-[10px] aspect-video">
-                    <img
-                        src="${getImageSrc(firstImage)}"
-                        alt="${getImageAlt(firstImage, project.title + ' Thumbnail')}"
-                        class="thumb w-full h-full object-cover cursor-pointer transition-smooth duration-300 hover:scale-105"
-                        loading="lazy"
-                    >
-                </div>
-
-                <p class="text-text-dim mb-2.5">
-                    ${project.description}
-                </p>
-
-                ${
-                    project.technologies
-                        ? `<p><strong>Technologies:</strong> ${project.technologies.join(", ")}</p>`
-                        : ""
-                }
-
-                <div class="flex gap-[clamp(10px,2vw,15px)] justify-center mt-[clamp(15px,3vw,20px)]">
-
-                    <a
-                        href="${project.site}"
-                        target="_blank"
-                        class="project-link flex gap-[clamp(10px,2vw,15px)] mt-[clamp(15px,3vw,20px)] sm:flex-col"
-                    >
-                        <i class="fas fa-external-link-alt"></i> Live Demo
-                    </a>
-
-                    <a
-                        href="${project.github}"
-                        target="_blank"
-                        class="project-link flex gap-[clamp(10px,2vw,15px)] mt-[clamp(15px,3vw,20px)] sm:flex-col"
-                    >
-                        <i class="fab fa-github"></i> Source Code
-                    </a>
-                </div>
-            </div>
-        `;
-    }).join("");
+        displayProjects(featured);
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        projectsContainer.innerHTML =
+            '<p class="error">Failed to load projects. Please try again later.</p>';
+    }
 }
 
-// Init
-loadProjects();
-
-*/
+init();

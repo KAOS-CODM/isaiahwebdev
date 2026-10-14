@@ -56,3 +56,7 @@ css/
 
 #Files that are to be exempted from ignore
 !css/styles.css
+
+# Local development dependencies and tools
+node_modules/
+serve_local.py

@@ -34,7 +34,7 @@
             "platform": "Fiverr",
             "url": "https://fiverr.com/isaiahwebdev",
             "iconType": "image",
-            "icon": "assets/icons/fiverr.svg",
+            "icon": "/assets/icons/fiverr.svg",
             "ariaLabel": "Connect with me on Fiverr"
         },
         {

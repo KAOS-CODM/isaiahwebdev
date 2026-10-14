@@ -3,7 +3,7 @@
 Welcome to my personal portfolio! 🚀  
 This site represents my journey as a web developer, showcasing my skills, creativity, and growth in building clean, functional, and user-friendly web interfaces.
 
-🔗 **Live Demo:** [Visit Portfolio](https://kaos-codm.github.io/isaiahwebdev-portfolio/)
+🔗 **Live Demo:** [Visit Portfolio](https://isaiahwebdev.onrender.com)
 
 ---
 
@@ -27,7 +27,7 @@ The portfolio is built to be easily expandable, so new works can be added seamle
 - **CSS3** – Responsive design, animations, and modern layouts
 - **JavaScript (Vanilla)** – Interactivity, dynamic rendering, and DOM manipulation
 - **JSON** – Data-driven content for projects, skills, and certificates
-- **GitHub Pages** – Hosting and deployment
+- **Render** – Hosting and deployment
 - **Font Awesome** – Icons and visual elements
 
 ---
@@ -89,6 +89,26 @@ isaiahwebdev-portfolio/
 
 ---
 
+### Admin CMS (local development)
+
+The private admin interface lets the owner create, edit, publish, unpublish and preview projects. It is part of the static frontend and talks to the separate backend API.
+
+1. Copy `backend/.env.example` to `backend/.env` and set `MONGODB_URI` — your MongoDB connection string.
+2. Start the backend with `npm run dev` from `backend/`.
+3. Open `http://localhost:8080/admin`. On first run (no administrator exists yet) the page shows a setup form: choose a username and a password of at least 12 characters. The account is created in MongoDB and you are signed in automatically.
+4. Afterwards, `/admin` shows the normal sign-in form (username + password). There is no environment variable for the admin password.
+
+Notes:
+
+- The administrator is stored in MongoDB, not in the environment. There is no `ADMIN_PASSWORD_HASH` or `ADMIN_SESSION_SECRET`.
+- The first administrator can only be created from the local machine (`127.0.0.1`/`::1`) while `NODE_ENV` is not `production`. Setup is disabled in production and permanently closed once an administrator exists, so production onboarding is performed locally against the same database.
+- Sessions use a signed, `HttpOnly` cookie (not `localStorage`/`sessionStorage`). The cookie lives for 8 hours, so refreshing the page and restarting the server keep you signed in until it expires; signing out clears the cookie.
+- The signing secret is a random per-administrator value stored in MongoDB, so it survives restarts and is never taken from the environment. Deleting the administrator record invalidates all outstanding sessions immediately.
+- In production the backend is API-only; the admin page is served by the static frontend. The cookie uses `SameSite=None; Secure` there (the frontend and API are different sites) and `SameSite=Lax` during local development; override with `ADMIN_COOKIE_SAMESITE` (`Lax`/`Strict`/`None`) if needed.
+- State-changing admin calls require a JSON body and pass the API's strict CORS/origin checks, which (together with the cookie's `HttpOnly`/`SameSite` attributes) mitigates CSRF.
+
+---
+
 ## 👨‍💻 About Me
 
 I'm Isaiah Adelowo, a Computer Science student passionate about web programming and creating digital experiences that matter.
@@ -111,7 +131,7 @@ I'm Isaiah Adelowo, a Computer Science student passionate about web programming 
 - **Email:** kaoskonseptech@gmail.com
 - **Fiverr:** https://www.fiverr.com/isaiahwebdev
 - **GitHub:** [https://github.com/KAOS-CODM](https://github.com/KAOS-CODM)
-- **Portfolio:** [https://kaos-codm.github.io/isaiahwebdev-portfolio/](https://kaos-codm.github.io/isaiahwebdev-portfolio/)
+- **Portfolio:** [https://isaiahwebdev.onrender.com](https://isaiahwebdev.onrender.com)
 
 ---
 

@@ -1,7 +1,7 @@
 // Footer loader for all pages
 async function loadFooter() {
     try {
-        const response = await fetch("data/footer.json");
+        const response = await fetch("/data/footer.json");
         const footerData = await response.json();
         
         const footer = document.getElementById('main-footer');

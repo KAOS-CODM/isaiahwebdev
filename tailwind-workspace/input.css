@@ -2,6 +2,7 @@
 
 @source "../*.html";
 @source "../*.js";
+@source "../backend/*.js";
 
 
 @theme {
