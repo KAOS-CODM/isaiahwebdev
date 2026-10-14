@@ -106,6 +106,7 @@ Notes:
 - The signing secret is a random per-administrator value stored in MongoDB, so it survives restarts and is never taken from the environment. Deleting the administrator record invalidates all outstanding sessions immediately.
 - In production the backend is API-only; the admin page is served by the static frontend. The cookie uses `SameSite=None; Secure` there (the frontend and API are different sites) and `SameSite=Lax` during local development; override with `ADMIN_COOKIE_SAMESITE` (`Lax`/`Strict`/`None`) if needed.
 - State-changing admin calls require a JSON body and pass the API's strict CORS/origin checks, which (together with the cookie's `HttpOnly`/`SameSite` attributes) mitigates CSRF.
+- **Image uploads (Cloudinary).** Projects can hold several uploaded images. Uploading requires three server-side variables on the API service — `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` — plus the optional `CLOUDINARY_FOLDER` (`MEDIA_MAX_UPLOAD_BYTES` and `MEDIA_MAX_IMAGES_PER_PROJECT` set the per-image and per-project caps). These values are read only by the backend and are never sent to the browser or committed; see `backend/.env.example` for the annotated placeholders. When they are not set, uploads report that the image service is not configured and the editor's manual "Add image URL" fallback keeps working, so nothing else in the CMS is affected. Accepted formats are JPEG, PNG, WebP and GIF.
 
 ---
 

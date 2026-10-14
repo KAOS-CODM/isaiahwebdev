@@ -13,7 +13,7 @@ Add a remote content-management capability to the existing portfolio while prese
 - **Backend API**: Separate Node.js service deployed as a Render Web Service. In production it is API-only and does not serve frontend assets. For local development it may serve the public frontend from an explicit allowlist so the portfolio and API run through one local server (approved 2026-10-14); this does not change the production boundary.
 - **Database**: MongoDB Atlas for CMS content.
 - **Admin dashboard**: Private interface for the owner to manage portfolio content.
-- **Media**: Cloudinary may be introduced in a later approved milestone.
+- **Media**: Cloudinary image uploads (Milestone 7, 2026-10-14). Credentials are API-service-only; the static frontend uploads through authenticated admin endpoints and never handles secrets.
 
 ---
 
@@ -180,20 +180,21 @@ Each milestone is **Proposed** — not automatically approved. Writing this road
 ---
 
 ### Milestone 7: Media Management
-- **Objective**: Evaluate and, if approved, integrate Cloudinary for image uploads.
+- **Objective**: Integrate Cloudinary for multiple images per project.
 - **Scope**:
-  - Evaluate Cloudinary vs. alternatives against requirements.
-  - If approved: implement secure upload authorization, file type/size validation, and deletion.
-  - Keep media secrets server-side only.
-  - Update content model to reference media URLs.
+  - Add the official `cloudinary` SDK to the API service (server-side only).
+  - Implement authenticated upload/delete endpoints with file type/size validation and safe deletion.
+  - Keep media secrets server-side only; expose limits through a secret-free config endpoint.
+  - Manage multiple images per project (`{ src, alt, publicId }`) from the admin editor (upload, preview, alt text, reorder, replace, remove).
+  - Keep legacy URL-only images rendering on the public pages.
 - **Acceptance criteria**:
-  - Uploads work for approved image types within size limits.
-  - Invalid files rejected.
-  - Deletion removes media from Cloudinary.
-  - No secrets exposed client-side.
-  - Costs reviewed and approved before integration.
-- **Dependencies**: Milestone 6 complete; Cloudinary account provisioned (user action).
-- **Status**: Proposed (deferred; requires explicit cost and account approval).
+  - Valid raster uploads (JPEG, PNG, WebP, GIF) succeed; unsupported or spoofed types and oversized payloads are rejected.
+  - Every upload and delete requires the existing admin session.
+  - Deletion happens only after the database write succeeded, only for assets no project references, and never for images without a `publicId`.
+  - No Cloudinary credential is exposed to the browser or committed.
+  - Legacy URL-only images still render and existing content is preserved.
+- **Dependencies**: Milestone 6 complete; Cloudinary account credentials (user action) for real-account verification.
+- **Status**: Implemented (2026-10-14) — pending review. Verified with a mocked Cloudinary client; real-account uploads have not been tested because no credentials are configured.
 
 ---
 
@@ -220,12 +221,12 @@ Each milestone is **Proposed** — not automatically approved. Writing this road
 
 | Field | Value |
 |-------|-------|
-| **Current milestone** | 5–6 — Admin authentication and dashboard (Phase A + Phase B) |
-| **Current status** | Implemented (Phase A completed; Phase B adds the structured project schema, sectioned editor and structured public case-study pages) — awaiting review |
-| **Completed work** | Milestones 1–4b (API foundation, DB, read-only content API, frontend integration with fallback and server-rendered `/projects/<slug>`); unified local static serving. Phase A admin: database-backed single-admin setup + username/password login, project CRUD, publish/unpublish, authenticated previews, admin UI, unique slug index. Phase B: canonical structured project fields (`shortDescription`, `category`, `problemStatement`, `solution`, `keyFeatures`, `technologies`, `role`, `developmentStatus`, `liveUrl`, `githubUrl`, per-image URL + alt), legacy read/write mapping (`description`/`summary`, `problem`, `site`, `github`), server-side validation with URL/size/array limits, sectioned admin editor with repeatable controls and image previews, structured public case-study rendering, and an old-schema compatibility test |
-| **Open blockers/decisions** | Cloudinary (M7) requires explicit cost/account approval; production deployment (M8) not authorized |
-| **Next proposed action** | Review the Phase B implementation and results |
-| **Implementation authorization** | **Phase A and Phase B** were authorized; no other milestone implementation is authorized |
+| **Current milestone** | 5–7 — Admin authentication and dashboard (Phases A + B), media management (M7) |
+| **Current status** | Implemented (Phase A/B plus M7 Cloudinary image uploads) — awaiting review. M7 verified with a mocked Cloudinary client; real-account uploads are unverified. |
+| **Completed work** | Milestones 1–4b (API foundation, DB, read-only content API, frontend integration with fallback and server-rendered `/projects/<slug>`); unified local static serving. Phase A admin: database-backed single-admin setup + username/password login, project CRUD, publish/unpublish, authenticated previews, admin UI, unique slug index. Phase B: canonical structured project fields (`shortDescription`, `category`, `problemStatement`, `solution`, `keyFeatures`, `technologies`, `role`, `developmentStatus`, `liveUrl`, `githubUrl`, per-image URL + alt), legacy read/write mapping (`description`/`summary`, `problem`, `site`, `github`), server-side validation with URL/size/array limits, sectioned admin editor with repeatable controls and image previews, structured public case-study rendering, and an old-schema compatibility test. M7: Cloudinary-backed multi-image uploads (`GET /api/admin/media/config`, `POST`/`DELETE /api/admin/media/images`), server-side format/size validation with magic-byte sniffing, injectable Cloudinary client, post-write exclusive asset cleanup with visible/retryable failures, and an admin image editor (multi-select upload, per-file status, preview, alt text, reorder, replace, remove, limit/empty states) |
+| **Open blockers/decisions** | Real Cloudinary credentials are not configured, so real-account uploads are unverified (a mock is used in tests); production deployment (M8) not authorized |
+| **Next proposed action** | Review the M7 implementation and results, then (once credentials exist) perform a real-account upload smoke test |
+| **Implementation authorization** | **Phase A, Phase B and M7** were authorized; no other milestone implementation is authorized |
 
 ---
 
@@ -238,8 +239,9 @@ A local Git checkpoint was taken to preserve the current working version before 
 | **Base commit (pre-checkpoint)** | `d01843d286da18ad9c3a9ad35cc34e3bf6718797` |
 | **Checkpoint commit** | Recorded in `git log` after this commit; it is not embedded here because a commit cannot contain its own hash |
 | **Purpose** | Preserve the working local version: static frontend and backend running together; database-backed single-admin cookie sessions that persist across page refreshes and server restarts; the admin dashboard supporting project creation and management; the existing Site Scout draft |
-| **Test status (verified 2026-10-14)** | Backend `node --test --test-concurrency=1` → 149 pass / 0 fail; repo root `node --test --test-concurrency=1` → 189 pass / 0 fail (the root run also discovers the backend tests; there is no root `package.json`, so the root suite is not run via `npm test`); root-frontend-only `node --test "tests/**/*.test.mjs"` → 40 pass / 0 fail |
-| **Next milestone** | M6 Phase B was implemented and is pending review. Cloudinary uploads (M7) remain a subsequent milestone and still require explicit cost/account approval. |
+| **Test status (verified 2026-10-14, after M7 review)** | Backend `node --test --test-concurrency=1` → 165 pass / 0 fail; root-frontend-only `node --test tests/admin-api.test.mjs tests/projects-loader.test.mjs tests/projects-schema.test.mjs` → 45 pass / 0 fail; combined root discovery `node --test --test-concurrency=1` → 210 pass / 0 fail (the root run also discovers the backend tests; there is no root `package.json`) |
+| **Next milestone** | M6 Phase B and M7 are implemented and pending review. Real-account Cloudinary uploads remain unverified (no credentials configured); production deployment (M8) is not authorized. |
+| **M7 media note (2026-10-14)** | Cloudinary uploads are verified against a mocked client only. `CLOUDINARY_CLOUD_NAME`/`CLOUDINARY_API_KEY`/`CLOUDINARY_API_SECRET` must be set on the API service to enable uploads; when unset, uploads return `503 MEDIA_NOT_CONFIGURED` and the editor's manual image-URL fallback keeps working. |
 | **Phase B live smoke test (read-only, 2026-10-14)** | Local server on an alternate port: `GET /api/content/projects` → 200 with the single published `site-scout` project carrying the structured fields; `GET /projects/site-scout` → 200 with "Problem statement", "Key features", meta badges, canonical link and JSON-LD; `GET /admin` → 200 with the sectioned editor. The live `portfolio_staging.projects` document was inspected read-only and left untouched. |
 
 ---
@@ -272,6 +274,13 @@ A local Git checkpoint was taken to preserve the current working version before 
 | 2026-10-14 | `developmentStatus` (`in-progress`/`completed`/`archived`) is a display-only lifecycle field, completely separate from the publication `status` (`draft`/`published`) | A project may be publicly visible while still in progress, and a completed project may stay a private draft; public visibility must depend only on `status` |
 | 2026-10-14 | Project images remain URL-only in Phase B, each with descriptive alt text and an optional `publicId` passthrough; no upload control is built | Avoids a premature Cloudinary commitment while keeping the stored image shape compatible with a later upload milestone and preserving existing image data |
 | 2026-10-14 | Admin writes are validated server-side with explicit URL, string-length and array-size limits; updates never overwrite existing content with empty values | Prevents malformed or oversized payloads and protects existing content from being silently cleared |
+| 2026-10-14 | M7 uses the official `cloudinary` Node SDK (added to `backend/package.json`, and its `lodash` transitive dependency) behind a single injectable client module (`src/lib/media-client.js`); the SDK is loaded lazily so the API still starts and serves when it is absent | Satisfies the requirement to use the official SDK while keeping it mockable in tests, confining the dependency to one seam, and preserving graceful degradation when credentials or the module are missing |
+| 2026-10-14 | Uploads are proxied through authenticated admin endpoints as one raw image per request (`POST /api/admin/media/images`), with the browser sending the file body and its own content type; no multipart parser is used | Native Node HTTP handles raw bodies simply, gives natural per-file progress/status, needs no new parsing dependency, and keeps all Cloudinary credentials server-side |
+| 2026-10-14 | Uploaded images are validated server-side by declared type **and** leading-byte magic sniffing against an allowlist (`image/jpeg`, `image/png`, `image/webp`, `image/gif`); SVG, HTML and executables are rejected | Prevents a renamed or spoofed file from being accepted, and blocks formats that can carry active content; the declared content type alone is not trusted |
+| 2026-10-14 | Asset deletion is deferred until after a successful MongoDB write, checks every project for remaining references, never deletes images without a `publicId`, and is refused while any project references the asset (`409 ASSET_IN_USE`) | Cloudinary and MongoDB cannot share a transaction, so the safe order is write-first/delete-after; reference scanning prevents deleting an asset another project still uses, and surfacing failures keeps a storage outage from failing a project save |
+| 2026-10-14 | Cleanup failures are returned in the project response as `media.failed` and logged (asset id + error code only), and can be retried via `DELETE /api/admin/media/images`; no new cleanup queue collection was introduced | Makes failures visible and recoverable without adding a database schema or background worker, staying within scope and keeping the deploy simple |
+| 2026-10-14 | `CLOUDINARY_CLOUD_NAME`/`CLOUDINARY_API_KEY`/`CLOUDINARY_API_SECRET` are the only required media variables, with optional `CLOUDINARY_FOLDER`, `MEDIA_MAX_UPLOAD_BYTES` (default 5 MiB) and `MEDIA_MAX_IMAGES_PER_PROJECT` (default 50); a secret-free `GET /api/admin/media/config` reports availability and limits | Keeps the naming convention explicit and server-only, lets the editor show limits and disable uploads when unconfigured, and avoids leaking any credential to the browser |
+| 2026-10-14 | The manual "Add image URL" affordance is retained alongside uploads, and existing URL-only images remain valid | Preserves legacy content and lets images be referenced without a Cloudinary account, so disabling uploads never breaks the editor |
 
 ---
 
@@ -281,7 +290,7 @@ A local Git checkpoint was taken to preserve the current working version before 
 - Exact content schema for each portfolio type (Phase A defines the core project schema; refinements deferred)
 - Frontend consumption strategy (client-side fetch vs. build-time vs. hybrid)
 - Environment variable naming convention (e.g., `APP_`, `CMS_` prefix)
-- Cloudinary integration (depends on Milestone 7 evaluation)
+- **Resolved (M7, 2026-10-14):** Cloudinary integration (server-side SDK, authenticated proxy uploads, validated formats/limits, deferred exclusive cleanup). Remaining: real-account verification and free-tier/quota confirmation before production use.
 - Custom domain, SSL, CDN configuration
 - Monitoring, logging, alerting strategy
 - Backup and disaster recovery procedures for database

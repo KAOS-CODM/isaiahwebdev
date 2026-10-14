@@ -191,8 +191,13 @@ function validateProjectInput(input, { partial, schema }) {
       if (typeof image.alt === 'string' && image.alt.length > LIMITS.imageAlt) {
         throw invalid(`image alt must be at most ${LIMITS.imageAlt} characters`);
       }
-      if (image.publicId !== undefined && typeof image.publicId !== 'string') {
-        throw invalid('image publicId must be a string');
+      if (image.publicId !== undefined) {
+        if (typeof image.publicId !== 'string') {
+          throw invalid('image publicId must be a string');
+        }
+        if (image.publicId.length > 512) {
+          throw invalid('image publicId must be at most 512 characters');
+        }
       }
     }
   }

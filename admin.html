@@ -135,6 +135,28 @@
       }
       .image-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .row-actions.inline { justify-content: flex-end; }
+      .images-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.6rem;
+      }
+      .images-toolbar .muted { margin-left: auto; }
+      .image-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+      .image-actions button {
+        padding: 0.35rem 0.6rem;
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      .image-actions button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+      .image-status { font-size: 0.78rem; display: block; }
+      .image-status.uploading { color: var(--muted); }
+      .image-status.error { color: var(--danger); }
+      .image-status.ok { color: var(--ok); }
+      .image-row.pending { opacity: 0.85; }
       .field-error { border-color: var(--danger) !important; }
 
       @media (max-width: 640px) {
@@ -330,14 +352,21 @@
 
           <fieldset class="editor-section">
             <legend>Project images</legend>
-            <p class="hint">
-              Add one image URL at a time and give each image descriptive alt text. Uploads are
-              planned for a later milestone, so paste hosted image URLs for now.
+            <p class="hint" id="images-hint">
+              Upload one or more images (JPEG, PNG, WebP or GIF). Give each image descriptive alt
+              text and use the move buttons to reorder. Uploads require Cloudinary to be configured
+              on the API service.
             </p>
-            <div id="images-editor"></div>
-            <div class="row-actions">
-              <button type="button" id="add-image-button" class="add-button">+ Add image</button>
+            <div class="images-toolbar">
+              <input id="image-upload-input" type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden />
+              <button type="button" id="upload-images-button">Upload images</button>
+              <button type="button" id="add-image-url-button" class="secondary">Add image URL</button>
+              <span class="muted" id="image-count"></span>
             </div>
+            <p class="message" id="images-message" role="status"></p>
+            <div id="images-editor"></div>
+            <p class="muted" id="images-empty" hidden>No images yet. Upload an image to get started.</p>
           </fieldset>
 
           <fieldset class="editor-section">

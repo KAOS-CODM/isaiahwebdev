@@ -15,6 +15,9 @@
  *   POST   /projects/:slug/publish                 → set status = published
  *   POST   /projects/:slug/unpublish               → set status = draft
  *   GET    /projects/:slug/preview                 → authenticated HTML preview
+ *   GET    /media/config                           → upload availability + limits (no secrets)
+ *   POST   /media/images                           → upload one raw image to Cloudinary
+ *   DELETE /media/images                           → delete one Cloudinary asset by publicId
  *
  * The administrator account lives in MongoDB (username + scrypt password hash +
  * per-admin token secret), never in the environment. `/bootstrap` and `/setup`
@@ -50,6 +53,9 @@ const auth = require('../lib/admin-auth');
 const accounts = require('../lib/admin-accounts');
 const { validateProjectInput, deriveSlug, buildProjectDoc } = require('../lib/admin-projects');
 const store = require('../lib/project-store');
+const { loadMediaConfig } = require('../lib/media-config');
+const { getMediaClient } = require('../lib/media-client');
+const media = require('../lib/media-service');
 const { loginRateLimiter, setupRateLimiter } = require('../lib/rate-limit');
 
 const ADMIN_PREFIX = '/api/admin';
@@ -466,12 +472,14 @@ async function handleProjectItem(req, res, pathname) {
   }
 
   if (req.method === 'DELETE') {
+    const raw = await store.findRawProjectBySlug(db, slug);
     const removed = await store.deleteProject(db, slug);
     if (!removed) {
       sendJsonError(res, Errors.notFound('Project not found'));
       return;
     }
-    sendJson(res, 200, { ok: true });
+    const mediaSummary = await cleanupRemovedAssets(db, raw ? raw.images : [], []);
+    sendJson(res, 200, mediaSummary ? { ok: true, media: mediaSummary } : { ok: true });
     return;
   }
 
@@ -505,7 +513,50 @@ async function updateProject(req, res, db, slug) {
     sendJsonError(res, Errors.notFound('Project not found'));
     return;
   }
-  sendJson(res, 200, { project: updated });
+
+  // The document write has succeeded, so it is now safe to release assets that
+  // were removed in this update (only those no other project still references).
+  const mediaSummary = await cleanupRemovedAssets(db, existing.images, updated.images);
+  sendJson(res, 200, mediaSummary ? { project: updated, media: mediaSummary } : { project: updated });
+}
+
+/**
+ * Delete Cloudinary assets that an update/delete no longer references.
+ *
+ * Runs only after the database write succeeded. Assets without a public id and
+ * assets still referenced by another project are left untouched. Failures are
+ * surfaced (never thrown) so a storage problem cannot fail a project write.
+ *
+ * @param {import('mongodb').Db} db
+ * @param {unknown} previousImages
+ * @param {unknown} nextImages
+ * @returns {Promise<{removed: string[], deleted: string[], failed: Array<{publicId: string, message: string}>}|null>}
+ */
+async function cleanupRemovedAssets(db, previousImages, nextImages) {
+  const previous = media.imageObjectPublicIds(previousImages);
+  if (!previous.length) return null;
+
+  const next = new Set(media.imageObjectPublicIds(nextImages));
+  const removed = previous.filter((publicId) => !next.has(publicId));
+  if (!removed.length) return null;
+
+  try {
+    const result = await media.cleanupProjectAssets({
+      db,
+      publicIds: removed,
+      client: getMediaClient(),
+    });
+    return { removed, deleted: result.deleted, failed: result.failed };
+  } catch (error) {
+    // `cleanupProjectAssets` collects its own failures; this guard only ensures
+    // an unexpected throw can never undo a successful project write.
+    console.error('Media cleanup error:', error && error.code ? error.code : 'unknown');
+    return {
+      removed,
+      deleted: [],
+      failed: removed.map((publicId) => ({ publicId, message: 'Cleanup failed' })),
+    };
+  }
 }
 
 async function previewProject(req, res, db, slug) {
@@ -560,6 +611,18 @@ async function adminHandler(req, res, pathname) {
       await handleLogout(req, res);
       return;
     }
+    if (pathname === `${ADMIN_PREFIX}/media/config`) {
+      await handleMediaConfigRoute(req, res);
+      return;
+    }
+    if (pathname === `${ADMIN_PREFIX}/media/images`) {
+      await handleMediaImagesRoute(req, res);
+      return;
+    }
+    if (pathname.startsWith(`${ADMIN_PREFIX}/media/`)) {
+      sendJsonError(res, Errors.notFound('Admin route not found'));
+      return;
+    }
     if (pathname === `${ADMIN_PREFIX}/projects`) {
       await handleProjects(req, res);
       return;
@@ -579,6 +642,30 @@ async function adminHandler(req, res, pathname) {
   }
 }
 
+async function handleMediaConfigRoute(req, res) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  return media.handleMediaConfig(req, res, { config: loadMediaConfig() });
+}
+
+async function handleMediaImagesRoute(req, res) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  const db = getDb();
+  if (!db) {
+    sendJsonError(res, Errors.serviceUnavailable('Content is temporarily unavailable'));
+    return;
+  }
+  if (req.method === 'POST') {
+    return media.handleImageUpload(req, res, { config: loadMediaConfig(), client: getMediaClient() });
+  }
+  if (req.method === 'DELETE') {
+    return media.handleImageDelete(req, res, { db, config: loadMediaConfig(), client: getMediaClient() });
+  }
+  res.setHeader('Allow', 'POST, DELETE');
+  sendJsonError(res, Errors.methodNotAllowed());
+}
+
 module.exports = {
   adminHandler,
   ADMIN_PREFIX,
@@ -590,4 +677,5 @@ module.exports = {
   handleLogout,
   handleProjects,
   handleProjectItem,
+  cleanupRemovedAssets,
 };

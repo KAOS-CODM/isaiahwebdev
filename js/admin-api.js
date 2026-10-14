@@ -37,14 +37,21 @@ export function createAdminApi(options = {}) {
     return `${ADMIN_BASE_PATH}/projects/${encodeURIComponent(slug)}`;
   }
 
-  async function call(path, { method = 'GET', body, expect = 'json' } = {}) {
+  async function call(path, { method = 'GET', body, raw, contentType, expect = 'json' } = {}) {
     const headers = {};
-    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    let requestBody;
+    if (raw !== undefined) {
+      headers['Content-Type'] = contentType || 'application/octet-stream';
+      requestBody = raw;
+    } else if (body !== undefined) {
+      headers['Content-Type'] = 'application/json';
+      requestBody = JSON.stringify(body);
+    }
 
     const response = await fetchImpl(`${base}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: requestBody,
       credentials: 'include',
     });
 
@@ -54,8 +61,8 @@ export function createAdminApi(options = {}) {
     }
 
     let data = null;
-    const contentType = response.headers.get('content-type') || '';
-    if (contentType.includes('application/json')) {
+    const responseType = response.headers.get('content-type') || '';
+    if (responseType.includes('application/json')) {
       data = await response.json();
     }
 
@@ -137,6 +144,33 @@ export function createAdminApi(options = {}) {
     },
     previewHtml(slug) {
       return call(`${projectPath(slug)}/preview`, { expect: 'text' });
+    },
+
+    /** Upload availability and limits (never includes credentials). */
+    mediaConfig() {
+      return call(`${ADMIN_BASE_PATH}/media/config`);
+    },
+    /**
+     * Upload a single image file. The File/Blob is sent as the raw request body
+     * with its own content type, so no multipart parser is required server-side
+     * and ordinary cookie-authenticated fetch is used.
+     * @param {Blob} file
+     * @param {{ alt?: string, slug?: string, contentType?: string }} [options]
+     */
+    uploadImage(file, options = {}) {
+      const params = new URLSearchParams();
+      if (options.alt) params.set('alt', options.alt);
+      if (options.slug) params.set('slug', options.slug);
+      const query = params.toString();
+      return call(`${ADMIN_BASE_PATH}/media/images${query ? `?${query}` : ''}`, {
+        method: 'POST',
+        raw: file,
+        contentType: options.contentType || (file && file.type) || 'application/octet-stream',
+      });
+    },
+    /** Delete a Cloudinary asset that no project references. */
+    deleteImage(publicId) {
+      return call(`${ADMIN_BASE_PATH}/media/images`, { method: 'DELETE', body: { publicId } });
     },
   };
 }

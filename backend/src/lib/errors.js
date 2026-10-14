@@ -81,6 +81,16 @@ const Errors = {
   tooManyRequests: (message = 'Too many requests') => createError('RATE_LIMITED', message, 429),
   internalError: (message = 'Internal server error') => createError('INTERNAL_ERROR', message, 500),
   serviceUnavailable: (message = 'Service unavailable') => createError('SERVICE_UNAVAILABLE', message, 503),
+  mediaNotConfigured: (message = 'Image uploads are not configured') =>
+    createError('MEDIA_NOT_CONFIGURED', message, 503),
+  mediaUnavailable: (message = 'The image service is temporarily unavailable') =>
+    createError('MEDIA_UNAVAILABLE', message, 503),
+  mediaUploadFailed: (message = 'The image could not be uploaded') =>
+    createError('MEDIA_UPLOAD_FAILED', message, 502),
+  mediaDeleteFailed: (message = 'The image could not be removed from storage') =>
+    createError('MEDIA_DELETE_FAILED', message, 502),
+  assetInUse: (message = 'This image is still used by a project') =>
+    createError('ASSET_IN_USE', message, 409),
 };
 
 module.exports = {

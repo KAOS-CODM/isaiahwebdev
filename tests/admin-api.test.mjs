@@ -222,6 +222,107 @@ test('a 401 from the session endpoint surfaces as an unauthenticated error', asy
   );
 });
 
+test('mediaConfig fetches upload limits from the admin API', async () => {
+  const calls = [];
+  const api = createAdminApi({
+    base: 'https://api.example.com',
+    fetch: async (url, options) => {
+      calls.push({ url, ...options });
+      return jsonResponse({ media: { configured: true, maxImagesPerProject: 50 } });
+    },
+  });
+
+  const result = await api.mediaConfig();
+  assert.strictEqual(result.media.configured, true);
+  assert.strictEqual(calls[0].url, 'https://api.example.com/api/admin/media/config');
+  assert.strictEqual(calls[0].method, 'GET');
+  assert.strictEqual(calls[0].credentials, 'include');
+  assert.strictEqual(headersOf(calls[0]).Authorization, undefined);
+});
+
+test('uploadImage posts the raw file with its content type and query options', async () => {
+  const calls = [];
+  const api = createAdminApi({
+    base: 'https://api.example.com',
+    fetch: async (url, options) => {
+      calls.push({ url, ...options });
+      return jsonResponse(
+        { image: { src: 'https://res.cloudinary.com/x/a.png', publicId: 'folder/a', alt: 'Hero' } },
+        { status: 201 }
+      );
+    },
+  });
+
+  const file = new Blob([new Uint8Array([1, 2, 3])], { type: 'image/png' });
+  const result = await api.uploadImage(file, { alt: 'Hero shot', slug: 'my-project' });
+
+  assert.strictEqual(result.image.publicId, 'folder/a');
+  assert.strictEqual(calls.length, 1);
+  assert.strictEqual(
+    calls[0].url,
+    'https://api.example.com/api/admin/media/images?alt=Hero+shot&slug=my-project'
+  );
+  assert.strictEqual(calls[0].method, 'POST');
+  assert.strictEqual(calls[0].body, file);
+  assert.strictEqual(calls[0].headers['Content-Type'], 'image/png');
+  assert.strictEqual(calls[0].credentials, 'include');
+  assert.strictEqual(headersOf(calls[0]).Authorization, undefined);
+});
+
+test('uploadImage falls back to octet-stream when the file carries no type', async () => {
+  const calls = [];
+  const api = createAdminApi({
+    base: 'https://api.example.com',
+    fetch: async (url, options) => {
+      calls.push({ url, ...options });
+      return jsonResponse({ image: {} }, { status: 201 });
+    },
+  });
+
+  await api.uploadImage({}, {});
+  assert.strictEqual(calls[0].url, 'https://api.example.com/api/admin/media/images');
+  assert.strictEqual(calls[0].headers['Content-Type'], 'application/octet-stream');
+});
+
+test('deleteImage sends the public id as a JSON DELETE body', async () => {
+  const calls = [];
+  const api = createAdminApi({
+    base: 'https://api.example.com',
+    fetch: async (url, options) => {
+      calls.push({ url, ...options });
+      return jsonResponse({ ok: true, publicId: 'folder/a' });
+    },
+  });
+
+  await api.deleteImage('folder/a');
+  assert.strictEqual(calls[0].url, 'https://api.example.com/api/admin/media/images');
+  assert.strictEqual(calls[0].method, 'DELETE');
+  assert.strictEqual(calls[0].headers['Content-Type'], 'application/json');
+  assert.deepStrictEqual(JSON.parse(calls[0].body), { publicId: 'folder/a' });
+  assert.strictEqual(calls[0].credentials, 'include');
+});
+
+test('uploadImage surfaces a server rejection as AdminApiError', async () => {
+  const api = createAdminApi({
+    base: 'https://api.example.com',
+    fetch: async () =>
+      jsonResponse(
+        { error: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'Unsupported image type.' } },
+        { status: 415 }
+      ),
+  });
+
+  await assert.rejects(
+    () => api.uploadImage(new Blob([new Uint8Array([1])], { type: 'image/png' })),
+    (err) => {
+      assert.ok(err instanceof AdminApiError);
+      assert.strictEqual(err.status, 415);
+      assert.strictEqual(err.code, 'UNSUPPORTED_MEDIA_TYPE');
+      return true;
+    }
+  );
+});
+
 function headersOf(call) {
   return call.headers || {};
 }

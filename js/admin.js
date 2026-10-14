@@ -10,9 +10,11 @@
  *
  * The editor is organised into the same sections as the project schema: basic
  * information, project details, technical information, links, images and
- * publishing settings. Key features, technologies and images use repeatable
- * controls; image URLs are entered by hand until Cloudinary uploads arrive in a
- * later milestone.
+ * publishing settings. Key features and technologies use repeatable controls;
+ * images are uploaded to Cloudinary (multiple per project, with per-image alt
+ * text, reorder, replace and remove) while a hosted URL can still be added by
+ * hand. Uploads go through the authenticated admin API, so the session cookie
+ * is the only credential and nothing sensitive touches JS.
  */
 
 import { createAdminApi } from './admin-api.js';
@@ -49,10 +51,21 @@ const dom = {
   featuresEditor: el('key-features-editor'),
   technologiesEditor: el('technologies-editor'),
   imagesEditor: el('images-editor'),
+  imagesMessage: el('images-message'),
+  imagesEmpty: el('images-empty'),
+  imagesHint: el('images-hint'),
+  imageCount: el('image-count'),
+  uploadImagesButton: el('upload-images-button'),
+  addImageUrlButton: el('add-image-url-button'),
+  imageUploadInput: el('image-upload-input'),
   addFeatureButton: el('add-feature-button'),
   addTechnologyButton: el('add-technology-button'),
-  addImageButton: el('add-image-button'),
 };
+
+/** Upload availability/limits, loaded lazily once the admin is signed in. */
+let mediaConfig = null;
+/** Number of image uploads currently in flight. */
+let activeUploads = 0;
 
 let editingSlug = null;
 
@@ -138,6 +151,10 @@ function readList(container) {
     .filter(Boolean);
 }
 
+// ---------------------------------------------------------------------------
+// Image editor (Cloudinary uploads + URL fallback)
+// ---------------------------------------------------------------------------
+
 function updateImagePreview(preview, url) {
   const src = String(url || '').trim();
   preview.textContent = '';
@@ -168,55 +185,308 @@ function labelledField(labelText, input) {
   return wrap;
 }
 
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return '';
+  const mb = bytes / (1024 * 1024);
+  if (mb >= 1) return `${Number.isInteger(mb) ? mb : mb.toFixed(1)} MB`;
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
+function imageRows() {
+  return dom.imagesEditor ? Array.from(dom.imagesEditor.querySelectorAll('.image-row')) : [];
+}
+
+function updateUploadAvailability(rows = imageRows().length, max = null) {
+  const limit =
+    max !== null
+      ? max
+      : mediaConfig && Number.isFinite(mediaConfig.maxImagesPerProject)
+        ? mediaConfig.maxImagesPerProject
+        : Infinity;
+  const atLimit = rows >= limit;
+  const configured = !mediaConfig || mediaConfig.configured !== false;
+  const busy = activeUploads > 0;
+  const disabled = busy || atLimit || !configured;
+
+  if (dom.uploadImagesButton) {
+    dom.uploadImagesButton.disabled = disabled;
+    dom.uploadImagesButton.textContent = busy ? 'Uploading…' : 'Upload images';
+  }
+  if (dom.imageUploadInput) dom.imageUploadInput.disabled = disabled;
+  if (dom.addImageUrlButton) dom.addImageUrlButton.disabled = atLimit;
+}
+
+function updateImageCount() {
+  const rows = imageRows().length;
+  const max =
+    mediaConfig && Number.isFinite(mediaConfig.maxImagesPerProject)
+      ? mediaConfig.maxImagesPerProject
+      : null;
+  if (dom.imageCount) {
+    dom.imageCount.textContent = max
+      ? `${rows} / ${max} images`
+      : `${rows} image${rows === 1 ? '' : 's'}`;
+  }
+  if (dom.imagesEmpty) dom.imagesEmpty.hidden = rows > 0;
+  updateUploadAvailability(rows, max);
+}
+
+function setRowStatus(row, text, kind) {
+  const status = row.querySelector('.image-status');
+  if (!status) return;
+  status.textContent = text || '';
+  status.classList.remove('uploading', 'error', 'ok');
+  if (kind) status.classList.add(kind);
+}
+
+function moveRow(row, delta) {
+  const parent = row.parentElement;
+  if (!parent) return;
+  const rows = Array.from(parent.children);
+  const index = rows.indexOf(row);
+  const target = index + delta;
+  if (target < 0 || target >= rows.length) return;
+  if (delta < 0) parent.insertBefore(row, rows[target]);
+  else parent.insertBefore(rows[target], row);
+  updateImageCount();
+}
+
+/** Normalize a stored image into the editor's row state. */
+function normalizeEditorImage(image) {
+  if (typeof image === 'string') {
+    return { src: image, alt: '', publicId: '', origin: 'manual' };
+  }
+  const src = image && typeof image.src === 'string' ? image.src : '';
+  const alt = image && typeof image.alt === 'string' ? image.alt : '';
+  const publicId = image && typeof image.publicId === 'string' ? image.publicId : '';
+  return { src, alt, publicId, origin: publicId ? 'saved' : 'manual' };
+}
+
 function addImageRow(image = {}) {
-  if (!dom.imagesEditor) return;
-  const source = typeof image === 'string' ? { src: image, alt: '' } : image;
+  if (!dom.imagesEditor) return null;
+
+  const state = {
+    src: image.src || '',
+    alt: image.alt || '',
+    publicId: image.publicId || '',
+    origin: image.origin || (image.publicId ? 'saved' : 'manual'),
+  };
 
   const row = document.createElement('div');
   row.className = 'image-row';
+  row.__image = state;
 
   const preview = document.createElement('div');
   preview.className = 'image-preview placeholder';
-  preview.textContent = 'No preview';
-
-  const srcInput = makeInput(source.src || '', 'https://res.cloudinary.com/.../image.jpg');
-  const altInput = makeInput(source.alt || '', 'Describe the image for screen readers');
-
-  srcInput.addEventListener('input', () => updateImagePreview(preview, srcInput.value));
-  updateImagePreview(preview, srcInput.value);
-
-  const actions = document.createElement('div');
-  actions.className = 'row-actions inline';
-  actions.appendChild(makeButton('Remove image', 'secondary', () => row.remove()));
 
   const fields = document.createElement('div');
   fields.className = 'image-fields';
-  fields.append(
-    labelledField('Image URL', srcInput),
-    labelledField('Alt text', altInput),
-    actions
-  );
+
+  const urlInput = makeInput(state.src, 'https://res.cloudinary.com/.../image.jpg');
+  urlInput.setAttribute('aria-label', 'Image URL');
+  urlInput.addEventListener('input', () => {
+    state.src = urlInput.value;
+    state.publicId = '';
+    state.origin = 'manual';
+    updateImagePreview(preview, state.src);
+  });
+
+  const altInput = makeInput(state.alt, 'Describe the image for screen readers');
+  altInput.setAttribute('aria-label', 'Alt text');
+  altInput.maxLength = 300;
+  altInput.addEventListener('input', () => {
+    state.alt = altInput.value;
+  });
+
+  const status = document.createElement('span');
+  status.className = 'image-status';
+
+  const actions = document.createElement('div');
+  actions.className = 'image-actions';
+
+  const up = makeButton('Move up', '', () => moveRow(row, -1));
+  up.setAttribute('aria-label', 'Move image up');
+  const down = makeButton('Move down', '', () => moveRow(row, 1));
+  down.setAttribute('aria-label', 'Move image down');
+
+  const replaceInput = document.createElement('input');
+  replaceInput.type = 'file';
+  replaceInput.accept = 'image/png,image/jpeg,image/webp,image/gif';
+  replaceInput.hidden = true;
+  const replace = makeButton('Replace', '', () => replaceInput.click());
+  replace.setAttribute('aria-label', 'Replace image');
+  replaceInput.addEventListener('change', async () => {
+    const file = replaceInput.files && replaceInput.files[0];
+    replaceInput.value = '';
+    if (file) await uploadIntoRow(row, file, { replace: true });
+  });
+
+  const remove = makeButton('Remove', 'danger', () => removeImageRow(row));
+  remove.setAttribute('aria-label', 'Remove image');
+
+  actions.append(up, down, replace, remove);
+
+  const urlField = labelledField('Image URL', urlInput);
+  const altField = labelledField('Alt text', altInput);
+  fields.append(urlField, altField, status, actions);
+
+  row.__apply = () => {
+    urlInput.value = state.src;
+    urlField.hidden = Boolean(state.publicId) && state.origin !== 'manual';
+    updateImagePreview(preview, state.src);
+  };
 
   row.append(preview, fields);
+  row.__apply();
+
   dom.imagesEditor.appendChild(row);
+  updateImageCount();
+  return row;
 }
 
 function renderImages(images) {
   if (!dom.imagesEditor) return;
   dom.imagesEditor.textContent = '';
-  if (Array.isArray(images)) images.forEach((image) => addImageRow(image));
+  const list = Array.isArray(images) ? images : [];
+  list.forEach((image) => addImageRow(normalizeEditorImage(image)));
+  updateImageCount();
 }
 
 function readImages() {
   if (!dom.imagesEditor) return [];
-  return Array.from(dom.imagesEditor.querySelectorAll('.image-row'))
+  return imageRows()
     .map((row) => {
-      const inputs = row.querySelectorAll('input');
-      const src = inputs[0] ? inputs[0].value.trim() : '';
-      const alt = inputs[1] ? inputs[1].value.trim() : '';
-      return src ? { src, alt } : null;
+      const state = row.__image || {};
+      const src = String(state.src || '').trim();
+      if (!src) return null;
+      const image = { src, alt: String(state.alt || '').trim() };
+      if (state.publicId) image.publicId = state.publicId;
+      return image;
     })
     .filter(Boolean);
+}
+
+function hasUnsavedUploads() {
+  return imageRows().some((row) => row.__image && row.__image.origin === 'new');
+}
+
+/** Remove a row, releasing an unsaved upload immediately. */
+function removeImageRow(row) {
+  const state = row.__image;
+  row.remove();
+  updateImageCount();
+  if (state && state.origin === 'new' && state.publicId) {
+    api.deleteImage(state.publicId).catch(() => {});
+  }
+}
+
+/** Reclaim every image uploaded during this session that was never saved. */
+function discardNewUploads() {
+  imageRows().forEach((row) => {
+    const state = row.__image;
+    if (state && state.origin === 'new') {
+      if (state.publicId) api.deleteImage(state.publicId).catch(() => {});
+      row.remove();
+    }
+  });
+  updateImageCount();
+}
+
+/** Upload a single file into an existing row. */
+async function uploadIntoRow(row, file, { replace = false } = {}) {
+  if (!mediaConfig || mediaConfig.configured !== true) {
+    setRowStatus(row, 'Image uploads are not configured on the API service.', 'error');
+    return false;
+  }
+  if (activeUploads > 0) {
+    setRowStatus(row, 'Please wait for the current upload to finish.', 'error');
+    return false;
+  }
+  const max = mediaConfig.maxUploadBytes;
+  if (max && file.size > max) {
+    setRowStatus(
+      row,
+      `File is too large (${formatBytes(file.size)}). Maximum is ${formatBytes(max)}.`,
+      'error'
+    );
+    return false;
+  }
+
+  activeUploads += 1;
+  updateUploadAvailability();
+  row.classList.add('pending');
+  setRowStatus(row, replace ? 'Replacing…' : 'Uploading…', 'uploading');
+
+  try {
+    const data = await api.uploadImage(file, { slug: editingSlug || undefined });
+    const image = data && data.image ? data.image : null;
+    if (!image || !image.src) throw new Error('Upload did not return an image');
+
+    const state = row.__image;
+    state.src = image.src;
+    state.publicId = image.publicId || '';
+    state.origin = 'new';
+    row.__apply();
+    setRowStatus(row, 'Uploaded — remember to save.', 'ok');
+    return true;
+  } catch (error) {
+    setRowStatus(row, error && error.message ? error.message : 'Upload failed', 'error');
+    return false;
+  } finally {
+    activeUploads -= 1;
+    row.classList.remove('pending');
+    updateUploadAvailability();
+  }
+}
+
+/** Upload every file chosen in one multi-select, one at a time. */
+async function handleUploadSelection(files) {
+  const list = Array.from(files || []);
+  if (!list.length) return;
+  if (!mediaConfig || mediaConfig.configured !== true) {
+    setMessage(dom.imagesMessage, 'Image uploads are not configured on the API service.', 'error');
+    return;
+  }
+  setMessage(dom.imagesMessage, '');
+
+  const max = mediaConfig.maxImagesPerProject;
+  for (const file of list) {
+    if (Number.isFinite(max) && imageRows().length >= max) {
+      setMessage(dom.imagesMessage, `You can add up to ${max} images per project.`, 'error');
+      break;
+    }
+    const row = addImageRow({ origin: 'new' });
+    // Sequential so the single-upload guard and progress state stay coherent.
+    // eslint-disable-next-line no-await-in-loop
+    await uploadIntoRow(row, file);
+  }
+}
+
+/** Lazily load upload availability/limits once the admin is signed in. */
+async function loadMediaConfig() {
+  try {
+    const data = await api.mediaConfig();
+    mediaConfig =
+      data && data.media
+        ? data.media
+        : { configured: false, allowedTypes: [], maxImagesPerProject: 50 };
+  } catch {
+    mediaConfig = { configured: false, allowedTypes: [], maxImagesPerProject: 50 };
+  }
+
+  if (mediaConfig.configured !== true) {
+    if (dom.imagesHint) {
+      dom.imagesHint.textContent =
+        'Image uploads are not configured on the API service. You can still add hosted image URLs below.';
+    }
+    if (dom.uploadImagesButton) dom.uploadImagesButton.disabled = true;
+    if (dom.imageUploadInput) dom.imageUploadInput.disabled = true;
+  } else if (dom.imagesHint && Number.isFinite(mediaConfig.maxUploadBytes)) {
+    dom.imagesHint.textContent =
+      `Upload images up to ${formatBytes(mediaConfig.maxUploadBytes)} each ` +
+      '(JPEG, PNG, WebP or GIF). Give each image descriptive alt text and use the move buttons to reorder.';
+  }
+  updateImageCount();
 }
 
 // ---------------------------------------------------------------------------
@@ -271,6 +541,8 @@ function showEditor(project) {
   renderList(dom.featuresEditor, project ? project.keyFeatures : []);
   renderList(dom.technologiesEditor, project ? project.technologies : []);
   renderImages(project ? project.images : []);
+  setMessage(dom.imagesMessage, '');
+  if (!mediaConfig) loadMediaConfig();
 
   dom.setupView.hidden = true;
   dom.loginView.hidden = true;
@@ -474,9 +746,35 @@ function wireEvents() {
 
   dom.addFeatureButton.addEventListener('click', () => addListRow(dom.featuresEditor, ''));
   dom.addTechnologyButton.addEventListener('click', () => addListRow(dom.technologiesEditor, ''));
-  dom.addImageButton.addEventListener('click', () => addImageRow({}));
+
+  dom.uploadImagesButton.addEventListener('click', () => dom.imageUploadInput.click());
+  dom.imageUploadInput.addEventListener('change', async () => {
+    // Snapshot the selection before resetting: `input.value = ''` empties the
+    // input's live FileList, so reading `files` afterwards would yield nothing
+    // and the upload would be skipped without any feedback.
+    const files = Array.from(dom.imageUploadInput.files || []);
+    dom.imageUploadInput.value = '';
+    await handleUploadSelection(files);
+  });
+  dom.addImageUrlButton.addEventListener('click', () => {
+    addImageRow({ origin: 'manual' });
+    updateImageCount();
+  });
 
   dom.cancelButton.addEventListener('click', () => {
+    if (activeUploads > 0) {
+      setMessage(dom.editorMessage, 'Please wait for image uploads to finish before cancelling.', 'error');
+      return;
+    }
+    if (
+      hasUnsavedUploads() &&
+      !window.confirm(
+        'Discard the newly uploaded images? They have not been saved to the project yet.'
+      )
+    ) {
+      return;
+    }
+    discardNewUploads();
     editingSlug = null;
     dom.editorView.hidden = true;
     setMessage(dom.statusMessage, '');
@@ -486,6 +784,11 @@ function wireEvents() {
     event.preventDefault();
     setMessage(dom.editorMessage, '');
     clearFieldError('field-title');
+
+    if (activeUploads > 0) {
+      setMessage(dom.editorMessage, 'Please wait for image uploads to finish before saving.', 'error');
+      return;
+    }
 
     const payload = collectPayload();
     if (!payload.title) {
@@ -500,13 +803,22 @@ function wireEvents() {
 
     dom.saveButton.disabled = true;
     try {
-      if (editingSlug) {
-        await api.updateProject(editingSlug, payload);
-        setMessage(dom.statusMessage, 'Project updated', 'ok');
+      const result = editingSlug
+        ? await api.updateProject(editingSlug, payload)
+        : await api.createProject(payload);
+
+      const failed = result && result.media && Array.isArray(result.media.failed) ? result.media.failed : [];
+      if (failed.length) {
+        setMessage(
+          dom.statusMessage,
+          `Project saved, but ${failed.length} image${failed.length === 1 ? '' : 's'} could not be ` +
+            'removed from storage. They will be retried the next time the project is saved.',
+          'error'
+        );
       } else {
-        await api.createProject(payload);
-        setMessage(dom.statusMessage, 'Project created', 'ok');
+        setMessage(dom.statusMessage, editingSlug ? 'Project updated' : 'Project created', 'ok');
       }
+
       editingSlug = null;
       dom.editorView.hidden = true;
       await loadProjects();
