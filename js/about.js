@@ -10,7 +10,6 @@ async function loadSkillsData() {
 
         renderSkillCards(skillsData.skillCards);
         renderDetailedSkills(skillsData.skillCategories);
-        setupSkillAnimations();
     } catch (error) {
         console.error('Error loading skills data:', error);
         document.getElementById('skills-cards-container').innerHTML = '<p class="error">Failed to load skills data.</p>';
@@ -37,45 +36,15 @@ function renderDetailedSkills(skillCategories) {
 
     container.innerHTML = skillCategories.map(category => `
         <div class="skill-category">
-            <h3 class="text-text-light font-orbitron text-[1.2rem] border-b-(--neon-red) box-border mb-6.25 m-0 pb-2.5 p-0 border-b-2 border-solid"><i class="${category.icon}"></i> ${category.name}</h3>
+            <h3><i class="${category.icon}" aria-hidden="true"></i> ${category.name}</h3>
             ${category.skills.map(skill => `
-                <div class="mb-6">
-                    <div class="flex justify-between mb-2 text-[0.95rem]">
-                        <span class="first:text-text-light first:font-medium last:text-neon-red last:font-semibold">${skill.name}</span>
-                        <span class="first:text-text-light first:font-medium last:text-neon-red last:font-semibold">${skill.level}%</span>
-                    </div>
-                    <div class=" skill-bar">
-                        <div class="skill-progress" style="width: ${skill.level}%"></div>
+                <div class="skill-item">
+                    <div class="skill-info">
+                        <span>${skill}</span>
                     </div>
                 </div>
             `).join('')}
         </div>
     `).join('');
-}
-
-function setupSkillAnimations() {
-    const observerOptions = {
-        threshold: 0.3,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const progressBar = entry.target;
-                const targetWidth = progressBar.style.width;
-                progressBar.style.width = '0%';
-
-                setTimeout(() => {
-                    progressBar.style.width = targetWidth;
-                    progressBar.style.animation = 'skillFill 1.5s ease-out forwards';
-                }, 100);
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.skill-progress').forEach(progress => {
-        observer.observe(progress);
-    });
 }
 

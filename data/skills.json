@@ -1,53 +1,69 @@
 {
+    "skillCards": [
+        {
+            "icon": "fas fa-code",
+            "title": "Frontend Development",
+            "description": "Responsive interfaces built with semantic HTML, modern CSS, JavaScript, and React."
+        },
+        {
+            "icon": "fas fa-server",
+            "title": "Backend Development",
+            "description": "Server-side logic and REST APIs built with Node.js and Express."
+        },
+        {
+            "icon": "fas fa-database",
+            "title": "Data & Services",
+            "description": "Storing and connecting application data with MongoDB, JSON, and external services."
+        },
+        {
+            "icon": "fas fa-tools",
+            "title": "Tools & Workflow",
+            "description": "Version control, debugging, and a maintainable day-to-day development workflow."
+        }
+    ],
     "skillCategories": [
         {
-            "name": "Frontend Technologies",
+            "name": "Frontend Development",
             "icon": "fas fa-code",
             "skills": [
-                { "name": "HTML5 & Semantic Markup", "level": 95 },
-                { "name": "CSS3 & Modern Layouts", "level": 90 },
-                { "name": "JavaScript (ES6+)", "level": 85 },
-                { "name": "React & Components", "level": 75 },
-                { "name": "Responsive Design", "level": 92 }
+                "HTML5 & semantic markup",
+                "CSS3 & responsive layouts",
+                "JavaScript (ES6+)",
+                "React",
+                "Tailwind CSS"
+            ]
+        },
+        {
+            "name": "Backend Development",
+            "icon": "fas fa-server",
+            "skills": [
+                "Node.js",
+                "Express.js",
+                "REST API design",
+                "Server-side logic"
+            ]
+        },
+        {
+            "name": "Data & Services",
+            "icon": "fas fa-database",
+            "skills": [
+                "MongoDB",
+                "JSON data handling",
+                "API integration",
+                "Cloudinary media handling",
+                "Working exposure to Python & FastAPI"
             ]
         },
         {
             "name": "Tools & Workflow",
             "icon": "fas fa-tools",
             "skills": [
-                { "name": "Git & Version Control", "level": 80 },
-                { "name": "Browser DevTools", "level": 88 },
-                { "name": "VS Code & Editors", "level": 90 },
-                { "name": "Figma & Prototyping", "level": 70 },
-                { "name": "Command Line", "level": 75 }
+                "Git & GitHub",
+                "Browser DevTools",
+                "VS Code",
+                "Command line",
+                "Figma (wireframing & prototyping)"
             ]
-        },
-        {
-            "name": "Design & UX",
-            "icon": "fas fa-palette",
-            "skills": [
-                { "name": "UI Design Principles", "level": 80 },
-                { "name": "User Experience", "level": 75 },
-                { "name": "Wireframing", "level": 85 },
-                { "name": "Prototyping", "level": 70 }
-            ]
-        }
-    ],
-    "skillCards": [
-        {
-            "icon": "fas fa-code",
-            "title": "Frontend Development",
-            "description": "HTML5, CSS3, JavaScript, React, Responsive Design"
-        },
-        {
-            "icon": "fas fa-palette",
-            "title": "UI/UX Design",
-            "description": "User-centered design, prototyping, wireframing"
-        },
-        {
-            "icon": "fas fa-tools",
-            "title": "Tools & Technologies",
-            "description": "Git, VS Code, Figma, Chrome DevTools"
         }
     ]
 }

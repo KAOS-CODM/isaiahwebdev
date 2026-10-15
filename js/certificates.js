@@ -15,7 +15,7 @@ async function loadCertificates() {
         if (!certificatesContainer) return;
 
         if (!certificates.length) {
-            certificatesContainer.innerHTML = '<p class="no-projects">No certificates available at the moment.</p>';
+            certificatesContainer.innerHTML = '<p class="no-projects">No completed certifications to list yet.</p>';
             return;
         }
 
