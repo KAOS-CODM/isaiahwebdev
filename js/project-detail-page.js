@@ -2,11 +2,11 @@
  * project-detail-page.js
  * Client-side renderer for the static project detail shell (`project.html`).
  *
- * The shell keeps the clean `/projects/<slug>` URL (a hosting rewrite maps that
- * path to `project.html`) and renders the selected project on the frontend
- * origin, so the existing root-relative assets (`/css`, `/js`, `/assets`) resolve
- * correctly. Content is loaded through the existing shared loader
- * (`js/api-config.js`): the CMS API first, then `/data/projects.json`.
+ * The shell is reached through the query-string route `/project?slug=<slug>`
+ * and renders the selected project on the frontend origin, so the existing
+ * root-relative assets (`/css`, `/js`, `/assets`) resolve correctly. Content is
+ * loaded through the existing shared loader (`js/api-config.js`): the CMS API
+ * first, then `/data/projects.json`.
  *
  * Slug matching relies on the exact slugs produced by the shared schema
  * (`js/projects-schema.js`) for both API and fallback records, so a project's URL
@@ -50,28 +50,15 @@ function asList(value) {
 }
 
 /**
- * Resolve a project slug from the address bar.
+ * Resolve a project slug from the URL query string.
  *
- * Prefers the pretty `/projects/<slug>` path. Falls back to `?slug=` so the shell
- * can also be opened directly (for example `/project.html?slug=<slug>` during
- * local development, before the hosting rewrite exists). Returns '' when no slug
- * is present.
+ * The project detail page is served as `/project?slug=<slug>`, so the slug
+ * is read from the `slug` query parameter. Returns '' when no slug is present.
  *
- * @param {string} pathname
- * @param {string} [search]
+ * @param {string} [search] - The URL query string, e.g. `?slug=my-project`.
  * @returns {string}
  */
-export function resolveProjectSlug(pathname, search = '') {
-  const path = typeof pathname === 'string' ? pathname : '';
-  const match = /^\/projects\/([^/]+)\/?$/.exec(path);
-  if (match && match[1]) {
-    try {
-      return decodeURIComponent(match[1]);
-    } catch {
-      return match[1];
-    }
-  }
-
+export function resolveProjectSlug(search = '') {
   let params;
   try {
     params = new URLSearchParams(typeof search === 'string' ? search : '');
@@ -83,7 +70,7 @@ export function resolveProjectSlug(pathname, search = '') {
 
 /**
  * Turn a possibly-relative image path into a root-relative URL so it resolves on
- * the frontend origin even when the document is served under `/projects/<slug>`.
+ * the frontend origin regardless of the current route (`/project?slug=…`).
  * Absolute http(s) URLs (e.g. Cloudinary uploads) are left untouched.
  *
  * @param {unknown} src
@@ -153,19 +140,19 @@ export function renderProjectMeta(project) {
   const category = asText(project.category);
   if (category) {
     parts.push(
-      `<span class="project-meta-badge" style="display:inline-block;padding:2px 10px;border:1px solid rgba(255,0,60,0.35);border-radius:999px;font-size:0.8rem;color:#ff5c7a;">${escapeHtml(category)}</span>`
+      `<span class="project-meta-badge project-meta-badge--category">${escapeHtml(category)}</span>`
     );
   }
 
   const developmentStatus = asText(project.developmentStatus).toLowerCase();
   if (DEVELOPMENT_STATUS_LABELS[developmentStatus]) {
     parts.push(
-      `<span class="project-meta-badge" style="display:inline-block;padding:2px 10px;border:1px solid rgba(255,255,255,0.2);border-radius:999px;font-size:0.8rem;color:#c9ccd3;">${escapeHtml(DEVELOPMENT_STATUS_LABELS[developmentStatus])}</span>`
+      `<span class="project-meta-badge project-meta-badge--status">${escapeHtml(DEVELOPMENT_STATUS_LABELS[developmentStatus])}</span>`
     );
   }
 
   if (!parts.length) return '';
-  return `<div class="project-meta" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 0.75rem;">${parts.join('')}</div>`;
+  return `<div class="project-meta">${parts.join('')}</div>`;
 }
 
 function renderGallery(project) {
@@ -178,31 +165,37 @@ function renderGallery(project) {
 
   const thumbs = images.length > 1
     ? `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px;" class="project-gallery-thumbs">
-          ${images
-            .map((image, index) => `
-          <button
-            type="button"
-            class="project-gallery-thumb"
-            data-src="${escapeHtml(toRootRelative(image.src))}"
-            data-alt="${escapeHtml(image.alt || `${project.title} screenshot ${index + 1}`)}"
-            aria-label="Show screenshot ${index + 1}"
-            style="padding:0;border:1px solid rgba(255,0,60,0.25);border-radius:10px;background:transparent;cursor:pointer;overflow:hidden;"
-          >
-            <img src="${escapeHtml(toRootRelative(image.src))}" alt="${escapeHtml(image.alt || `${project.title} screenshot ${index + 1}`)}" loading="lazy" style="width:100%;display:block;">
-          </button>`)
-            .join('')}
-        </div>`
+            <div class="project-gallery-thumbs" role="group" aria-label="Project screenshots">
+              ${images
+                .map((image, index) => {
+                  const src = escapeHtml(toRootRelative(image.src));
+                  const alt = escapeHtml(
+                    image.alt || `${project.title} screenshot ${index + 1}`
+                  );
+                  const current = index === 0 ? ' aria-current="true"' : '';
+                  return `
+              <button
+                type="button"
+                class="project-gallery-thumb"
+                data-src="${src}"
+                data-alt="${alt}"
+                aria-label="Show screenshot ${index + 1}"${current}
+              >
+                <img src="${src}" alt="${alt}" loading="lazy">
+              </button>`;
+                })
+                .join('')}
+            </div>`
     : '';
 
   return `
-        <figure class="project-gallery" style="margin:0;">
+        <figure class="project-gallery">
           <img
             id="project-gallery-main"
+            class="project-gallery__main"
             src="${mainSrc}"
             alt="${mainAlt}"
             loading="eager"
-            style="width:100%;max-height:65vh;object-fit:contain;border-radius:12px;background:rgba(0,0,0,0.25);"
           >
         </figure>${thumbs}`;
 }
@@ -214,22 +207,22 @@ function renderLinks(project) {
 
   if (liveUrl) {
     links.push(`
-          <a href="${escapeHtml(liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Live Demo
-          </a>`);
+                        <a href="${escapeHtml(liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Live Demo
+                        </a>`);
   }
 
   if (githubUrl) {
     links.push(`
-          <a href="${escapeHtml(githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn">
-            <i class="fab fa-github" aria-hidden="true"></i> Source Code
-          </a>`);
+                        <a href="${escapeHtml(githubUrl)}" target="_blank" rel="noopener noreferrer" class="btn">
+                            <i class="fab fa-github" aria-hidden="true"></i> Source Code
+                        </a>`);
   }
 
   links.push(`
-          <a href="/projects" class="btn">
-            <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Projects
-          </a>`);
+                        <a href="/projects" class="btn">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Projects
+                        </a>`);
 
   return links.join('');
 }
@@ -243,7 +236,7 @@ function renderCaseStudy(project) {
   const summary = asText(project.summary);
   const shortDescription = projectSummary(project);
   if (summary && summary !== shortDescription) {
-    blocks.push(`<p class="large-text">${escapeHtml(summary)}</p>`);
+    blocks.push(`<p class="project-case-study__lead">${escapeHtml(summary)}</p>`);
   }
 
   const sections = [
@@ -261,32 +254,37 @@ function renderCaseStudy(project) {
   for (const section of sections) {
     if (section.items && section.items.length) {
       blocks.push(
-        `<h2>${escapeHtml(section.heading)}</h2>
-        <ul class="text-text-dim">${section.items
-          .map((item) => `
-          <li>${escapeHtml(item)}</li>`)
-          .join('')}
-        </ul>`
+        `<section class="project-section">
+          <h2 class="project-section__title">${escapeHtml(section.heading)}</h2>
+          <ul class="project-section__list">${section.items
+            .map((item) => `
+            <li>${escapeHtml(item)}</li>`)
+            .join('')}
+          </ul>
+        </section>`
       );
     } else if (section.body) {
       blocks.push(
-        `<h2>${escapeHtml(section.heading)}</h2>
-        <p class="text-text-dim">${escapeHtml(section.body)}</p>`
+        `<section class="project-section">
+          <h2 class="project-section__title">${escapeHtml(section.heading)}</h2>
+          <p class="project-section__body">${escapeHtml(section.body)}</p>
+        </section>`
       );
     }
   }
 
   if (!blocks.length) return '';
   return `
-                    <div class="project-case-study mt-16 text-left">
+                    <div class="project-case-study">
         ${blocks.join('\n        ')}
                     </div>`;
 }
 
 /**
  * Render the full project page body (hero + content sections) for one project.
- * Mirrors the markup of the server-rendered page so the two stay visually
- * identical. All project data is escaped.
+ * This is the markup for the live public detail page (the static shell served
+ * at /project?slug=<slug>); the separate backend SSR renderer is not used.
+ * All project data is escaped.
  *
  * @param {object} project - A project normalized by the shared schema.
  * @returns {string}
@@ -300,31 +298,34 @@ export function renderProjectContent(project) {
 
   const technologiesBlock = technologies.length
     ? `
-                    <p id="project-technologies" class="text-text-dim mt-16">
-                      <strong>Technologies:</strong> ${escapeHtml(technologies.join(', '))}
+                    <p id="project-technologies" class="project-technologies">
+                      <span class="project-technologies__label">Technologies:</span>
+                      <span class="project-technologies__value">${escapeHtml(technologies.join(', '))}</span>
                     </p>`
     : '';
 
   return `
-        <section id="project-hero">
+        <section id="project-hero" class="project-hero">
             <div class="container">
-                <div class="content-wrapper text-left">
-                    <p class="text-text-dim">
-                        <a href="/index">Home</a> / <a href="/projects">Projects</a> / ${title}
-                    </p>
-                </div>
-                <div class="section-header">
+                <div class="project-detail">
+                    <nav class="project-breadcrumb" aria-label="Breadcrumb">
+                        <a href="/">Home</a>
+                        <span class="project-breadcrumb__sep" aria-hidden="true">/</span>
+                        <a href="/projects">Projects</a>
+                        <span class="project-breadcrumb__sep" aria-hidden="true">/</span>
+                        <span aria-current="page">${title}</span>
+                    </nav>
                     <h1 id="project-title">${title}</h1>
                     ${renderProjectMeta(project)}
-                    <p id="project-description">${description}</p>
+                    <p id="project-description" class="project-lede">${description}</p>
                 </div>
             </div>
         </section>
 
-        <section id="project-content" class="section-padding">
+        <section id="project-content" class="section-padding project-detail-body">
             <div class="container">
-                <div class="content-wrapper text-left">${renderGallery(project)}${technologiesBlock}${renderCaseStudy(project)}
-                    <div class="btn-group center-buttons mt-16">${renderLinks(project)}
+                <div class="project-detail">${renderGallery(project)}${technologiesBlock}${renderCaseStudy(project)}
+                    <div class="project-actions">${renderLinks(project)}
                     </div>
                 </div>
             </div>
@@ -334,10 +335,10 @@ export function renderProjectContent(project) {
 /** The default (pre-JavaScript) body state, kept until a project is resolved. */
 export function renderLoadingState() {
   return `
-        <section id="project-content" class="section-padding">
+        <section id="project-content" class="section-padding project-detail-body">
             <div class="container">
-                <div class="content-wrapper text-left">
-                    <p class="text-text-dim">Loading project…</p>
+                <div class="project-detail">
+                    <p class="project-state">Loading project…</p>
                 </div>
             </div>
         </section>`;
@@ -346,14 +347,16 @@ export function renderLoadingState() {
 /** Genuine not-found UI for an unknown slug. Never shows another project. */
 export function renderNotFoundState() {
   return `
-        <section id="project-content" class="section-padding">
+        <section id="project-content" class="section-padding project-detail-body">
             <div class="container">
-                <div class="section-header">
-                    <h1>Project not found</h1>
-                    <p>The project you are looking for does not exist or is no longer available.</p>
-                </div>
-                <div class="btn-group center-buttons">
-                    <a href="/projects" class="btn btn-primary">View all projects</a>
+                <div class="project-detail">
+                    <div class="project-state">
+                        <h1>Project not found</h1>
+                        <p>The project you are looking for does not exist or is no longer available.</p>
+                        <div class="project-actions">
+                            <a href="/projects" class="btn btn-primary">View all projects</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>`;
@@ -362,14 +365,16 @@ export function renderNotFoundState() {
 /** Failure UI shown when neither the API nor the fallback could be loaded. */
 export function renderFailureState() {
   return `
-        <section id="project-content" class="section-padding">
+        <section id="project-content" class="section-padding project-detail-body">
             <div class="container">
-                <div class="section-header">
-                    <h1>Temporarily unavailable</h1>
-                    <p>This project page could not be loaded right now. Please try again shortly.</p>
-                </div>
-                <div class="btn-group center-buttons">
-                    <a href="/projects" class="btn btn-primary">View all projects</a>
+                <div class="project-detail">
+                    <div class="project-state">
+                        <h1>Temporarily unavailable</h1>
+                        <p>This project page could not be loaded right now. Please try again shortly.</p>
+                        <div class="project-actions">
+                            <a href="/projects" class="btn btn-primary">View all projects</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>`;
@@ -405,7 +410,7 @@ export function buildProjectMetadata(project, siteUrl = DEFAULT_SITE_URL) {
       : DEFAULT_SITE_URL
   ).replace(/\/+$/, '');
 
-  const canonical = `${site}/projects/${encodeURIComponent(project.slug)}`;
+  const canonical = `${site}/project?slug=${encodeURIComponent(project.slug)}`;
   const pageTitle = `${project.title} | IsaiahWebDev Portfolio`;
   const description = projectSummary(project) || `${project.title} — a project by Isaiah Adelowo.`;
   const technologies = asList(project.technologies);
@@ -437,7 +442,7 @@ export function buildProjectMetadata(project, siteUrl = DEFAULT_SITE_URL) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site}/index` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site}/` },
       { '@type': 'ListItem', position: 2, name: 'Projects', item: `${site}/projects` },
       { '@type': 'ListItem', position: 3, name: project.title, item: canonical },
     ],
@@ -538,15 +543,36 @@ export function applyNoindexMetadata(doc, title, description) {
   removeJsonLd(doc);
 }
 
+/** Show one thumbnail's image in the main frame and mark it as current. */
+function selectThumb(main, thumbs, index) {
+  const thumb = thumbs[index];
+  if (!thumb) return;
+  if (thumb.dataset.src) main.src = thumb.dataset.src;
+  if (thumb.dataset.alt) main.alt = thumb.dataset.alt;
+  thumbs.forEach((item, itemIndex) => {
+    if (itemIndex === index) item.setAttribute('aria-current', 'true');
+    else item.removeAttribute('aria-current');
+  });
+}
+
 function initGallery(root) {
   const main = root.querySelector('#project-gallery-main');
-  const thumbs = root.querySelectorAll('.project-gallery-thumb');
+  const thumbs = Array.from(root.querySelectorAll('.project-gallery-thumb'));
   if (!main || thumbs.length === 0) return;
 
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      if (thumb.dataset.src) main.src = thumb.dataset.src;
-      if (thumb.dataset.alt) main.alt = thumb.dataset.alt;
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => selectThumb(main, thumbs, index));
+    thumb.addEventListener('keydown', (event) => {
+      let next = null;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        next = (index + 1) % thumbs.length;
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        next = (index - 1 + thumbs.length) % thumbs.length;
+      }
+      if (next === null) return;
+      event.preventDefault();
+      thumbs[next].focus();
+      selectThumb(main, thumbs, next);
     });
   });
 }
@@ -583,7 +609,7 @@ export async function initProjectPage(doc = document, win = window) {
   if (!root) return;
 
   const location = (win && win.location) || {};
-  const slug = resolveProjectSlug(location.pathname || '', location.search || '');
+  const slug = resolveProjectSlug(location.search || '');
 
   if (!slug) {
     showNotFound(doc, root);

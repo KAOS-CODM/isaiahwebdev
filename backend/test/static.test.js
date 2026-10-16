@@ -54,6 +54,7 @@ test('resolvePublicPath maps every extensionless HTML route', () => {
     '/index': 'index.html',
     '/about': 'about.html',
     '/projects': 'projects.html',
+    '/project': 'project.html',
     '/certificates': 'certificates.html',
     '/resume': 'resume.html',
     '/contact': 'contact.html',
@@ -142,6 +143,7 @@ test('isPublicStaticRequest matches only public path shapes', () => {
     '/',
     '/about',
     '/admin',
+    '/project',
     '/css/styles.css',
     '/data/projects.json',
     '/robots.txt',
@@ -171,7 +173,7 @@ test('isPublicStaticRequest matches only public path shapes', () => {
 
 test('serves every public HTML route over HTTP', async () => {
   await withServer(async (baseUrl) => {
-    for (const route of ['/', '/index', '/about', '/projects', '/certificates', '/resume', '/contact', '/admin']) {
+    for (const route of ['/', '/index', '/about', '/projects', '/project', '/certificates', '/resume', '/contact', '/admin']) {
       const res = await fetch(`${baseUrl}${route}`);
       assert.strictEqual(res.status, 200, route);
       assert.ok(res.headers.get('content-type').includes('text/html'), route);

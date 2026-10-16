@@ -191,7 +191,7 @@ test('publishedProjects and featuredProjects filter by status/featured', () => {
   assert.equal(featuredProjects(projects).length, 1);
 });
 
-test('projectPagePath builds an encoded site-relative path', () => {
-  assert.equal(projectPagePath('my-project'), '/projects/my-project');
-  assert.equal(projectPagePath('a b/c'), '/projects/a%20b%2Fc');
+test('projectPagePath builds an encoded query-string project URL', () => {
+  assert.equal(projectPagePath('my-project'), '/project?slug=my-project');
+  assert.equal(projectPagePath('a b/c'), '/project?slug=a%20b%2Fc');
 });

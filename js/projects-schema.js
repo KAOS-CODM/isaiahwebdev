@@ -237,9 +237,12 @@ export function featuredProjects(projects) {
 
 /**
  * Build the site-relative URL for a project's dedicated page.
+ *
+ * Uses the query-string route (`/project?slug=<slug>`) instead of a path
+ * segment, so the same URL resolves on any static host with no rewrite needed.
  * @param {string} slug
  * @returns {string}
  */
 export function projectPagePath(slug) {
-  return `/projects/${encodeURIComponent(slug)}`;
+  return `/project?slug=${encodeURIComponent(slug)}`;
 }

@@ -126,16 +126,13 @@ async function loadWithApi(slug, apiHandler, { apiBase = SITE } = {}) {
 // Pure helpers
 // ---------------------------------------------------------------------------
 
-test('resolveProjectSlug reads the pretty path, trailing slash and query fallback', () => {
-  assert.equal(resolveProjectSlug('/projects/af-bookstore', ''), 'af-bookstore');
-  assert.equal(resolveProjectSlug('/projects/af-bookstore/', ''), 'af-bookstore');
-  assert.equal(resolveProjectSlug('/projects/a%20b', ''), 'a b');
-  assert.equal(resolveProjectSlug('/project.html', '?slug=nimcircle'), 'nimcircle');
-  assert.equal(resolveProjectSlug('/projects', ''), '');
-  assert.equal(resolveProjectSlug('/projects/', ''), '');
-  assert.equal(resolveProjectSlug('/projects/a/b', ''), '');
-  assert.equal(resolveProjectSlug('/index', ''), '');
-  assert.equal(resolveProjectSlug('', ''), '');
+test('resolveProjectSlug reads the slug query parameter', () => {
+  assert.equal(resolveProjectSlug('?slug=af-bookstore'), 'af-bookstore');
+  assert.equal(resolveProjectSlug('?slug=nimcircle'), 'nimcircle');
+  assert.equal(resolveProjectSlug('?slug=a%20b'), 'a b');
+  assert.equal(resolveProjectSlug('?other=1'), '');
+  assert.equal(resolveProjectSlug(''), '');
+  assert.equal(resolveProjectSlug(undefined), '');
 });
 
 test('toRootRelative resolves relative fallback paths and keeps absolute URLs', () => {
@@ -167,13 +164,13 @@ test('API data renders A.F. Bookstore and NimCircle', async () => {
   const nim = await loadWithApi('nimcircle', () => jsonResponse({ projects: API_PROJECTS }));
   assert.ok(nim, 'NimCircle should resolve from the API');
   assert.ok(renderProjectContent(nim).includes('NimCircle'));
-  assert.equal(buildProjectMetadata(nim, SITE).canonical, `${SITE}/projects/nimcircle`);
+  assert.equal(buildProjectMetadata(nim, SITE).canonical, `${SITE}/project?slug=nimcircle`);
 });
 
 test('project metadata and structured data correspond to the selected project', async () => {
   const af = await loadWithApi('af-bookstore', () => jsonResponse({ projects: API_PROJECTS }));
   const meta = buildProjectMetadata(af, SITE);
-  const canonical = `${SITE}/projects/af-bookstore`;
+  const canonical = `${SITE}/project?slug=af-bookstore`;
 
   assert.equal(meta.title, 'A.F. Bookstore | IsaiahWebDev Portfolio');
   assert.equal(meta.description, 'An online bookstore with search and checkout.');

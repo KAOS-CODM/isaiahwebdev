@@ -30,6 +30,7 @@ const HTML_ROUTES = new Map([
   ['/index', 'index.html'],
   ['/about', 'about.html'],
   ['/projects', 'projects.html'],
+  ['/project', 'project.html'],
   ['/certificates', 'certificates.html'],
   ['/resume', 'resume.html'],
   ['/contact', 'contact.html'],
