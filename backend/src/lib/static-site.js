@@ -27,7 +27,6 @@ const PUBLIC_ROOT_FILES = new Set(['robots.txt', 'sitemap.xml']);
 /** Extensionless HTML routes used by the existing frontend navigation. */
 const HTML_ROUTES = new Map([
   ['/', 'index.html'],
-  ['/index', 'index.html'],
   ['/about', 'about.html'],
   ['/projects', 'projects.html'],
   ['/project', 'project.html'],

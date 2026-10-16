@@ -285,7 +285,7 @@ function buildProjectPage(project, { escapeHtml, siteUrl }) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/index` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
       { '@type': 'ListItem', position: 2, name: 'Projects', item: `${siteUrl}/projects` },
       { '@type': 'ListItem', position: 3, name: project.title, item: canonical },
     ],
@@ -339,9 +339,9 @@ ${safeJsonLd(breadcrumb)}
 <body>
     <main>
         <nav class="navbar">
-            <a href="/index" class="logo">ISAIAH<span>WEB</span>DEV</a>
+            <a href="/" class="logo">ISAIAH<span>WEB</span>DEV</a>
             <div class="nav-links">
-                <a href="/index" class="nav-link">Home</a>
+                <a href="/" class="nav-link">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/projects" class="nav-link active">Projects</a>
                 <a href="/certificates" class="nav-link">Certificates</a>
@@ -355,7 +355,7 @@ ${safeJsonLd(breadcrumb)}
             <div class="container">
                 <div class="content-wrapper text-left">
                     <p class="text-text-dim">
-                        <a href="/index">Home</a> / <a href="/projects">Projects</a> / ${title}
+                        <a href="/">Home</a> / <a href="/projects">Projects</a> / ${title}
                     </p>
                 </div>
                 <div class="section-header">
@@ -416,9 +416,9 @@ function buildProjectErrorPage({ title, message }) {
 <body>
     <main>
         <nav class="navbar">
-            <a href="/index" class="logo">ISAIAH<span>WEB</span>DEV</a>
+            <a href="/" class="logo">ISAIAH<span>WEB</span>DEV</a>
             <div class="nav-links">
-                <a href="/index" class="nav-link">Home</a>
+                <a href="/" class="nav-link">Home</a>
                 <a href="/projects" class="nav-link active">Projects</a>
             </div>
         </nav>
