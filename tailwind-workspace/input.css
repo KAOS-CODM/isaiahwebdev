@@ -6,18 +6,79 @@
 
 
 @theme {
-    --color-neon-red: #ff003c;
-    --color-neon-pink: #ff2a6d;
-    --color-light-bg: #1a1a1a;
-    --color-lighter-bg: #2a2a2a;
-    --color-card-bg: rgba(255, 255, 255, 0.08);
-    --color-text-light: #ffffff;
-    --color-text-dim: #cccccc;
-    --color-text-muted: #999999;
-    --color-dark: rgba(255, 255, 255, 0.1);
+    /* Milestone 1A — amber & gold palette (warm charcoal foundation) */
+    --color-neon-red: #f5b942;      /* primary accent */
+    --color-neon-pink: #fde68a;     /* secondary accent */
+    --color-light-bg: #17140f;      /* deep warm charcoal background */
+    --color-lighter-bg: #1f1a13;    /* raised warm surface */
+    --color-card-bg: rgba(253, 230, 138, 0.05);   /* warm translucent surface */
+    --color-text-light: #f6f0e2;    /* warm near-white text */
+    --color-text-dim: #c8bfae;      /* warm muted body text */
+    --color-text-muted: #9c927f;    /* warm muted meta text */
+    --color-dark: rgba(255, 251, 235, 0.1);
     --font-orbitron: "Orbitron", sans-serif;
     --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --font-exo: "Exo 2", sans-serif;
+    /* Milestone 1B — the Milestone 1A global --radius-* overrides were removed
+       so Tailwind's default radius scale again drives the .rounded-* utilities.
+       Component-specific radii are deferred to Milestone 2. */
+}
+
+:root {
+    /* Milestone 1A — supporting surface, border, status, elevation & mono tokens.
+       Plain custom properties: not Tailwind utilities, so always emitted and
+       available to the base layer below. */
+    --color-surface-high: #262019;
+    --color-border: rgba(245, 185, 66, 0.22);
+    --color-border-strong: rgba(245, 185, 66, 0.42);
+    --color-border-subtle: rgba(253, 230, 138, 0.12);
+    --color-accent-ink: #221703;
+    --color-danger: #fca5a5;
+    --color-danger-border: rgba(248, 113, 113, 0.55);
+    --color-danger-bg: rgba(248, 113, 113, 0.12);
+    --color-success: #a7f3d0;
+    --color-success-border: rgba(52, 211, 153, 0.5);
+    --color-success-bg: rgba(52, 211, 153, 0.12);
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --shadow-accent-sm: 0 0 25px rgba(245, 185, 66, 0.25);
+    --shadow-accent-md: 0 10px 25px rgba(245, 185, 66, 0.28);
+
+    /* Milestone 1B — reserved dark-ink/ivory pair for future warm-ivory
+       surfaces. Tokens only; no ivory section backgrounds are applied in
+       this milestone. Contrast: #17140f on #fffbeb ≈ 17.7:1. */
+    --color-ivory-bg: #fffbeb;
+    --color-ivory-ink: #17140f;
+
+    /* Milestone 2 — component tokens.
+       Plain custom properties (not @theme keys), so Tailwind's own scales stay
+       untouched. Radii are component-level values deliberately kept separate
+       from Tailwind's --radius-* scale, which Milestone 1B restored to its
+       defaults. One surface ramp (card → card-hover → inset → chip), one
+       hairline ramp, and two elevation steps are enough for every component
+       the public markup can produce. */
+    --radius-control: 10px;   /* buttons, fields, chips */
+    --radius-card: 14px;      /* cards, panels, toast */
+    --radius-pill: 999px;     /* labels */
+
+    --surface-card: rgba(43, 36, 26, 0.55);       /* raised warm panel */
+    --surface-card-hover: rgba(52, 44, 31, 0.62);
+    --surface-inset: rgba(18, 15, 11, 0.55);      /* recessed media / field */
+    --surface-chip: rgba(253, 230, 138, 0.07);    /* label / chip fill */
+
+    --border-hairline: rgba(246, 240, 226, 0.10);
+    --border-field: rgba(246, 240, 226, 0.20);    /* matches the value the
+                                                     contact script writes
+                                                     inline on reset */
+
+    --shadow-card: inset 0 1px 0 rgba(255, 251, 235, 0.05), 0 14px 30px -22px rgba(0, 0, 0, 0.95);
+    --shadow-card-hover: inset 0 1px 0 rgba(255, 251, 235, 0.08), 0 22px 44px -26px rgba(0, 0, 0, 1);
+    --shadow-control: inset 0 1px 0 rgba(255, 251, 235, 0.22), 0 10px 20px -14px rgba(245, 185, 66, 0.75);
+    --shadow-control-hover: inset 0 1px 0 rgba(255, 251, 235, 0.3), 0 14px 24px -14px rgba(245, 185, 66, 0.9);
+
+    --color-accent-deep: #d99f2e;   /* pressed state for amber-filled controls */
+    --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --dur-fast: 0.16s;
+    --dur: 0.26s;
 }
 
 
@@ -25,7 +86,7 @@
     animation: pulse 4s infinite alternate;
 }
 @utility text-neon {
-    text-shadow: 0 0 10px rgba(255, 0, 60, 0.7);
+    text-shadow: 0 0 12px rgba(245, 185, 66, 0.6);
 }
 
 @utility transition-smooth {
@@ -63,8 +124,11 @@
   body {
       background: var(--color-light-bg);
       color: var(--color-text-light);
-      font-family: "Exo 2", sans-serif;
+      font-family: var(--font-exo);
+      font-size: 1rem;
       line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       min-height: 100vh;
       position: relative;
@@ -76,67 +140,94 @@
       scroll-behavior: smooth;
   }
   
+  /* Milestone 3 — the bar is sized by one deterministic height instead of a
+     clamp() height fighting a clamp() vertical padding. The old pair left the
+     logo and links taller than the content box at several widths (at 768px the
+     wordmark wrapped to two lines and the six links to two rows inside the
+     70px bar), so the bar is now height-driven with horizontal padding only. */
   .navbar {
       position: fixed;
       top: 0;
       left: 0;
-      height: clamp(60px, 10vw, 70px);
+      height: clamp(64px, 5.4vw, 76px);
       width: 100%;
-      padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 40px);
+      padding: 0 clamp(16px, 4vw, 40px);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: clamp(16px, 2vw, 28px);
       z-index: 1000;
-      backdrop-filter: blur(10px);
-      background: rgba(26, 26, 26, 0.9);
-      border-bottom: 1px solid rgba(255, 0, 60, 0.2);
+      backdrop-filter: blur(12px);
+      background: rgba(23, 20, 15, 0.9);
+      border-bottom: 1px solid var(--color-border-subtle);
       overflow: hidden;
   }
   
+  /* Milestone 3 — wordmark. It is nowrap so it never breaks mid-bar, uses a
+     proportional tracking value, and is sized so it supports the navigation
+     instead of dominating it. The 10px amber text glow is gone: the brand mark
+     is carried by the amber "WEB" alone. */
   .logo {
-      font-family: "Orbitron", sans-serif;
-      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-family: var(--font-orbitron);
+      font-size: clamp(1.05rem, 1.9vw, 1.5rem);
       font-weight: 700;
+      line-height: 1.2;
       color: var(--color-text-light);
       text-decoration: none;
-      letter-spacing: 2px;
+      letter-spacing: clamp(0.5px, 0.1vw, 1.6px);
+      white-space: nowrap;
   }
   
   .logo span {
       color: var(--color-neon-red);
-      text-shadow: 0 0 10px rgba(255, 0, 60, 0.7);
   }
   
+  /* Milestone 3 — one spacing rhythm for the whole scale instead of the old
+     per-breakpoint gap jumps (28 → 25 → 20 → 8 → 6px). The row is kept on a
+     single line from 768px up (and verified to fit at 768px); below that the
+     bar switches to the stacked layout rather than wrapping mid-row. */
   .nav-links {
       display: flex;
-      gap: clamp(15px, 3vw, 35px);
-      flex-wrap: wrap;
+      gap: clamp(12px, 1.25vw, 20px);
+      flex-wrap: nowrap;
+      align-items: center;
   }
   
+  /* Milestone 2 — nav links are secondary UI: small, tracked, uppercase, and
+     quiet until they are hovered or current. The underline lives inside the
+     link box (padding) so it cannot be clipped by the navbar's overflow. */
   .nav-link {
       color: var(--color-text-dim);
       text-decoration: none;
-      font-weight: 500;
-      letter-spacing: 1px;
+      font-family: var(--font-exo);
+      font-size: clamp(0.72rem, 1.2vw, 0.9rem);
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       position: relative;
-      transition: var(--transition);
-      font-size: clamp(0.8rem, 2vw, 1rem);
+      padding: 4px 0;
+      white-space: nowrap;
+      transition: color var(--dur) var(--ease-smooth);
   }
   
   .nav-link::after {
       content: "";
       position: absolute;
-      bottom: -5px;
+      bottom: 0;
       left: 0;
       width: 0;
       height: 2px;
-      background: var(--color-neon-red);
-      transition: var(--transition);
+      background: linear-gradient(90deg, var(--color-neon-red), var(--color-neon-pink));
+      transition: width var(--dur) var(--ease-smooth);
   }
   
-  .nav-link:hover,
-  .nav-link.active {
+  .nav-link:hover {
       color: var(--color-text-light);
+  }
+  
+  .nav-link.active {
+      color: var(--color-neon-red);
   }
   
   .nav-link:hover::after,
@@ -160,50 +251,93 @@
       display: flex;
       align-items: center;
       min-height: 100vh;
+      /* Milestone 3 — on phones `100vh` is taller than the visible viewport
+         while browser bars are showing, which pushed the composition out of
+         the first screen. `svh` falls back to the line above where unsupported. */
+      min-height: 100svh;
       padding: clamp(80px, 12vw, 90px) 0 clamp(30px, 6vw, 50px);
       position: relative;
       box-sizing: border-box;
       background: var(--color-light-bg);
   }
 
+  /* Milestone 2 — status panels read as deliberate notices: a 3px semantic
+     accent bar, a control-radius frame, and body copy that inherits the
+     semantic colour instead of the base `p` colour. */
   #formMessage,
   #formError {
-      text-align: center;
+      text-align: left;
       margin-top: 20px;
-      padding: 15px;
-      border-radius: 5px;
+      padding: 14px 16px;
+      border-radius: var(--radius-control);
+      border-left-width: 3px;
       display: none;
+      font-size: 0.95rem;
+      line-height: 1.55;
+  }
+  
+  #formMessage p,
+  #formError p {
+      margin: 0;
+      color: inherit;
   }
   
   #formMessage {
-      background: rgba(0, 255, 0, 0.1);
-      border: 1px solid #00ff00;
-      color: #00ff00;
+      background: var(--color-success-bg);
+      border: 1px solid var(--color-success-border);
+      border-left-color: var(--color-success);
+      color: var(--color-success);
   }
   
   #formError {
-      background: rgba(255, 0, 60, 0.1);
-      border: 1px solid var(--neon-red);
-      color: var(--neon-red);
+      background: var(--color-danger-bg);
+      border: 1px solid var(--color-danger-border);
+      border-left-color: var(--color-danger);
+      color: var(--color-danger);
   }
   
   h1, h2 {
-      font-family: "Orbitron", sans-serif;
-      font-weight: 100;
-      line-height: 1.2;
+      font-family: var(--font-orbitron);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
       text-transform: uppercase;
+  }
+  
+  h3, h4, h5, h6 {
+      font-family: var(--font-orbitron);
+      font-weight: 600;
+      line-height: 1.25;
+  }
+  
+  h1 {
+      font-size: clamp(1.9rem, 5.5vw, 3rem);
+  }
+  
+  h2 {
+      font-size: clamp(1.5rem, 4.2vw, 2.35rem);
+  }
+  
+  h3 {
+      font-size: clamp(1.15rem, 2.4vw, 1.4rem);
   }
   
   p {
       margin-bottom: 1.5rem;
       color: var(--color-text-dim);
-      font-weight: 300;
+      font-weight: 400;
   }
   
+  /* Milestone 3 — hero composition.
+     The split is column-driven (`minmax(0, …)`) instead of content-driven: the
+     portrait used to hold a fixed width, so it owned its grid track and starved
+     the text (at 768px the introduction was squeezed into 266px and the
+     headline ran to eight lines). Below 1025px the hero stacks so the
+     introduction always keeps the full measure. */
   .hero-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: clamp(30px, 6vw, 60px);
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(40px, 5vw, 72px);
       align-items: center;
       width: 100%;
   }
@@ -211,152 +345,234 @@
   .hero-text {
       position: relative;
       z-index: 2;
+      min-width: 0;
+      max-width: 34rem;
   }
   
+  /* Milestone 3 — headline. Solid warm ivory replaces the white→amber
+     gradient-clipped text (gradient text loses contrast through its mid stops
+     and cannot be measured or forced-colours safe), with tighter display
+     tracking and a balanced wrap. */
   .hero-text h1 {
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      margin-bottom: clamp(15px, 3vw, 25px);
-      background: linear-gradient(90deg, #ffffff, var(--color-neon-red), var(--color-neon-pink));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      font-size: clamp(1.75rem, 3.2vw, 2.35rem);
       line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin-bottom: clamp(14px, 1.6vw, 20px);
+      color: var(--color-text-light);
+      background: none;
+      -webkit-background-clip: border-box;
+      background-clip: border-box;
+      text-wrap: balance;
   }
   
+  /* Milestone 3 — positioning line: soft gold, sentence case (the shared
+     uppercase display rule shouts when the line is a full sentence), announced
+     by one short amber marker so it reads as a deliberate sub-heading rather
+     than as a dimmed second paragraph. */
   .hero-text h2 {
-      font-size: clamp(0.5rem, 2vw, 1rem);
-      font-weight: 400;
-      margin-bottom: clamp(20px, 4vw, 35px);
-      color: var(--color-text-dim);
+      font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: 0.005em;
+      text-transform: none;
+      margin-bottom: clamp(20px, 2.6vw, 30px);
+      color: var(--color-neon-pink);
   }
   
+  .hero-text h2::before {
+      content: "";
+      display: block;
+      width: 40px;
+      height: 2px;
+      margin-bottom: clamp(10px, 1.4vw, 14px);
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--color-neon-red), var(--color-neon-pink));
+  }
+  
+  /* Milestone 3 — introduction: capped to a deliberate reading measure instead
+     of the 600px block that never bound inside the column. */
   .hero-text p {
-      font-size: clamp(0.5rem, 2vw, 1rem);
-      max-width: 600px;
-      margin-bottom: clamp(25px, 5vw, 40px);
+      font-size: clamp(0.975rem, 1.15vw, 1.0625rem);
+      line-height: 1.7;
+      max-width: 52ch;
+      margin-bottom: clamp(26px, 3vw, 34px);
   }
   
+  /* Milestone 3 — portrait.
+     The old treatment was a morphing blob (animated four-value border-radius),
+     a floating 3D wrapper, a 4–6px transparent border and a 45px/95px/140px
+     amber halo, plus a 440px `blur(60px)` pulsing circle. It is now a still,
+     deliberately framed panel: it follows its grid column, keeps one radius
+     from the shared component scale, and carries exactly two decorations — one
+     static warm key light and one offset hairline frame. */
   .profile-container {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      min-width: 0;
       perspective: 1000px;
   }
   
   .profile-wrapper {
       position: relative;
-      width: clamp(250px, 50vw, 400px);
-      height: clamp(250px, 50vw, 400px);
-      transform-style: preserve-3d;
-      animation: float 6s ease-in-out infinite;
+      width: min(100%, 26rem);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-card);
+  }
+  
+  /* The offset hairline frame sits behind the portrait and is inert: it never
+     intercepts pointer events and it never affects layout. */
+  .profile-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: 14px -14px -14px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      z-index: -1;
+      pointer-events: none;
   }
   
   .profile-img {
+      display: block;
       width: 100%;
       height: 100%;
-      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
       object-fit: cover;
-      border: clamp(4px, 1.5vw, 6px) solid transparent;
-      box-shadow: 0 0 50px var(--color-neon-red), 0 0 100px rgba(255, 0, 60, 0.5), 0 0 150px rgba(255, 0, 60, 0.3);
-      animation: glow 3s infinite alternate, morph 12s ease-in-out infinite;
+      object-position: 50% 50%;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+      background: var(--surface-inset);
       position: relative;
       z-index: 10;
-      background: linear-gradient(45deg, var(--color-light-bg), var(--color-lighter-bg));
   }
   
+  /* Static warm key light behind the portrait: a restrained radial wash with no
+     blur filter and no animation, replacing the 440px blurred, pulsing circle. */
   .glow-effect {
       position: absolute;
-      width: 110%;
-      height: 110%;
-      top: -5%;
-      left: -5%;
+      inset: -7%;
       border-radius: 50%;
-      background: var(--color-neon-red);
-      filter: blur(60px);
-      opacity: 0.2;
+      background: radial-gradient(circle at 50% 45%, rgba(245, 185, 66, 0.20), rgba(245, 185, 66, 0) 70%);
+      opacity: 1;
       z-index: 1;
-      animation: pulse 4s infinite alternate;
   }
   .btn-group {
       display: flex;
+      flex-wrap: wrap;
       gap: clamp(12px, 3vw, 20px);
       margin-top: 10px;
   }
   
+  /* Milestone 2 — button system. Three visibly different roles:
+       .btn          secondary — quiet outline, still obviously interactive
+       .btn-primary  primary   — solid amber, the strongest control on a page
+       .project-link tertiary  — editorial text action (defined further down)
+     The old 25px halo glow, the wipe-fill pseudo element and the bouncy
+     transition are gone; feedback is now a restrained lift plus a close,
+     warm shadow. Sizing uses clamp() so one rule covers 320px → 1440px. */
   .btn {
       display: inline-flex;
       align-items: center;
-      gap: clamp(8px, 2vw, 10px);
-      padding: clamp(12px, 3vw, 16px) clamp(20px, 4vw, 38px);
+      justify-content: center;
+      gap: 0.55rem;
+      padding: clamp(11px, 2vw, 14px) clamp(20px, 3vw, 28px);
       background: transparent;
       color: var(--color-neon-red);
-      border: 2px solid var(--color-neon-red);
-      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
       text-decoration: none;
+      font-family: var(--font-exo);
       font-weight: 600;
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      transition: var(--transition);
-      box-shadow: 0 0 25px rgba(255, 0, 60, 0.3);
+      font-size: clamp(0.92rem, 1.7vw, 1rem);
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      box-shadow: none;
+      transition: background-color var(--dur) var(--ease-smooth),
+                  border-color var(--dur) var(--ease-smooth),
+                  color var(--dur) var(--ease-smooth),
+                  box-shadow var(--dur) var(--ease-smooth),
+                  transform var(--dur-fast) var(--ease-smooth);
       position: relative;
-      overflow: hidden;
       z-index: 1;
   }
   
-  .btn::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0%;
-      height: 100%;
-      background: var(--color-neon-red);
-      transition: width 0.5s ease;
-      z-index: -1;
-  }
-  
   .btn:hover {
-      color: #000;
-      box-shadow: 0 0 40px var(--color-neon-red);
-      transform: translateY(-5px);
+      background: rgba(245, 185, 66, 0.12);
+      border-color: var(--color-border-strong);
+      color: var(--color-text-light);
+      box-shadow: none;
+      transform: translateY(-1px);
   }
   
-  .btn:hover::before {
-      width: 100%;
+  .btn:active {
+      background: rgba(245, 185, 66, 0.2);
+      transform: translateY(0);
   }
   
   .btn-primary {
       background: var(--color-neon-red);
-      color: #000;
+      border-color: var(--color-neon-red);
+      color: var(--color-accent-ink);
       font-weight: 700;
+      box-shadow: var(--shadow-control);
   }
   
   .btn-primary:hover {
-      background: transparent;
-      color: var(--color-neon-red);
+      background: var(--color-neon-pink);
+      border-color: var(--color-neon-pink);
+      color: var(--color-accent-ink);
+      box-shadow: var(--shadow-control-hover);
   }
   
-  .btn-primary::before {
-      background: #000;
+  .btn-primary:active {
+      background: var(--color-accent-deep);
+      border-color: var(--color-accent-deep);
+      color: var(--color-accent-ink);
   }
   
+  .btn[aria-disabled="true"],
+  .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+  }
+  
+  /* Milestone 2 — the footer is the page's conclusion, not an appended block:
+     a centred gold hairline, a measured tagline, squarer social chips and a
+     monospace copyright separated by its own divider. */
   footer {
       background: var(--color-lighter-bg);
-      padding: clamp(30px, 6vw, 50px) 0 clamp(20px, 4vw, 30px);
+      padding: clamp(44px, 7vw, 64px) 0 clamp(22px, 4vw, 30px);
       text-align: center;
-      border-top: 1px solid rgba(255, 0, 60, 0.2);
+      border-top: 1px solid var(--border-hairline);
       width: 100%;
+      position: relative;
+  }
+  
+  footer::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(245, 185, 66, 0.55), transparent);
+      pointer-events: none;
   }
   
   .footer-content {
-      max-width: 600px;
+      max-width: 620px;
       margin: 0 auto;
   }
   
   .footer-logo {
-      font-family: "Orbitron", sans-serif;
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
-      margin-bottom: clamp(15px, 3vw, 20px);
+      font-family: var(--font-orbitron);
+      font-size: clamp(1.5rem, 3.6vw, 1.95rem);
+      line-height: 1.2;
+      letter-spacing: 0.1em;
+      margin-bottom: clamp(12px, 2.4vw, 16px);
       color: var(--color-text-light);
   }
   
@@ -365,16 +581,19 @@
   }
   
   .footer-text {
-      font-size: clamp(1rem, 2vw, 1.1rem);
-      color: var(--color-text-dim);
-      margin-bottom: clamp(20px, 4vw, 30px);
+      font-size: clamp(0.95rem, 1.9vw, 1.05rem);
+      line-height: 1.65;
+      color: var(--color-text-muted);
+      max-width: 46ch;
+      margin: 0 auto clamp(24px, 4vw, 32px);
   }
   
   .social-links {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: clamp(15px, 3vw, 25px);
-      margin-bottom: clamp(25px, 5vw, 40px);
+      gap: clamp(12px, 2.4vw, 18px);
+      margin-bottom: clamp(26px, 5vw, 36px);
   }
   
   .social-link {
@@ -382,29 +601,35 @@
       align-items: center;
       text-decoration: none;
       justify-content: center;
-      width: clamp(45px, 8vw, 60px);
-      height: clamp(45px, 8vw, 60px);
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
+      width: clamp(44px, 7vw, 52px);
+      height: clamp(44px, 7vw, 52px);
+      border-radius: var(--radius-control);
+      background: var(--surface-chip);
       color: var(--color-text-dim);
-      font-size: clamp(1.1rem, 3vw, 1.5rem);
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+      border: 1px solid var(--border-hairline);
+      transition: background-color var(--dur) var(--ease-smooth),
+                  border-color var(--dur) var(--ease-smooth),
+                  color var(--dur) var(--ease-smooth),
+                  box-shadow var(--dur) var(--ease-smooth),
+                  transform var(--dur-fast) var(--ease-smooth);
   }
   
   .social-link:hover {
       background: var(--color-neon-red);
-      color: #000;
-      transform: translateY(-8px);
-      box-shadow: 0 10px 25px rgba(255, 0, 60, 0.4);
+      color: var(--color-accent-ink);
       border-color: var(--color-neon-red);
+      box-shadow: var(--shadow-control);
+      transform: translateY(-3px);
   }
   
   .copyright {
       color: var(--color-text-muted);
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
-      padding-top: clamp(20px, 4vw, 30px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--font-mono);
+      font-size: clamp(0.75rem, 1.7vw, 0.84rem);
+      letter-spacing: 0.04em;
+      padding-top: clamp(22px, 4vw, 28px);
+      border-top: 1px solid var(--border-hairline);
   }
   
   .section-header {
@@ -413,8 +638,8 @@
   }
   
   .section-header h2 {
-      font-family: "Orbitron", sans-serif;
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-family: var(--font-orbitron);
+      font-size: clamp(1.5rem, 4.2vw, 2.35rem);
       margin-bottom: 15px;
       background: linear-gradient(90deg, #ffffff, var(--color-neon-red));
       -webkit-background-clip: text;
@@ -424,7 +649,7 @@
   
   .section-header p {
       color: var(--color-text-dim);
-      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-size: clamp(1rem, 2vw, 1.15rem);
   }
   
   .section-padding {
@@ -445,7 +670,7 @@
   }
   
   .large-text {
-      font-size: 1.2rem;
+      font-size: clamp(1.05rem, 1.6vw, 1.2rem);
       line-height: 1.8;
       margin-bottom: 30px;
   }
@@ -463,46 +688,50 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 50px;
-      height: 50px;
+      width: 46px;
+      height: 46px;
       background: var(--color-neon-red);
-      color: #000;
+      color: var(--color-accent-ink);
       border: none;
-      border-radius: 50%;
+      border-radius: var(--radius-control);
       display: none;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 1000;
-      transition: var(--transition);
-      font-size: 1.2rem;
-      box-shadow: 0 4px 20px rgba(255, 0, 60, 0.4);
+      transition: background-color var(--dur) var(--ease-smooth),
+                  box-shadow var(--dur) var(--ease-smooth),
+                  transform var(--dur-fast) var(--ease-smooth);
+      font-size: 1.05rem;
+      box-shadow: var(--shadow-control);
   }
   
   .back-to-top:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 25px rgba(255, 0, 60, 0.6);
+      background: var(--color-neon-pink);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-control-hover);
   }
   
   .skip-link {
-      position: relative;
-      top: 70px;
+      position: absolute;
+      top: -100px;
       left: 6px;
       background: var(--color-neon-red);
-      color: #000;
-      padding: 12px 16px;
+      color: var(--color-accent-ink);
+      padding: 12px 18px;
       text-decoration: none;
-      font-weight: 600;
-      border-radius: 4px;
-      z-index: 999;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border-radius: var(--radius-control);
+      z-index: 1001;
       transition: top 0.3s ease;
       font-size: 0.9rem;
   }
   
+  /* Keyboard focus brings it back just below the fixed navbar; the shared
+     :focus-visible rule (below) supplies the outline so it stays consistent. */
   .skip-link:focus {
-      top: 80px;
-      outline: 2px solid #000;
-      outline-offset: 2px;
+      top: 76px;
   }
   
   .loading-spinner {
@@ -529,32 +758,54 @@
   
   input,
   textarea {
-      font-family: "Exo 2", sans-serif;
+      font-family: var(--font-exo);
   }
   
+  /* Milestone 2 — amber focus border kept `!important` because the contact
+     script writes an inline border colour when it resets a field; the loose
+     10px glow was dropped in favour of the shared :focus-visible outline. */
   input:focus,
   textarea:focus {
       outline: none;
       border-color: var(--color-neon-red) !important;
-      box-shadow: 0 0 10px rgba(255, 0, 60, 0.3);
+      box-shadow: none;
   }
   
   
+  /* Milestone 2 — tertiary action: an editorial text link rather than a third
+     button. Used by the featured project card and the certificate cards, so it
+     has to work both inline and inside a flex row (locked markup adds `flex`).
+     The old `!important` colour is gone: the base rule now owns every state. */
   .project-link {
       display: inline-flex;
       align-items: center;
-      gap: clamp(6px, 1.5vw, 8px);
-      padding: clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px);
-      background: rgba(255, 0, 60, 0.1);
-      border: 1px solid var(--color-neon-red);
-      border-radius: 5px;
+      gap: 0.5rem;
+      padding: 0.35rem 0.15rem;
+      background: none;
+      border: 0;
+      border-bottom: 1px solid rgba(245, 185, 66, 0.4);
+      border-radius: 0;
+      color: var(--color-neon-red);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       text-decoration: none;
-      transition: var(--transition);
+      transition: color var(--dur) var(--ease-smooth),
+                  border-color var(--dur) var(--ease-smooth);
+  }
+  
+  .project-link i {
+      transition: transform var(--dur) var(--ease-smooth);
   }
   
   .project-link:hover {
-      background: var(--color-neon-red);
-      color: #000 !important;
+      background: none;
+      color: var(--color-neon-pink);
+      border-bottom-color: var(--color-neon-pink);
+  }
+  
+  .project-link:hover i {
+      transform: translateX(3px);
   }
   
   ::-webkit-scrollbar {
@@ -562,7 +813,7 @@
   }
   
   ::-webkit-scrollbar-track {
-      background: #2a2a2a;
+      background: var(--color-surface-high);
   }
   
   ::-webkit-scrollbar-thumb {
@@ -592,12 +843,14 @@
       justify-content: space-between;
       margin-bottom: 8px;
       font-size: 0.95rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.01em;
   }
   
   
   .skill-bar {
       height: 8px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(253, 230, 138, 0.1);
       border-radius: 4px;
       overflow: hidden;
       position: relative;
@@ -630,14 +883,12 @@
   }
   a {
       overflow-wrap: anywhere;
-      word-break: break-word;
   }
   p,
   li,
   .content-wrapper,
   .container {
       overflow-wrap: anywhere;
-      word-break: break-word;
   }
 
   .social-icon {
@@ -659,43 +910,64 @@
     transform:scale(1);
 }
   
-  @media (max-width: 1024px) {
-      .nav-links {
-          gap: 25px;
+  /* Milestone 3 — hero stacking point. Below 800px the split-screen columns
+     leave the introduction under ~360px wide, so the hero becomes a single
+     column (text above portrait, DOM order preserved) and the portrait is sized
+     for that stack. From 801px the split is kept, since the text column there
+     is a comfortable 366px+. */
+  @media (max-width: 800px) {
+      .hero-content {
+          grid-template-columns: minmax(0, 1fr);
+          gap: clamp(36px, 6vw, 56px);
+      }
+      .hero-text {
+          max-width: 42rem;
+      }
+      .profile-wrapper {
+          width: min(66vw, 20rem);
       }
   }
-  
-  @media (max-width: 768px) {
+
+  /* Milestone 3 — below 768px six links plus the wordmark no longer fit on one
+     line, so the bar stacks: wordmark on top, centred links beneath. `height:
+     auto` here is also what removes the old risk of a wrapped second row being
+     silently clipped by the bar's `overflow: hidden`. */
+  @media (max-width: 767px) {
       .navbar {
-          padding: 15px 20px;
+          flex-direction: column;
+          height: auto;
+          padding: 12px 14px;
+          gap: 10px;
       }
       .nav-links {
-          gap: 20px;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 6px;
       }
+      .nav-link {
+          font-size: 0.7rem;
+          padding: 3px 6px;
+      }
+      .logo {
+          font-size: 1.15rem;
+          text-align: center;
+      }
+  }
+
+  @media (max-width: 768px) {
       .btn-group {
           justify-content: center;
       }
   }
   
   @media (max-width: 576px) {
-      .navbar {
-          flex-direction: column;
-          height: auto;
-          padding: 15px;
-          gap: 15px;
-      }
-      .nav-links {
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 12px;
-      }
-      .nav-link {
-          font-size: 0.9rem;
-          padding: 5px 10px;
-      }
-      .logo {
-          font-size: 1.5rem;
-          text-align: center;
+      /* Milestone 3 — the mobile nav rhythm (stacked bar, wrapping links, link
+         type scale) is owned by the 767px block above; this breakpoint keeps the
+         rest of the small-screen tuning. */
+      /* Follows the shorter mobile navbar so the focused skip link still
+         appears clear of the bar instead of underneath it. */
+      .skip-link:focus {
+          top: 120px;
       }
       .btn {
           width: 100%;
@@ -707,18 +979,18 @@
           margin-bottom: 40px;
       }
       footer {
-          padding: 40px 0 20px;
+          padding: 36px 0 20px;
       }
       .footer-logo {
-          font-size: 2rem;
+          font-size: 1.6rem;
       }
       .social-links {
-          gap: 15px;
+          gap: 12px;
       }
       .social-link {
-          width: 50px;
-          height: 50px;
-          font-size: 1.2rem;
+          width: 46px;
+          height: 46px;
+          font-size: 1.15rem;
       }
       .skills-container {
             grid-template-columns: 1fr;
@@ -735,25 +1007,18 @@
   }
   
   @media (max-width: 480px) {
+      /* Milestone 3 — smallest screens only need a tighter bar; the link type
+         scale, link rhythm and wordmark size are inherited from the 767px block. */
       .navbar {
-          padding: 12px;
-          gap: 12px;
-      }
-      .nav-links {
+          padding: 10px 12px;
           gap: 8px;
       }
-      .nav-link {
-          font-size: 0.85rem;
-          padding: 4px 8px;
-      }
-      .logo {
-          font-size: 1.3rem;
-      }
 
-      /* Hero sections: single column on small screens */
+      /* Hero sections: single column (already stacked from 800px down; the
+         minmax() form keeps the track from being content-sized here). */
       .hero-content {
-          grid-template-columns: 1fr;
-          gap: clamp(80px, 5vw, 70px);
+          grid-template-columns: minmax(0, 1fr);
+          gap: clamp(40px, 8vw, 70px);
       }
 
       /* Remove invalid padding value */
@@ -766,31 +1031,36 @@
           padding-top: clamp(90px, 20vw, 110px);
       }
 
-      .profile-wrapper {
-          width: 180px;
-          height: 180px;
-      }
       .section-header h2 {
           font-size: 1.6rem;
       }
       .footer-logo {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
       }
       .social-link {
-          width: 45px;
-          height: 45px;
-          font-size: 1.1rem;
+          width: 42px;
+          height: 42px;
+          font-size: 1.05rem;
       }
       .lightbox .close {
           font-size: 25px;
           right: 15px;
       }
       .nav-btns span {
-          font-size: auto;
+          font-size: 1rem;
       }
+  }
 
-      .skip-link{
-        display: hidden;
+  /* Milestone 3 — below 440px the six links no longer fit on one line, and the
+     flex row then wraps 5 + 1, leaving the last link orphaned on its own row.
+     A three-column grid gives a balanced 3 + 3 block instead (columns size to
+     their content, so nothing overflows at 320px). */
+  @media (max-width: 440px) {
+      .nav-links {
+          display: grid;
+          grid-template-columns: repeat(3, auto);
+          justify-content: center;
+          justify-items: center;
       }
   }
 
@@ -812,11 +1082,11 @@
   
   @keyframes glow {
       0% {
-          box-shadow: 0 0 40px var(--color-neon-red), 0 0 80px rgba(255, 0, 60, 0.5), 0 0 120px rgba(255, 0, 60, 0.3);
+          box-shadow: 0 0 40px rgba(245, 185, 66, 0.6), 0 0 80px rgba(245, 185, 66, 0.32), 0 0 120px rgba(245, 185, 66, 0.18);
           border-color: var(--color-neon-red);
       }
       100% {
-          box-shadow: 0 0 60px var(--neon-red), 0 0 120px rgba(255, 0, 60, 0.7), 0 0 120px rgba(255, 0, 60, 0.5);
+          box-shadow: 0 0 60px rgba(245, 185, 66, 0.75), 0 0 120px rgba(245, 185, 66, 0.42), 0 0 160px rgba(245, 185, 66, 0.25);
           border-color: var(--color-neon-pink);
       }
   }
@@ -856,4 +1126,1029 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 1A/1B — palette normalization for locked markup.
+   Locked HTML/JS build some borders/shadows/backgrounds as arbitrary-value
+   utilities using rgba(255,0,60,...). These overrides remap those specific
+   colour values to the amber palette. Colour-only, no layout changes,
+   reversible.
+
+   They live outside every @layer on purpose: unlayered author CSS outranks
+   Tailwind's utility layer, which is the only way to restyle utility colours
+   without editing locked markup.
+
+   Selectors use exact class-token matching ([class~=...]) instead of
+   substring matching ([class*=...]) so each rule matches the literal utility
+   token the DOM stores and nothing else. Variants are matched by their full
+   token, e.g. "hover:border-neon-red".
+--------------------------------------------------------------------------- */
+[class~="border-[rgba(255,0,60,0.15)]"] {
+    border-color: var(--color-border-subtle);
+}
+[class~="border-[rgba(255,0,60,0.35)]"] {
+    border-color: var(--color-border-strong);
+}
+
+/* Restore the amber hover border on cards/links that carry both one of the
+   base borders above and Tailwind's `hover:border-neon-red` utility. Without
+   this, the unlayered base rule wins over the layered hover utility and the
+   intended amber hover state would be suppressed. */
+[class~="hover:border-neon-red"]:hover {
+    border-color: var(--color-neon-red);
+}
+
+[class~="hover:shadow-[0_15px_30px_rgba(255,0,60,0.2)]"]:hover {
+    box-shadow: var(--shadow-accent-md);
+}
+[class~="hover:bg-[rgba(255,0,60,0.2)]"]:hover {
+    background-color: rgba(245, 185, 66, 0.22);
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 2 — shared component system (cards, labels, fields, feedback).
+
+   Why this is unlayered:
+   the card, label, field and submit markup is built from Tailwind utilities in
+   locked HTML/JS, and several utilities those elements depend on are never
+   compiled at all (@source "../*.js" does not reach js/, so
+   `p-[clamp(...)]`, `overflow-hidden`, `rounded-full`, `transition-all`,
+   `backdrop-blur-[10px]`, `hover:scale-105`, `aspect-video`, `max-h-62.5` and
+   friends simply do not exist in this stylesheet). Layered rules lose to
+   utilities, so the component treatment is defined here, where it outranks
+   every layer. Selectors stay targeted: component classes, element ids, and
+   exact class-token matches ([class~=...]) — never substring matches.
+--------------------------------------------------------------------------- */
+
+/* --- Cards and elevated surfaces ------------------------------------------
+   One warm panel treatment for every card the public markup produces: project
+   listing cards (projects-page.js), the homepage featured card
+   (#projects-container > article), certificate cards, the certificates panel
+   and the skills grid. Content reads left-aligned for an editorial feel, the
+   media sits in its own recessed frame, and hover plus :focus-within share one
+   elevation so keyboard users get the same affordance as pointer users. */
+.project-card,
+#projects-container > article,
+#certificates-container > div,
+#skills-cards-container > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    padding: clamp(16px, 2.4vw, 22px);
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth),
+                box-shadow var(--dur) var(--ease-smooth),
+                translate var(--dur) var(--ease-smooth);
+}
+
+.project-card,
+#projects-container > article,
+#certificates-container > div {
+    text-align: left;
+    gap: clamp(12px, 2vw, 16px);
+}
+
+#skills-cards-container > div {
+    align-items: center;
+    text-align: center;
+    gap: clamp(8px, 1.6vw, 12px);
+}
+
+/* Children are spaced by the card's gap. Per-element margins in the locked
+   markup (mb-1, mb-2.5, mb-[clamp(...)], plus the base `p` margin) are either
+   uncompiled or would double up with it, so they are neutralised inside
+   cards only. */
+.project-card > *,
+.project-card > a > *,
+.project-card > a > div:last-child > *,
+#projects-container > article > *,
+#certificates-container > div > *,
+#skills-cards-container > div > * {
+    margin: 0;
+}
+
+.project-card:hover,
+#projects-container > article:hover,
+#certificates-container > div:hover,
+#skills-cards-container > div:hover {
+    background: var(--surface-card-hover);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-card-hover);
+    /* The lift is applied through `translate` — the same property the locked
+       `hover:-translate-y-1` / `hover:-translate-y-2.5` utilities use — so this
+       value simply wins and the lift happens once, at one distance. (A
+       `translate: none` here would be folded away by the minifier into the
+       neighbouring `transform`, letting the utility's own -4px through too.) */
+    translate: 0 -3px;
+}
+
+.project-card:focus-within,
+#projects-container > article:focus-within,
+#certificates-container > div:focus-within,
+#skills-cards-container > div:focus-within {
+    background: var(--surface-card-hover);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -3px;
+}
+
+/* --- Media inside cards ---------------------------------------------------
+   Project imagery is a portrait screenshot (334x450 for the only published
+   project). It used to render at full container width — 1159x1561 at 1440 —
+   with square corners bleeding out of the rounded card and `object-fit: fill`.
+   It is now capped, centred, never upscaled past 26rem and never distorted,
+   framed by the rounded inset surface. Project imagery uses `cover` for a
+   consistent banner shape; certificates use `contain` so the whole document
+   stays readable. */
+.project-card img,
+.project-card .thumb,
+#projects-container > article img,
+#projects-container > article .thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 26rem;
+    max-height: clamp(200px, 34vw, 340px);
+    margin-inline: auto;
+    object-fit: cover;
+    object-position: 50% 0%;
+    border-radius: 8px;
+    background-color: var(--surface-inset);
+    transition: transform 0.5s var(--ease-smooth);
+}
+
+#certificates-container img,
+#certificates-container .thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 26rem;
+    max-height: clamp(200px, 34vw, 320px);
+    margin-inline: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: var(--surface-inset);
+    transition: transform 0.5s var(--ease-smooth);
+}
+
+.project-card:hover img,
+#projects-container > article:hover img,
+#certificates-container img:hover {
+    transform: scale(1.03);
+}
+
+/* --- Project card internals ----------------------------------------------- */
+.project-card > a.block {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2vw, 16px);
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.project-card > a.block > div:last-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: clamp(8px, 1.4vw, 10px);
+}
+
+/* The closing "View Details" line is pinned to the bottom of the card so cards
+   in a row end on the same visual baseline. */
+.project-card > a.block > div:last-child > span:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.35rem;
+    color: var(--color-neon-red);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color var(--dur) var(--ease-smooth);
+}
+
+.project-card > a.block > div:last-child > span:last-child i {
+    transition: transform var(--dur) var(--ease-smooth);
+}
+
+.project-card:hover > a.block > div:last-child > span:last-child {
+    color: var(--color-neon-pink);
+}
+
+.project-card:hover > a.block > div:last-child > span:last-child i {
+    transform: translateX(3px);
+}
+
+.project-card h3 {
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.project-card p {
+    color: var(--color-text-dim);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 68ch;
+}
+
+/* --- Featured project card (homepage) ------------------------------------- */
+#projects-container > article h3 {
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+#projects-container > article h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease-smooth);
+}
+
+#projects-container > article h3 a:hover {
+    color: var(--color-neon-red);
+}
+
+#projects-container > article p {
+    color: var(--color-text-dim);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-width: 68ch;
+}
+
+#projects-container > article > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: clamp(12px, 2vw, 18px);
+    margin-top: 0.25rem;
+}
+
+/* --- Certificate cards ---------------------------------------------------- */
+#certificates-container h3 {
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+#certificates-container p {
+    color: var(--color-text-dim);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* Locked class with no stylesheet rule at all: the action row under each
+   certificate card. */
+.project-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* --- Skills cards --------------------------------------------------------- */
+/* These never had padding: the locked utility is malformed
+   (`p-[clamp(25px,5vw,40px)` is missing its closing bracket) so Tailwind drops
+   it, and the icon utility is dropped with it. */
+#skills-cards-container > div > i {
+    color: var(--color-neon-red);
+    font-size: clamp(1.7rem, 4vw, 2.2rem);
+    line-height: 1;
+}
+
+#skills-cards-container > div h3 {
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1rem, 1.9vw, 1.15rem);
+}
+
+#skills-cards-container > div p {
+    color: var(--color-text-dim);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* --- Informational labels -------------------------------------------------
+   Category labels are the only badges the public markup produces; they carry
+   the locked `border-[rgba(255,0,60,0.35)]` token. They are now monospace,
+   uppercase, tracked pills in pale gold — deliberately distinct from the amber
+   used for actions. Meaningful status pills exist only on the server-rendered
+   project page, where they are written as inline styles and cannot be restyled
+   from CSS (documented limitation). */
+[class~="border-[rgba(255,0,60,0.35)]"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.7rem;
+    background: var(--surface-chip);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-neon-pink);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1.7;
+    text-transform: uppercase;
+}
+
+/* Metadata captions ("Technologies:", "Issuer:", "Date:") read as small
+   technical labels instead of bold body text. */
+.project-card strong,
+#projects-container > article strong,
+#certificates-container strong {
+    display: inline-block;
+    margin-right: 0.4rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* --- Forms ---------------------------------------------------------------- */
+#contactForm label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* The label reacts to the field it belongs to. */
+#contactForm div:focus-within > label {
+    color: var(--color-neon-red);
+}
+
+/* The locked markup sets 24px text on every field and leaves the textarea with
+   no background, padding or radius at all (it rendered 190px wide). */
+#contactForm input,
+#contactForm textarea {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    background-color: var(--surface-inset);
+    border: 1px solid var(--border-field);
+    border-radius: var(--radius-control);
+    color: var(--color-text-light);
+    font-family: var(--font-exo);
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: border-color var(--dur) var(--ease-smooth),
+                background-color var(--dur) var(--ease-smooth);
+}
+
+#contactForm textarea {
+    display: block;
+    min-height: 8.5rem;
+    margin: 0;
+    resize: vertical;
+}
+
+#contactForm input:hover,
+#contactForm textarea:hover {
+    border-color: var(--color-border);
+}
+
+#contactForm ::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
+/* Field-level errors, which the locked markup scales to 24px. `.hidden`
+   (base layer, !important) still governs visibility. */
+.error-message {
+    margin-top: 0.4rem;
+    color: var(--color-danger);
+    font-size: 0.86rem;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+}
+
+/* Submit control: the markup's 24px text, 16px radius and amber glow are
+   replaced by the shared primary-button treatment, with a real disabled state
+   (the contact script sets `disabled` while the request is in flight). */
+#submitBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: clamp(12px, 2vw, 15px) clamp(20px, 3vw, 28px);
+    background: var(--color-neon-red);
+    border: 1px solid var(--color-neon-red);
+    border-radius: var(--radius-control);
+    color: var(--color-accent-ink);
+    font-family: var(--font-exo);
+    font-size: clamp(0.95rem, 1.7vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    box-shadow: var(--shadow-control);
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth),
+                box-shadow var(--dur) var(--ease-smooth),
+                transform var(--dur-fast) var(--ease-smooth);
+}
+
+#submitBtn:hover {
+    background: var(--color-neon-pink);
+    border-color: var(--color-neon-pink);
+    color: var(--color-accent-ink);
+    box-shadow: var(--shadow-control-hover);
+}
+
+#submitBtn:active {
+    background: var(--color-accent-deep);
+    border-color: var(--color-accent-deep);
+    transform: translateY(1px);
+}
+
+#submitBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* --- Copy controls and clipboard feedback --------------------------------- */
+/* Appearance only: the locked `ml-4 / md:ml-0 / md:mt-2.5 / md:self-end`
+   utilities keep owning the responsive layout of the contact rows. */
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.7rem;
+    background: var(--surface-chip);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-control);
+    color: var(--color-text-light);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth),
+                color var(--dur) var(--ease-smooth);
+}
+
+/* `button.` raises this above the Milestone 1A hover-colour remap, which is
+   also unlayered and more specific than a bare class:hover. */
+button.copy-btn:hover {
+    background: rgba(245, 185, 66, 0.16);
+    border-color: var(--color-border);
+    color: var(--color-neon-red);
+}
+
+button.copy-btn.copied {
+    background: var(--color-success-bg);
+    border-color: var(--color-success-border);
+    color: var(--color-success);
+}
+
+/* The clipboard toast is revealed by the script's `.show` class, but no rule
+   for `.show` ever existed, so the toast stayed at `opacity-0` permanently. It
+   is now a real toast, and `pointer-events: none` stops it intercepting clicks
+   aimed at the back-to-top control underneath it. */
+#copyFeedback {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1rem;
+    background: var(--color-surface-high);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    color: var(--color-text-light);
+    font-family: var(--font-exo);
+    font-size: 0.85rem;
+    box-shadow: 0 18px 36px -22px rgba(0, 0, 0, 1);
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease-smooth),
+                translate var(--dur) var(--ease-smooth);
+}
+
+#copyFeedback.show {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* --- Contact info rows ----------------------------------------------------
+   The locked markup washes these rows with a neutral white tint; they are
+   re-tinted onto the warm surface ramp so they match every other panel. */
+[class~="bg-[rgba(255,255,255,0.03)]"] {
+    background-color: var(--surface-chip);
+    border-color: var(--border-hairline);
+    border-radius: var(--radius-control);
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth);
+}
+
+[class~="bg-[rgba(255,255,255,0.03)]"]:hover {
+    background-color: rgba(245, 185, 66, 0.08);
+    border-color: var(--color-border);
+}
+
+/* --- Empty and failure states --------------------------------------------- */
+.no-projects {
+    grid-column: 1 / -1;
+    padding: 1.75rem 1rem;
+    border: 1px dashed var(--border-hairline);
+    border-radius: var(--radius-card);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#projects-container .error,
+#projects-container-full .error,
+#certificates-container .error,
+#skills-cards-container .error {
+    color: var(--color-danger);
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 3 — hero particles (the one inline-style override in this file).
+
+   `js/script.js` creates 30 decorative particles inside `.profile-wrapper` and
+   writes their colour inline as `hsl(random, 100%, 70%)` — i.e. saturated
+   random hues (blues/greens/reds) in the middle of an amber composition. Inline
+   declarations outrank every stylesheet rule, so `!important` on this single
+   property is the only way to reach it; the rule stays narrow (one class, one
+   colour property) and leaves the script's size, position, opacity and motion
+   untouched. The particles are painted behind the portrait (z-index 5 against
+   the image's 10); only the handful that sit outside the frame are visible, and
+   they are now amber.
+--------------------------------------------------------------------------- */
+.particle {
+    background-color: var(--color-neon-red) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 1B — keyboard focus visibility.
+   Unlayered so it also wins over the locked `focus:outline-none` utilities on
+   the text fields (and the base-layer `input:focus { outline: none }`),
+   guaranteeing a visible indicator even where markup tries to remove it.
+   Outlines and outline-offset never affect layout, so focus causes no shift.
+--------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.btn:focus-visible,
+.nav-link:focus-visible,
+.social-link:focus-visible,
+.project-link:focus-visible,
+.copy-btn:focus-visible,
+.skip-link:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--color-neon-red);
+    outline-offset: 3px;
+}
+
+/* --- Focus on filled controls ---------------------------------------------
+   Amber-filled controls keep the shared 3px ring but paint it in warm
+   near-white, so the indicator is distinguishable from the control it sits on
+   rather than relying on the 3px offset gap alone. This block is declared
+   after the generic focus rules on purpose: the selectors tie with them on
+   specificity, so source order is what decides the outline colour. */
+.btn-primary:focus-visible,
+#submitBtn:focus-visible,
+.skip-link:focus-visible,
+.back-to-top:focus-visible,
+button.copy-btn:focus-visible {
+    outline-color: var(--color-text-light);
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone — project detail page (static shell).
+   The detail page markup is produced by js/project-detail-page.js, which the
+   Tailwind content scan does not reach (@source does not cover js/), so these
+   component styles are authored here rather than generated as utilities.
+   Unlayered, like the Milestone 2 system, so they are always emitted and
+   outrank utilities. Colour comes only from the existing amber/gold tokens.
+
+   Layout intent: one centred ~1040px column so the project imagery reads large,
+   an editorial left-aligned hero, uncropped screenshots in a recessed frame,
+   and narrative sections separated by a quiet hairline rhythm.
+--------------------------------------------------------------------------- */
+
+/* --- Hero ----------------------------------------------------------------- */
+.project-hero {
+    padding: clamp(104px, 13vw, 148px) 0 clamp(8px, 2vw, 18px);
+    background:
+        radial-gradient(120% 90% at 50% -10%, rgba(245, 185, 66, 0.10), rgba(245, 185, 66, 0) 62%);
+}
+
+.project-detail {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.project-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: clamp(18px, 3vw, 28px);
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 1.6vw, 0.82rem);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    color: var(--color-text-muted);
+}
+
+.project-breadcrumb a {
+    color: var(--color-text-dim);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease-smooth);
+}
+
+.project-breadcrumb a:hover {
+    color: var(--color-neon-red);
+}
+
+.project-breadcrumb__sep {
+    color: var(--color-border-strong);
+}
+
+.project-breadcrumb [aria-current="page"] {
+    color: var(--color-text-light);
+}
+
+#project-title {
+    margin-bottom: clamp(14px, 2.4vw, 20px);
+    text-wrap: balance;
+}
+
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 clamp(16px, 2.6vw, 22px);
+}
+
+.project-meta-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 13px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.project-meta-badge--category {
+    color: var(--color-neon-red);
+    background: var(--surface-chip);
+    border: 1px solid var(--color-border-strong);
+}
+
+.project-meta-badge--status {
+    color: var(--color-text-dim);
+    background: transparent;
+    border: 1px solid var(--border-field);
+}
+
+.project-lede {
+    max-width: 62ch;
+    margin-bottom: 0;
+    color: var(--color-text-dim);
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    line-height: 1.7;
+}
+
+/* --- Body rhythm ---------------------------------------------------------- */
+.project-detail-body {
+    padding-top: clamp(30px, 5vw, 48px);
+    padding-bottom: clamp(56px, 9vw, 96px);
+}
+
+/* --- Gallery --------------------------------------------------------------
+   Screenshots keep their source aspect ratio: the main image is contained
+   (never cropped) inside an inset frame, and the thumbnail strip is a fixed
+   height with auto width, so every shot stays undistorted. */
+.project-gallery {
+    margin: 0;
+    padding: clamp(10px, 2vw, 18px);
+    background: var(--surface-inset);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.project-gallery__main {
+    display: block;
+    width: 100%;
+    max-height: 68vh;
+    object-fit: contain;
+    border-radius: calc(var(--radius-card) - 4px);
+}
+
+.project-gallery-thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.project-gallery-thumb {
+    flex: 0 0 auto;
+    height: clamp(60px, 12vw, 88px);
+    margin: 0;
+    padding: 0;
+    background: var(--surface-inset);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-control);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color var(--dur) var(--ease-smooth),
+                box-shadow var(--dur) var(--ease-smooth),
+                transform var(--dur-fast) var(--ease-smooth);
+}
+
+.project-gallery-thumb img {
+    display: block;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.project-gallery-thumb:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-1px);
+}
+
+.project-gallery-thumb[aria-current="true"] {
+    border-color: var(--color-neon-red);
+    box-shadow: var(--shadow-control);
+}
+
+/* --- Technologies --------------------------------------------------------- */
+.project-technologies {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.85rem;
+    margin: clamp(22px, 4vw, 30px) 0 0;
+    padding-top: clamp(20px, 3vw, 26px);
+    border-top: 1px solid var(--border-hairline);
+}
+
+.project-technologies__label {
+    font-family: var(--font-orbitron);
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.project-technologies__value {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    letter-spacing: 0.02em;
+    color: var(--color-text-light);
+}
+
+/* --- Case study ----------------------------------------------------------- */
+.project-case-study {
+    max-width: 74ch;
+    margin-top: clamp(34px, 6vw, 54px);
+}
+
+.project-case-study__lead {
+    margin-bottom: clamp(28px, 4vw, 40px);
+    color: var(--color-text-light);
+    font-size: clamp(1.05rem, 1.9vw, 1.2rem);
+    line-height: 1.8;
+}
+
+.project-section {
+    margin-top: clamp(30px, 5vw, 44px);
+}
+
+.project-section__title {
+    margin-bottom: clamp(12px, 2vw, 16px);
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    letter-spacing: 0.02em;
+    color: var(--color-text-light);
+}
+
+.project-section__title::before {
+    content: "";
+    display: block;
+    width: 34px;
+    height: 2px;
+    margin-bottom: 12px;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-neon-red), var(--color-neon-pink));
+}
+
+.project-section__body {
+    margin-bottom: 0;
+    color: var(--color-text-dim);
+    line-height: 1.8;
+}
+
+.project-section__list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.project-section__list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-text-dim);
+    line-height: 1.7;
+}
+
+.project-section__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-neon-red);
+    box-shadow: 0 0 0 3px rgba(245, 185, 66, 0.16);
+}
+
+/* --- Actions -------------------------------------------------------------- */
+.project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(12px, 3vw, 18px);
+    margin-top: clamp(34px, 6vw, 52px);
+    padding-top: clamp(22px, 4vw, 30px);
+    border-top: 1px solid var(--border-hairline);
+}
+
+/* --- Not-found / failure state -------------------------------------------- */
+.project-state {
+    max-width: 46rem;
+    padding: clamp(28px, 5vw, 44px);
+    background: var(--surface-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+}
+
+.project-state h1 {
+    margin-bottom: 14px;
+}
+
+.project-state p {
+    margin-bottom: 0;
+}
+
+/* --- Detail-page responsive tuning ---------------------------------------- */
+@media (max-width: 768px) {
+    .project-gallery__main {
+        max-height: 56vh;
+    }
+    .project-case-study {
+        max-width: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .project-gallery {
+        padding: 10px;
+    }
+    .project-gallery__main {
+        max-height: 48vh;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 1B — reduced motion.
+   Decorative keyframe animations (float, glow, morph, shimmer, pulse) are
+   removed, decorative JS-generated particles/glow are hidden, and smooth
+   scrolling and nonessential transitions are curtailed. The loading spinner
+   is intentionally left running because it communicates a real state.
+   Unlayered rules outrank every @layer, so no !important is required.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .profile-wrapper,
+    .profile-img,
+    .glow-effect,
+    .skill-progress::after {
+        animation: none;
+    }
+
+    .glow-effect,
+    .particle {
+        display: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms;
+        transition-delay: 0ms;
+    }
+
+    /* Milestone 2 — the component system adds transforms (card lift, image
+       zoom, arrow nudge, control lift). Shortening transitions alone would
+       still let them jump, so the movement is removed outright. */
+    .project-card,
+    .project-card img,
+    #projects-container > article,
+    #projects-container > article img,
+    #certificates-container > div,
+    #certificates-container img,
+    #skills-cards-container > div,
+    .project-gallery-thumb,
+    .btn,
+    .social-link,
+    .project-link,
+    .project-link i,
+    .back-to-top {
+        transition: none;
+    }
+
+    /* Card lift travels through `translate`, control lift through `transform`. */
+    .project-card:hover,
+    #projects-container > article:hover,
+    #certificates-container > div:hover,
+    #skills-cards-container > div:hover {
+        translate: 0 0;
+    }
+
+    .btn:hover,
+    .btn:active,
+    .btn-primary:active,
+    .social-link:hover,
+    .project-gallery-thumb:hover,
+    .back-to-top:hover,
+    #submitBtn:active {
+        transform: none;
+    }
+
+    .project-card:hover img,
+    #projects-container > article:hover img,
+    #certificates-container img:hover,
+    .project-card:hover > a.block > div:last-child > span:last-child i,
+    .project-link:hover i {
+        transform: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Milestone 1B — forced-colors (high-contrast) fallback.
+   The hero and section headings paint their text with a clipped gradient and
+   `color: transparent`, which leaves the text invisible under an OS-enforced
+   high-contrast scheme. Fall back to a system text colour and drop the
+   gradient, while preserving the normal treatment everywhere else.
+--------------------------------------------------------------------------- */
+@media (forced-colors: active) {
+    .hero-text h1,
+    .section-header h2 {
+        background: none;
+        -webkit-background-clip: border-box;
+        background-clip: border-box;
+        color: CanvasText;
+    }
+
+    /* Milestone 2 — the footer's decorative gold hairline carries no meaning
+       and would otherwise render as an arbitrary forced-colour bar. */
+    footer::before {
+        display: none;
+    }
 }

@@ -60,3 +60,6 @@ css/
 # Local development dependencies and tools
 node_modules/
 serve_local.py
+
+# Local Playwright MCP browser tooling and artifacts
+.playwright-mcp/
