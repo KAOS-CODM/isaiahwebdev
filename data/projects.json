@@ -5,6 +5,7 @@
         "technologies": ["HTML", "CSS", "JavaScript", "NODEJS"],
         "site": "https://praroz.onrender.com",
         "github": "https://github.com/KAOS-CODM/PRAROZ.git",
+        "featured": true,
         "images": [
             {
                 "src": "images/recipe/praroz-homepage.jpeg",
@@ -34,6 +35,7 @@
         "technologies": ["HTML", "CSS", "JavaScript", "NODEJS"],
         "site": "https://kaossub.onrender.com",
         "github": "https://github.com/KAOS-CODM/kaossub.git",
+        "featured": false,
         "images": [
             {
                 "src": "images/kaossub/kaossub-history.jpeg",
@@ -64,6 +66,7 @@
         ],
         "site": "https://kaostech.onrender.com",
         "github": "https://github.com/KAOS-CODM/kaostech.git",
+        "featured": false,
         "images": [
             {
             "src": "images/kaostech/homepage.png",
@@ -82,5 +85,91 @@
             "alt": "Kaostech Quote page with quote form"
             }
         ]
+    },
+    {
+        "title": "Bindr",
+        "description": "A Windows desktop app for comic and manga libraries: converts PDFs to CBZ, sorts archives into natural page order, and batch-optimises images with live progress and ETA.",
+        "technologies": ["Python", "CustomTkinter", "Pillow", "PyPDF2", "Poppler"],
+        "github": "https://github.com/KAOS-CODM/BindrApp",
+        "featured": true,
+        "images": [
+            {
+                "src": "images/bindr/bindr.png",
+                "alt": "Bindr desktop app interface"
+            }
+        ]
+    },
+    {
+        "title": "Fantomixx",
+        "description": "A self-hosted comic library backed by PocketBase. Readers browse comics and read CBZ chapters in the browser, while admins manage metadata, upload covers and batch-import chapters.",
+        "technologies": ["Node.js", "Express", "JavaScript", "PocketBase", "Multer"],
+        "github": "https://github.com/KAOS-CODM/fantomixx",
+        "featured": true,
+        "images": [
+            {
+                "src": "images/fantomixx/homepage.png",
+                "alt": "Fantomixx homepage"
+            },
+            {
+                "src": "images/fantomixx/comics.png",
+                "alt": "Fantomixx comic listing"
+            },
+            {
+                "src": "images/fantomixx/chapters.png",
+                "alt": "Fantomixx chapters view"
+            },
+            {
+                "src": "images/fantomixx/genres.png",
+                "alt": "Fantomixx genres view"
+            },
+            {
+                "src": "images/fantomixx/chapter.png",
+                "alt": "Fantomixx chapter view"
+            }
+        ]
+    },
+    {
+        "title": "NimCircle",
+        "description": "A Nimiq Pay Mini App for shared savings goals in NIM. Creators set a target, deadline and goal owner, contributors pay through Nimiq Pay, and the backend verifies each on-chain transaction before it counts toward a Circle's progress.",
+        "technologies": ["React", "TypeScript", "Vite", "Tailwind CSS", "Node.js", "Express", "MongoDB", "Nimiq"],
+        "site": "https://nimcircle.vercel.app",
+        "github": "https://github.com/KAOS-CODM/nimcircle",
+        "featured": false
+    },
+    {
+        "title": "Site Rescue",
+        "description": "An AI-assisted website rescue tool: a bounded crawl of up to 10 same-origin pages runs 16 evidence-backed checks, then an OpenAI-compatible model prioritises the findings and writes developer tasks. Plans are validated against the scanner's findings, and scans still work if the AI step fails.",
+        "technologies": ["Node.js", "Express", "JavaScript", "Tailwind CSS", "OpenRouter"],
+        "github": "https://github.com/KAOS-CODM/site-rescue",
+        "featured": false
+    },
+    {
+        "title": "Cee-Kee-Zy Property Listings",
+        "description": "A property listing platform for houses, land and vehicles, with a searchable public catalogue, dynamic listing pages and a JWT-protected admin dashboard for creating listings and uploading images.",
+        "technologies": ["TypeScript", "Node.js", "Express", "MongoDB", "Mongoose", "Tailwind CSS", "Cloudinary"],
+        "github": "https://github.com/KAOS-CODM/Cee-Kee-Zy",
+        "featured": false
+    },
+    {
+        "title": "Site Scout",
+        "description": "A website audit tool that crawls sites with Puppeteer and Lighthouse, scores SEO, performance, accessibility, UX and technical health, and generates proposals and Excel exports.",
+        "technologies": ["Node.js", "Express", "JavaScript", "Puppeteer", "Lighthouse", "Cheerio"],
+        "github": "https://github.com/KAOS-CODM/webscout",
+        "featured": false
+    },
+    {
+        "title": "123 Essentials Website",
+        "description": "A multi-page marketing website for an IT services company, covering managed IT, cybersecurity, CCTV and access control, web development and networking, with a contact enquiry flow.",
+        "technologies": ["HTML", "CSS", "JavaScript", "Tailwind CSS"],
+        "github": "https://github.com/KAOS-CODM/123essentials",
+        "featured": false
+    },
+    {
+        "title": "Developer Portfolio & CMS",
+        "description": "A static HTML, CSS and JavaScript portfolio with a separate Node.js API and MongoDB database, including a private CMS for drafting and publishing projects, server-rendered project pages and image management.",
+        "technologies": ["HTML", "CSS", "JavaScript", "Node.js", "MongoDB", "Cloudinary"],
+        "site": "https://isaiahwebdev.onrender.com",
+        "github": "https://github.com/KAOS-CODM/isaiahwebdev",
+        "featured": false
     }
 ]

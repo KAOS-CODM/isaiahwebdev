@@ -173,7 +173,10 @@ export function normalizeProject(raw, index = 0) {
     images: normalizeImages(raw.images),
     // Existing fields.
     status: asString(raw.status) || DEFAULT_STATUS,
-    featured: raw.featured === true || (raw.featured === undefined && index === 0),
+    // Featured is opt-in only: an explicit boolean `true` is the sole qualifier.
+    // Missing, null, false and non-boolean values (for example "true" or 1) do
+    // not make a project featured, and no position in the list implies it.
+    featured: raw.featured === true,
     order,
     // Legacy long-form case-study fields, kept so existing records round-trip.
     summary: asString(raw.summary),

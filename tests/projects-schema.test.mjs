@@ -39,18 +39,28 @@ test('escapeHtml neutralizes markup', () => {
   assert.equal(escapeHtml("O'Brien & Co"), 'O&#39;Brien &amp; Co');
 });
 
-test('normalizeProject derives slug, status and featured defaults', () => {
+test('normalizeProject derives slug and status without implying featured', () => {
   const project = normalizeProject({ title: 'My Project', description: 'Hello' }, 0);
   assert.equal(project.slug, 'my-project');
   assert.equal(project.status, 'published');
-  assert.equal(project.featured, true);
+  assert.equal(project.featured, false);
   assert.deepEqual(project.technologies, []);
   assert.deepEqual(project.images, []);
 });
 
-test('normalizeProject is not featured by default for non-first entries', () => {
-  const project = normalizeProject({ title: 'Second', description: 'x' }, 1);
-  assert.equal(project.featured, false);
+test('normalizeProject requires an explicit boolean true for featured', () => {
+  const nonFeatured = [undefined, false, null, 'true', 1, {}, []];
+  nonFeatured.forEach((value, index) => {
+    const project = normalizeProject({ title: `Project ${index}`, featured: value }, 0);
+    assert.equal(
+      project.featured,
+      false,
+      `featured=${JSON.stringify(value)} must not qualify a project`
+    );
+  });
+
+  assert.equal(normalizeProject({ title: 'First', featured: true }, 0).featured, true);
+  assert.equal(normalizeProject({ title: 'Later', featured: true }, 7).featured, true);
 });
 
 test('normalizeProject rejects entries without a usable title', () => {

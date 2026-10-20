@@ -1183,13 +1183,11 @@
 
 /* --- Cards and elevated surfaces ------------------------------------------
    One warm panel treatment for every card the public markup produces: project
-   listing cards (projects-page.js), the homepage featured card
-   (#projects-container > article), certificate cards, the certificates panel
+   listing cards (projects-page.js), certificate cards, the certificates panel
    and the skills grid. Content reads left-aligned for an editorial feel, the
    media sits in its own recessed frame, and hover plus :focus-within share one
    elevation so keyboard users get the same affordance as pointer users. */
 .project-card,
-#projects-container > article,
 #certificates-container > div,
 #skills-cards-container > div {
     position: relative;
@@ -1208,7 +1206,6 @@
 }
 
 .project-card,
-#projects-container > article,
 #certificates-container > div {
     text-align: left;
     gap: clamp(12px, 2vw, 16px);
@@ -1227,14 +1224,12 @@
 .project-card > *,
 .project-card > a > *,
 .project-card > a > div:last-child > *,
-#projects-container > article > *,
 #certificates-container > div > *,
 #skills-cards-container > div > * {
     margin: 0;
 }
 
 .project-card:hover,
-#projects-container > article:hover,
 #certificates-container > div:hover,
 #skills-cards-container > div:hover {
     background: var(--surface-card-hover);
@@ -1249,7 +1244,6 @@
 }
 
 .project-card:focus-within,
-#projects-container > article:focus-within,
 #certificates-container > div:focus-within,
 #skills-cards-container > div:focus-within {
     background: var(--surface-card-hover);
@@ -1267,9 +1261,7 @@
    consistent banner shape; certificates use `contain` so the whole document
    stays readable. */
 .project-card img,
-.project-card .thumb,
-#projects-container > article img,
-#projects-container > article .thumb {
+.project-card .thumb {
     display: block;
     width: 100%;
     height: auto;
@@ -1298,7 +1290,6 @@
 }
 
 .project-card:hover img,
-#projects-container > article:hover img,
 #certificates-container img:hover {
     transform: scale(1.03);
 }
@@ -1362,38 +1353,291 @@
     max-width: 68ch;
 }
 
-/* --- Featured project card (homepage) ------------------------------------- */
-#projects-container > article h3 {
-    color: var(--color-text-light);
-    font-family: var(--font-orbitron);
-    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
-    font-weight: 600;
-    line-height: 1.25;
+/* --- Selected Work (homepage) ---------------------------------------------
+   The featured project is one wide editorial panel — a large visual beside its
+   description, technology labels and detail link — with the remaining projects
+   in a compact supporting grid and a single "Explore all projects" action
+   beneath. Reuses the shared card surface and motion tokens so it stays in step
+   with the project listing and detail pages. */
+#projects .section-header p {
+    max-width: 46rem;
+    margin-inline: auto;
 }
 
-#projects-container > article h3 a {
+#projects-container {
+    display: grid;
+    gap: clamp(20px, 3vw, 30px);
+}
+
+/* --- Featured project ----------------------------------------------------- */
+.work-featured {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: stretch;
+    overflow: hidden;
+    background: var(--surface-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth),
+                box-shadow var(--dur) var(--ease-smooth),
+                translate var(--dur) var(--ease-smooth);
+}
+
+.work-featured:hover,
+.work-featured:focus-within {
+    background: var(--surface-card-hover);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -3px;
+}
+
+.work-featured__media {
+    display: block;
+    overflow: hidden;
+    background: var(--surface-inset);
+}
+
+.work-featured__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: clamp(224px, 30vw, 340px);
+    object-fit: cover;
+    object-position: 50% 0%;
+    cursor: pointer;
+    transition: transform 0.5s var(--ease-smooth);
+}
+
+.work-featured:hover .work-featured__media img,
+.work-featured:focus-within .work-featured__media img {
+    transform: scale(1.04);
+}
+
+.work-featured__body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.8vw, 16px);
+    padding: clamp(22px, 3vw, 38px);
+}
+
+.work-featured__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.work-featured__kicker {
+    margin: 0;
+    color: var(--color-neon-red);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.work-featured__title {
+    margin: 0;
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1.35rem, 3.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.work-featured__title a {
     color: inherit;
     text-decoration: none;
     transition: color var(--dur) var(--ease-smooth);
 }
 
-#projects-container > article h3 a:hover {
+.work-featured__title a:hover {
     color: var(--color-neon-red);
 }
 
-#projects-container > article p {
+.work-featured__desc {
+    margin: 0;
+    max-width: 60ch;
     color: var(--color-text-dim);
-    font-size: 0.95rem;
+    font-size: clamp(0.95rem, 1.6vw, 1.02rem);
     line-height: 1.65;
-    max-width: 68ch;
 }
 
-#projects-container > article > div:last-child {
+.work-featured__actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: clamp(12px, 2vw, 18px);
-    margin-top: 0.25rem;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: clamp(6px, 1.4vw, 12px);
+}
+
+/* --- Technology labels ---------------------------------------------------- */
+.work-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.work-tech li,
+.work-pill {
+    padding: 0.2rem 0.7rem;
+    background: var(--surface-chip);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    text-transform: uppercase;
+}
+
+/* --- Supporting projects -------------------------------------------------- */
+.work-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: clamp(16px, 2.4vw, 24px);
+}
+
+.work-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: clamp(14px, 2vw, 18px);
+    background: var(--surface-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: background-color var(--dur) var(--ease-smooth),
+                border-color var(--dur) var(--ease-smooth),
+                box-shadow var(--dur) var(--ease-smooth),
+                translate var(--dur) var(--ease-smooth);
+}
+
+.work-card:hover,
+.work-card:focus-within {
+    background: var(--surface-card-hover);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-card-hover);
+    translate: 0 -3px;
+}
+
+.work-card__media {
+    display: block;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--surface-inset);
+}
+
+.work-card__media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: 50% 0%;
+    cursor: pointer;
+    transition: transform 0.5s var(--ease-smooth);
+}
+
+.work-card:hover .work-card__media img,
+.work-card:focus-within .work-card__media img {
+    transform: scale(1.04);
+}
+
+.work-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: clamp(8px, 1.4vw, 12px);
+    padding-top: clamp(12px, 1.8vw, 16px);
+}
+
+.work-card__title {
+    margin: 0;
+    color: var(--color-text-light);
+    font-family: var(--font-orbitron);
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.work-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease-smooth);
+}
+
+.work-card__title a:hover {
+    color: var(--color-neon-red);
+}
+
+.work-card__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.work-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.35rem;
+    color: var(--color-neon-red);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.work-card__cta i {
+    transition: transform var(--dur) var(--ease-smooth);
+}
+
+.work-card:hover .work-card__cta i,
+.work-card:focus-within .work-card__cta i {
+    transform: translateX(3px);
+}
+
+/* --- Explore all ---------------------------------------------------------- */
+.work-more {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(28px, 4vw, 44px);
+}
+
+/* --- Selected Work responsive tuning -------------------------------------- */
+@media (max-width: 900px) {
+    .work-featured {
+        grid-template-columns: 1fr;
+    }
+    .work-featured__media img {
+        height: auto;
+        min-height: 0;
+        aspect-ratio: 16 / 10;
+    }
+    .work-featured__body {
+        padding: clamp(20px, 4vw, 30px);
+    }
+}
+
+@media (max-width: 380px) {
+    .work-featured__actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* --- Certificate cards ---------------------------------------------------- */
@@ -1468,7 +1712,6 @@
 /* Metadata captions ("Technologies:", "Issuer:", "Date:") read as small
    technical labels instead of bold body text. */
 .project-card strong,
-#projects-container > article strong,
 #certificates-container strong {
     display: inline-block;
     margin-right: 0.4rem;
@@ -2089,8 +2332,6 @@ button.copy-btn:focus-visible {
        still let them jump, so the movement is removed outright. */
     .project-card,
     .project-card img,
-    #projects-container > article,
-    #projects-container > article img,
     #certificates-container > div,
     #certificates-container img,
     #skills-cards-container > div,
@@ -2099,15 +2340,25 @@ button.copy-btn:focus-visible {
     .social-link,
     .project-link,
     .project-link i,
-    .back-to-top {
+    .back-to-top,
+    .work-featured,
+    .work-featured img,
+    .work-card,
+    .work-card img,
+    .work-featured__title a,
+    .work-card__title a,
+    .work-card__cta i {
         transition: none;
     }
 
     /* Card lift travels through `translate`, control lift through `transform`. */
     .project-card:hover,
-    #projects-container > article:hover,
     #certificates-container > div:hover,
-    #skills-cards-container > div:hover {
+    #skills-cards-container > div:hover,
+    .work-featured:hover,
+    .work-featured:focus-within,
+    .work-card:hover,
+    .work-card:focus-within {
         translate: 0 0;
     }
 
@@ -2122,10 +2373,15 @@ button.copy-btn:focus-visible {
     }
 
     .project-card:hover img,
-    #projects-container > article:hover img,
     #certificates-container img:hover,
     .project-card:hover > a.block > div:last-child > span:last-child i,
-    .project-link:hover i {
+    .project-link:hover i,
+    .work-featured:hover .work-featured__media img,
+    .work-featured:focus-within .work-featured__media img,
+    .work-card:hover .work-card__media img,
+    .work-card:focus-within .work-card__media img,
+    .work-card:hover .work-card__cta i,
+    .work-card:focus-within .work-card__cta i {
         transform: none;
     }
 }
