@@ -27,7 +27,9 @@ function getImageSrc(image) {
 }
 
 function getImageAlt(image, fallback) {
-    return image?.alt ?? fallback;
+    // CMS records may store an empty alt string; keep a meaningful fallback
+    // instead of emitting alt="" for a project screenshot.
+    return image?.alt || fallback;
 }
 
 /**
@@ -273,7 +275,16 @@ export async function initHomepageWork(doc = document, win = window) {
     if (!container) return;
 
     try {
-        const { projects } = await loadProjects();
+        const { projects, source } = await loadProjects();
+
+        // The homepage ships a generated snapshot of the featured API data.
+        // Do not overwrite it with the local JSON fallback, which currently
+        // contains projects the production API does not publish. The API result
+        // still replaces the snapshot when it is available.
+        if (source === 'local' && container.dataset?.staticFeatured === 'true') {
+            return;
+        }
+
         const { featured, html, lightboxProjects } = buildHomepageWork(projects);
 
         if (!featured) {

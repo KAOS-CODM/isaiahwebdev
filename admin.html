@@ -234,6 +234,7 @@
       <section id="dashboard-view" hidden>
         <div class="toolbar">
           <button type="button" id="new-project-button">New project</button>
+  <button type="button" id="new-certificate-button">New certificate</button>
           <button type="button" id="refresh-button" class="secondary">Refresh</button>
         </div>
         <p class="message" id="status-message" role="status"></p>
@@ -393,7 +394,125 @@
         </form>
         <p class="message error" id="editor-message" role="alert"></p>
       </section>
-    </main>
+    <!-- Certificate management view -->
+      <section id="certificates-view" hidden>
+        <h2>Certificate Management</h2>
+        <div class="toolbar">
+          <button type="button" id="certificate-new-button">New certificate</button>
+          <button type="button" id="refresh-certificates-button" class="secondary">Refresh certificates</button>
+          <button type="button" id="certificate-dashboard-button" class="secondary">Back to projects</button>
+        </div>
+        <p class="message" id="certificates-message" role="status"></p>
+        <table id="certificates-table">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Issuer</th>
+              <th scope="col">Status</th>
+              <th scope="col">Order</th>
+              <th scope="col"><span class="muted">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="certificates-tbody"></tbody>
+        </table>
+      </section>
+
+      <section id="certificate-editor" hidden>
+        <h2 id="certificate-editor-title">New certificate</h2>
+        <form id="certificate-form" novalidate>
+          <fieldset class="editor-section">
+            <legend>Basic information</legend>
+            <div class="grid">
+              <div class="full">
+                <label for="certificate-field-title">Title *</label>
+                <input id="certificate-field-title" name="title" type="text" maxlength="200" required />
+              </div>
+              <div>
+                <label for="certificate-field-slug">Slug (optional)</label>
+                <input id="certificate-field-slug" name="slug" type="text" maxlength="80"
+                  placeholder="derived from the title" />
+              </div>
+              <div>
+                <label for="certificate-field-issuer">Issuer *</label>
+                <input id="certificate-field-issuer" name="issuer" type="text" maxlength="200" required />
+              </div>
+              <div class="full">
+                <label for="certificate-field-description">Description</label>
+                <textarea id="certificate-field-description" name="description" maxlength="2000"></textarea>
+              </div>
+              <div>
+                <label for="certificate-field-issueDate">Issue date</label>
+                <input id="certificate-field-issueDate" name="issueDate" type="date" />
+              </div>
+              <div>
+                <label for="certificate-field-expiryDate">Expiry date</label>
+                <input id="certificate-field-expiryDate" name="expiryDate" type="date" />
+              </div>
+              <div>
+                <label for="certificate-field-credentialId">Credential ID</label>
+                <input id="certificate-field-credentialId" name="credentialId" type="text" maxlength="200" />
+              </div>
+              <div>
+                <label for="certificate-field-category">Category</label>
+                <input id="certificate-field-category" name="category" type="text" maxlength="100" />
+              </div>
+              <div class="full">
+                <label for="certificate-field-skills">Skills</label>
+                <input id="certificate-field-skills" name="skills" type="text"
+                  placeholder="HTML, CSS, JavaScript" />
+                <p class="hint">Separate multiple skills with commas.</p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Certificate evidence</legend>
+            <div class="grid">
+              <div class="full">
+                <label for="certificate-field-imageSrc">Image URL</label>
+                <input id="certificate-field-imageSrc" name="imageSrc" type="url" maxlength="2048"
+                  placeholder="https://example.com/certificate.jpg" />
+              </div>
+              <div class="full">
+                <label for="certificate-field-imageAlt">Image alt text</label>
+                <input id="certificate-field-imageAlt" name="imageAlt" type="text" maxlength="300" />
+              </div>
+              <input id="certificate-field-imagePublicId" name="imagePublicId" type="hidden" />
+              <div class="full">
+                <label for="certificate-field-verificationUrl">Verification URL</label>
+                <input id="certificate-field-verificationUrl" name="verificationUrl" type="url" maxlength="2048"
+                  placeholder="https://example.com/verify" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="editor-section">
+            <legend>Publishing information</legend>
+            <div class="grid">
+              <div>
+                <label for="certificate-field-status">Status</label>
+                <select id="certificate-field-status" name="status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </div>
+              <div>
+                <label for="certificate-field-displayOrder">Display order</label>
+                <input id="certificate-field-displayOrder" name="displayOrder" type="number" step="1" />
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" id="certificate-save-button">Save certificate</button>
+            <button type="button" id="certificate-preview-button" class="secondary">Preview</button>
+            <button type="button" id="certificate-cancel-button" class="secondary">Cancel</button>
+          </div>
+        </form>
+        <p class="message error" id="certificate-editor-message" role="alert"></p>
+      </section>
+
+</main>
 
     <script type="module" src="/js/admin.js"></script>
   </body>

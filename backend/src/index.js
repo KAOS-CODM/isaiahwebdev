@@ -10,12 +10,14 @@ const { loadCorsConfig, createCorsMiddleware } = require('./middleware/cors');
 const { healthHandler } = require('./routes/health');
 const { notFoundHandler } = require('./routes/notFound');
 const { projectsHandler } = require('./routes/projects');
+const { certificatesHandler, certificateItemHandler } = require('./routes/certificates');
 const { projectPagesHandler } = require('./routes/project-pages');
 const { adminHandler } = require('./routes/admin');
 const { staticHandler } = require('./routes/static');
 const { isPublicStaticRequest, frontendServingEnabled } = require('./lib/static-site');
 const { setDb } = require('./lib/db-handle');
 const { ensureSlugIndex } = require('./lib/project-store');
+const { ensureCertificateIndexes } = require('./lib/certificate-store');
 const { Errors, sendJsonError } = require('./lib/errors');
 const { connect, close, getConnectionStatus } = require('./lib/db');
 
@@ -47,7 +49,7 @@ const publicReadCorsMiddleware = createCorsMiddleware(allowedOrigins, { allowMis
 const adminCorsMiddleware = createCorsMiddleware(allowedOrigins, {
   allowMissingOrigin: true,
   allowCredentials: true,
-  methods: 'GET, POST, PUT, DELETE, OPTIONS',
+  methods: 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
   allowHeaders: 'Content-Type, Authorization, Cookie',
   preflightPaths: (pathname) => pathname === '/api/admin' || pathname.startsWith('/api/admin/'),
 });
@@ -98,10 +100,23 @@ function dispatch(req, res) {
   // Public read-only projects API. Same-origin browser requests omit Origin, so
   // this endpoint allows a missing Origin while the CORS allowlist still governs
   // cross-origin responses.
-  if (pathname === '/api/content/projects') {
+  if (pathname === "/api/content/projects") {
     publicReadCorsMiddleware(req, res, () => {
       if (!res.writableEnded) projectsHandler(req, res);
     });
+    return;
+  }
+  // Public read-only certificates API
+  if (pathname === "/api/content/certificates") {
+    publicReadCorsMiddleware(req, res, () => {
+      if (!res.writableEnded) certificatesHandler(req, res);
+    });
+    return;
+  }
+  // Public certificate detail: /api/content/certificates/:slug
+  if (pathname.startsWith("/api/content/certificates/")) {
+    const slug = pathname.replace("/api/content/certificates/", "");
+    certificateItemHandler(req, res, slug);
     return;
   }
 
@@ -222,6 +237,11 @@ if (require.main === module) {
         // guard against duplicates.
         return ensureSlugIndex(db).catch(err => {
           console.warn('Could not ensure projects slug index:', err.message);
+        });
+        // Ensure the certificate indexes exist (slug unique + status/order/issueDate).
+        // Fail-soft: a failure is logged but does not take the public site/API down.
+        return ensureCertificateIndexes(db).catch(err => {
+          console.warn('Could not ensure certificates indexes:', err.message);
         });
       })
       .catch(err => {

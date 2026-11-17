@@ -430,6 +430,45 @@ test('initHomepageWork falls back to the JSON list after an API failure and stay
   assert.ok(!container.innerHTML.includes('Fallback Plain'), 'fallback must not show non-featured work');
 });
 
+test('initHomepageWork keeps the generated snapshot when only the JSON fallback is available', async () => {
+  const staticMarkup =
+    '<article class="work-featured"><h3>Generated Snapshot</h3></article>';
+  const container = {
+    innerHTML: staticMarkup,
+    dataset: { staticFeatured: 'true' },
+  };
+  const doc = { getElementById: () => container };
+  const win = { initProjectsLightbox: () => {} };
+  const originalConsoleWarn = console.warn;
+  console.warn = () => {};
+
+  const restoreWindow = withWindow({
+    PORTFOLIO_API_BASE: API_BASE,
+    location: { hostname: 'app.example.com' },
+  });
+  const restoreFetch = withFetch((url) => {
+    if (url.includes('/api/content/projects')) throw new Error('offline');
+    if (url.includes('/data/projects.json')) {
+      return jsonResponse([
+        { title: 'Stale Fallback', description: 'Stale', featured: true, images: [{ src: '/images/stale.jpg' }] },
+      ]);
+    }
+    throw new Error(`unexpected fetch: ${url}`);
+  });
+
+  try {
+    await initHomepageWork(doc, win);
+  } finally {
+    restoreFetch();
+    restoreWindow();
+    console.warn = originalConsoleWarn;
+  }
+
+  assert.ok(restoreFetch.calls.includes('/data/projects.json'), 'fallback is still requested');
+  assert.equal(container.innerHTML, staticMarkup, 'generated snapshot must not be overwritten');
+  assert.ok(!container.innerHTML.includes('Stale Fallback'));
+});
+
 test('initHomepageWork shows the empty state when the JSON fallback has no featured project', async () => {
   const container = { innerHTML: '' };
   const doc = { getElementById: () => container };

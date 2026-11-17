@@ -63,3 +63,23 @@ serve_local.py
 
 # Local Playwright MCP browser tooling and artifacts
 .playwright-mcp/
+
+
+# Playwright browser artifacts
+.playwright-cli/
+
+# Temporary test output
+output.txt
+output2.txt
+p.txt
+pout.txt
+test_output.txt
+# Playwright browser artifacts
+.playwright-cli/
+
+# Temporary test output
+output.txt
+output2.txt
+p.txt
+pout.txt
+test_output.txt

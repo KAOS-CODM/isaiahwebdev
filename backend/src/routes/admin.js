@@ -47,12 +47,15 @@ const { getDb } = require('../lib/db-handle');
 const { Errors, HttpError, sendJson, sendJsonError } = require('../lib/errors');
 const { readJsonBody } = require('../lib/request-body');
 const { loadProjectSchema } = require('../lib/project-schema');
+const { loadCertificateSchema } = require('../lib/certificate-schema');
 const { buildProjectPage } = require('../lib/project-page');
 const { SITE_URL } = require('./project-pages');
 const auth = require('../lib/admin-auth');
 const accounts = require('../lib/admin-accounts');
 const { validateProjectInput, deriveSlug, buildProjectDoc } = require('../lib/admin-projects');
+const { deriveSlug: deriveCertSlug, validateCertificateInput, buildCertificateDoc } = require('../lib/admin-certificates');
 const store = require('../lib/project-store');
+const certStore = require('../lib/certificate-store');
 const { loadMediaConfig } = require('../lib/media-config');
 const { getMediaClient } = require('../lib/media-client');
 const media = require('../lib/media-service');
@@ -578,6 +581,254 @@ async function previewProject(req, res, db, slug) {
 }
 
 // ---------------------------------------------------------------------------
+// Certificate collection endpoints
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse `/api/admin/certificates/<slug>[/<action>]`.  Returns {slug, action}
+ * or null when the path does not match the expected pattern.
+ * @param {string} pathname
+ * @returns {{ slug: string, action: string|null }|null}
+ */
+function parseCertificatePath(pathname) {
+  const prefix = '/api/admin/certificates/';
+  if (!pathname.startsWith(prefix)) return null;
+  var rest = pathname.slice(prefix.length).replace(/^\/+|\/+$/g, '');
+  if (!rest) return null;
+  var segments = rest.split('/');
+  if (segments.length > 2) return null;
+  var slug;
+  try {
+    slug = decodeURIComponent(segments[0]);
+  } catch {
+    return null;
+  }
+  return { slug, action: segments[1] || null };
+}
+
+async function handleCertificates(req, res) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  const db = getDb();
+  if (!db) {
+    sendJsonError(res, Errors.serviceUnavailable('Content is temporarily unavailable'));
+    return;
+  }
+  if (req.method === 'GET') {
+    // Admin listing must include drafts as well as published certificates.
+    const certificates = await certStore.listAllCertificates(db);
+    sendJson(res, 200, { certificates });
+    return;
+  }
+  if (req.method === 'POST') {
+    var schema = await loadCertificateSchema();
+    const input = await readJsonBody(req);
+    validateCertificateInput(input, { partial: false, schema });
+
+    // Derive slug from input title if not provided
+    var slug = input.slug;
+    if (!slug) {
+      slug = deriveCertSlug(input.title, schema);
+    }
+    if (!slug) {
+      sendJsonError(res, Errors.badRequest('a valid slug could not be derived from the title'));
+      return;
+    }
+    // Check for duplicate slug
+    var conflict = await db.collection(certStore.COLLECTION_NAME).findOne({ slug });
+    if (conflict) {
+      sendJsonError(res, Errors.conflict('A certificate with slug "' + slug + '" already exists'));
+      return;
+    }
+    const displayOrder =
+      input.displayOrder !== undefined
+        ? Math.trunc(Number(input.displayOrder))
+        : await certStore.nextOrder(db);
+    var doc = buildCertificateDoc({ input, slug: slug, schema: schema, displayOrder });
+    var created = await certStore.createCertificate(db, doc);
+    sendJson(res, 201, { certificate: created });
+    return;
+  }
+  res.setHeader('Allow', 'GET, POST');
+  sendJsonError(res, Errors.methodNotAllowed());
+}
+
+// ---------------------------------------------------------------------------
+// Certificate item endpoints
+// ---------------------------------------------------------------------------
+
+/**
+ * Handle certificate item operations (GET, PATCH, DELETE, publish, unpublish).
+ * @param {import('http').IncomingMessage} req
+ * @param {import('http').ServerResponse} res
+ * @param {string} pathname
+ */
+async function handleCertificateItem(req, res, pathname) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  const db = getDb();
+  if (!db) {
+    sendJsonError(res, Errors.serviceUnavailable('Content is temporarily unavailable'));
+    return;
+  }
+  var parsed = parseCertificatePath(pathname);
+  if (!parsed || !certStore.isValidSlug(parsed.slug)) {
+    sendJsonError(res, Errors.notFound('Certificate not found'));
+    return;
+  }
+  var { slug, action } = parsed;
+
+  if (action === 'publish') {
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST');
+      sendJsonError(res, Errors.methodNotAllowed());
+      return;
+    }
+    var updated = await certStore.setStatus(db, slug, 'published');
+    if (!updated) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    sendJson(res, 200, { certificate: updated });
+    return;
+  }
+
+  if (action === 'unpublish') {
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST');
+      sendJsonError(res, Errors.methodNotAllowed());
+      return;
+    }
+    var updated = await certStore.setStatus(db, slug, 'draft');
+    if (!updated) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    sendJson(res, 200, { certificate: updated });
+    return;
+  }
+
+  if (action !== null) {
+    sendJsonError(res, Errors.notFound('Certificate not found'));
+    return;
+  }
+
+  if (req.method === 'GET') {
+    var cert = await certStore.findCertificateBySlug(db, parsed.slug);
+    if (!cert) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    sendJson(res, 200, { certificate: cert });
+    return;
+  }
+
+  if (req.method === 'PATCH') {
+    var existing = await certStore.findCertificateBySlug(db, slug);
+    if (!existing) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    var schema = await loadCertificateSchema();
+    var input = await readJsonBody(req);
+
+    // Server-owned fields are never accepted from a client payload.
+    delete input._id;
+    delete input.createdAt;
+    delete input.updatedAt;
+
+    validateCertificateInput(input, { partial: true, schema, existing });
+
+    // Status is deliberately editable here: the form offers Draft/Published,
+    // while the dedicated publish/unpublish endpoints remain available.
+    if (input.status === undefined) {
+      input.status = existing.status;
+    }
+
+    const displayOrder =
+      input.displayOrder !== undefined
+        ? Math.trunc(Number(input.displayOrder))
+        : existing.displayOrder;
+
+    var doc = buildCertificateDoc({ input, existing, slug: slug, schema, displayOrder });
+    var updated = await certStore.updateCertificate(db, slug, doc);
+    if (!updated) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    sendJson(res, 200, { certificate: updated });
+    return;
+  }
+
+  if (req.method === 'DELETE') {
+    var raw = await certStore.findRawCertificateBySlug(db, slug);
+    var removed = await certStore.deleteCertificate(db, slug);
+    if (!removed) {
+      sendJsonError(res, Errors.notFound('Certificate not found'));
+      return;
+    }
+    sendJson(res, 200, { ok: true });
+    return;
+  }
+
+  res.setHeader('Allow', 'GET, PATCH, DELETE');
+  sendJsonError(res, Errors.methodNotAllowed());
+}
+
+// ---------------------------------------------------------------------------
+// Reorder certificates endpoint
+// ---------------------------------------------------------------------------
+
+async function handleReorderCertificates(req, res) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  const db = getDb();
+  if (!db) {
+    sendJsonError(res, Errors.serviceUnavailable('Content is temporarily unavailable'));
+    return;
+  }
+  if (req.method !== 'PATCH') {
+    res.setHeader('Allow', 'PATCH');
+    sendJsonError(res, Errors.methodNotAllowed());
+    return;
+  }
+  try {
+    var input = await readJsonBody(req);
+    var items = input.items;
+    if (!items || !Array.isArray(items)) {
+      sendJsonError(res, Errors.badRequest('reorder items must be an array with {slug, displayOrder}'));
+      return;
+    }
+    var updated = await certStore.reorderCertificates(db, items);
+    sendJson(res, 200, { certificates: updated });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      sendJsonError(res, err.toError ? err.toError() : Errors.badRequest(err.message));
+    } else {
+      sendJsonError(res, Errors.internalError());
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Certificate image upload endpoint
+// ---------------------------------------------------------------------------
+
+async function handleCertificateImageUpload(req, res) {
+  const payload = await requireAuth(req, res);
+  if (!payload) return;
+  var db = getDb();
+  if (!db) {
+    sendJsonError(res, Errors.serviceUnavailable('Content is temporarily unavailable'));
+    return;
+  }
+  var media = require('../lib/media-service');
+  var config = require('../lib/media-config')();
+  var client = require('../lib/media-client')();
+  return media.handleImageUpload(req, res, { config: config, client: client });
+}
+
+// ---------------------------------------------------------------------------
 // Dispatcher
 // ---------------------------------------------------------------------------
 
@@ -629,6 +880,25 @@ async function adminHandler(req, res, pathname) {
     }
     if (pathname.startsWith(`${ADMIN_PREFIX}/projects/`)) {
       await handleProjectItem(req, res, pathname);
+      return;
+    }
+    if (pathname === `${ADMIN_PREFIX}/certificates`) {
+      await handleCertificates(req, res);
+      return;
+    }
+    // The reorder path must be matched before the generic certificate item
+    // prefix, otherwise "reorder" is treated as a slug and returns 404.
+    if (pathname === `${ADMIN_PREFIX}/certificates/reorder`) {
+      if (req.method === 'PATCH') {
+        await handleReorderCertificates(req, res);
+        return;
+      }
+      res.setHeader('Allow', 'PATCH');
+      sendJsonError(res, Errors.methodNotAllowed());
+      return;
+    }
+    if (pathname.startsWith(`${ADMIN_PREFIX}/certificates/`)) {
+      await handleCertificateItem(req, res, pathname);
       return;
     }
     sendJsonError(res, Errors.notFound('Admin route not found'));
