@@ -54,8 +54,13 @@ css/*.backup
 css/*.backup.*
 css/
 
+# Re-include only the root CSS directory so specific public stylesheets can be
+# committed; nested css/ directories stay ignored.
+!/css/
+/css/*
 #Files that are to be exempted from ignore
-!css/styles.css
+!/css/styles.css
+!/css/certificates-public.css
 
 # Local development dependencies and tools
 node_modules/
