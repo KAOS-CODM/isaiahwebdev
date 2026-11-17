@@ -21,7 +21,7 @@ const { buildProjectPage, buildProjectErrorPage } = require('../lib/project-page
 const PROJECT_PREFIX = '/projects/';
 
 /** Public origin used for canonical/OG/schema.org URLs. */
-const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://isaiahwebdev.onrender.com').replace(/\/+$/, '');
+const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://isaiahweb.pages.dev').replace(/\/+$/, '');
 
 /**
  * Extract the slug from a `/projects/<slug>` pathname.

@@ -20,7 +20,7 @@
 import { loadProjectBySlug } from './api-config.js';
 import { escapeHtml } from './projects-schema.js';
 
-export const DEFAULT_SITE_URL = 'https://isaiahwebdev.onrender.com';
+export const DEFAULT_SITE_URL = 'https://isaiahweb.pages.dev';
 
 /** Robots directive applied once a real project is resolved. */
 export const INDEX_ROBOTS =
@@ -463,9 +463,10 @@ export function buildProjectMetadata(project, siteUrl = DEFAULT_SITE_URL) {
 // DOM wiring (browser only)
 // ---------------------------------------------------------------------------
 
-function siteUrlFrom(win) {
-  const origin = win && win.location && win.location.origin;
-  return typeof origin === 'string' && /^https?:\/\//i.test(origin) ? origin : DEFAULT_SITE_URL;
+function siteUrlFrom() {
+  // Both frontend domains serve the same site. Project metadata must always
+  // point at the preferred canonical origin, whichever host loaded the page.
+  return DEFAULT_SITE_URL;
 }
 
 function upsertMeta(doc, attribute, key, content) {
@@ -625,7 +626,7 @@ export async function initProjectPage(doc = document, win = window) {
 
     root.innerHTML = renderProjectContent(project);
     initGallery(root);
-    applyProjectMetadata(doc, project, siteUrlFrom(win));
+    applyProjectMetadata(doc, project, siteUrlFrom());
   } catch (error) {
     console.error(
       '[project] Failed to load project:',

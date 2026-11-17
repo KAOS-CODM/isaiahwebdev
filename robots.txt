@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://isaiahwebdev.onrender.com/sitemap.xml
+Sitemap: https://isaiahweb.pages.dev/sitemap.xml

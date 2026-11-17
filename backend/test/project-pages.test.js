@@ -1,5 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
+const { execFileSync } = require('node:child_process');
+const path = require('node:path');
 
 const {
   buildProjectPage,
@@ -71,6 +73,50 @@ const PUBLISHED_PROJECT = {
 function jsonLdBlocks(html) {
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   return blocks.map((match) => match[1]);
+}
+
+/**
+ * Load the route in a fresh process so PUBLIC_SITE_URL is evaluated at module
+ * load exactly as it is in the deployed API service.
+ */
+function probeSiteUrl(siteUrl) {
+  const env = { ...process.env };
+  if (siteUrl === undefined) {
+    delete env.PUBLIC_SITE_URL;
+  } else {
+    env.PUBLIC_SITE_URL = siteUrl;
+  }
+
+  const script = `
+    const { SITE_URL } = require('./src/routes/project-pages.js');
+    const { buildProjectPage } = require('./src/lib/project-page.js');
+    const html = buildProjectPage(
+      { slug: 'probe', title: 'Probe', description: 'Probe', images: [], technologies: [] },
+      { escapeHtml: (value) => String(value), siteUrl: SITE_URL }
+    );
+    const blocks = [...html.matchAll(/<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g)]
+      .map((match) => JSON.parse(match[1]));
+    const first = (pattern) => (html.match(pattern) || [])[1];
+    process.stdout.write(JSON.stringify({
+      siteUrl: SITE_URL,
+      canonical: first(/<link rel="canonical" href="([^"]+)">/),
+      ogUrl: first(/<meta property="og:url" content="([^"]+)">/),
+      ogImage: first(/<meta property="og:image" content="([^"]+)">/),
+      softwareAppId: blocks[0] && blocks[0]['@id'],
+      authorId: blocks[0] && blocks[0].author && blocks[0].author['@id'],
+      breadcrumbHome: blocks[1] && blocks[1].itemListElement[0].item,
+      breadcrumbProjects: blocks[1] && blocks[1].itemListElement[1].item,
+      breadcrumbProject: blocks[1] && blocks[1].itemListElement[2].item,
+    }));
+  `;
+
+  return JSON.parse(
+    execFileSync(process.execPath, ['-e', script], {
+      cwd: path.resolve(__dirname, '..'),
+      env,
+      encoding: 'utf8',
+    })
+  );
 }
 
 test('extractSlug reads a single path segment and rejects nesting', () => {
@@ -247,6 +293,36 @@ test('canonicalUrl builds the site path', () => {
     canonicalUrl('https://example.com', 'my-project'),
     'https://example.com/projects/my-project'
   );
+});
+
+test('PUBLIC_SITE_URL defaults to the preferred frontend origin when unset', () => {
+  const probe = probeSiteUrl(undefined);
+  const site = 'https://isaiahweb.pages.dev';
+
+  assert.strictEqual(probe.siteUrl, site);
+  assert.strictEqual(probe.canonical, `${site}/projects/probe`);
+  assert.strictEqual(probe.ogUrl, `${site}/projects/probe`);
+  assert.strictEqual(probe.ogImage, `${site}/images/profile.jpg`);
+  assert.strictEqual(probe.softwareAppId, `${site}/projects/probe#project`);
+  assert.strictEqual(probe.authorId, `${site}/#isaiah-adelowo`);
+  assert.strictEqual(probe.breadcrumbHome, `${site}/`);
+  assert.strictEqual(probe.breadcrumbProjects, `${site}/projects`);
+  assert.strictEqual(probe.breadcrumbProject, `${site}/projects/probe`);
+});
+
+test('PUBLIC_SITE_URL overrides the default across canonical, OG, JSON-LD and breadcrumbs', () => {
+  const probe = probeSiteUrl('https://canonical.example.test/');
+  const site = 'https://canonical.example.test'; // trailing slash is normalized
+
+  assert.strictEqual(probe.siteUrl, site);
+  assert.strictEqual(probe.canonical, `${site}/projects/probe`);
+  assert.strictEqual(probe.ogUrl, `${site}/projects/probe`);
+  assert.strictEqual(probe.ogImage, `${site}/images/profile.jpg`);
+  assert.strictEqual(probe.softwareAppId, `${site}/projects/probe#project`);
+  assert.strictEqual(probe.authorId, `${site}/#isaiah-adelowo`);
+  assert.strictEqual(probe.breadcrumbHome, `${site}/`);
+  assert.strictEqual(probe.breadcrumbProjects, `${site}/projects`);
+  assert.strictEqual(probe.breadcrumbProject, `${site}/projects/probe`);
 });
 
 test('findPublishedProjectBySlug resolves by derived slug and hides drafts', async () => {

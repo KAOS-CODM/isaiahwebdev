@@ -2,12 +2,12 @@
 
 ## Canonical URLs (All Pages)
 ```
-index.html       → https://isaiahwebdev.onrender.com/
-about.html       → https://isaiahwebdev.onrender.com/about.html
-projects.html    → https://isaiahwebdev.onrender.com/projects.html
-certificates.html→ https://isaiahwebdev.onrender.com/certificates.html
-contact.html     → https://isaiahwebdev.onrender.com/contact.html
-resume.html      → https://isaiahwebdev.onrender.com/resume.html
+index.html       → https://isaiahweb.pages.dev/
+about.html       → https://isaiahweb.pages.dev/about.html
+projects.html    → https://isaiahweb.pages.dev/projects.html
+certificates.html→ https://isaiahweb.pages.dev/certificates.html
+contact.html     → https://isaiahweb.pages.dev/contact.html
+resume.html      → https://isaiahweb.pages.dev/resume.html
 ```
 
 ## Schema.org Entities Added
@@ -104,7 +104,7 @@ Focus Management:
 - 6-7 URLs (index.html included separately)
 - All using .html extension
 - All with priority values
-- All with lastmod="2026-08-15"
+- Each lastmod reflects the most recent committed page-content change
 
 ## JavaScript Changes
 **File:** js/projects-lightbox.js
@@ -153,7 +153,7 @@ Focus Management:
 
 **Quick Validation Checklist:**
 
-1. **Canonical URLs**: Check page source → should see `<link rel="canonical" href="https://isaiahwebdev.onrender.com/[page].html">`
+1. **Canonical URLs**: Check page source → should see `<link rel="canonical" href="https://isaiahweb.pages.dev/[page].html">`
 
 2. **Schema Validation**: https://validator.schema.org/ → Should show "Valid"
 
@@ -169,8 +169,8 @@ Focus Management:
 
 ### Canonical URL Issue
 ```
-BEFORE: <link rel="canonical" href="https://isaiahwebdev.onrender.com/about">
-AFTER:  <link rel="canonical" href="https://isaiahwebdev.onrender.com/about.html">
+BEFORE: <link rel="canonical" href="https://isaiahweb.pages.dev/about">
+AFTER:  <link rel="canonical" href="https://isaiahweb.pages.dev/about.html">
 IMPACT: +5-10% crawl efficiency, 0 duplicate content risk
 ```
 

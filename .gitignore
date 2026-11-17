@@ -61,6 +61,7 @@ css/
 #Files that are to be exempted from ignore
 !/css/styles.css
 !/css/certificates-public.css
+!/css/sitemap.css
 
 # Local development dependencies and tools
 node_modules/

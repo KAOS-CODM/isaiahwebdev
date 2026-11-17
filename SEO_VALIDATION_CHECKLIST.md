@@ -43,14 +43,14 @@
 ### 1. Canonical URL Verification
 ```
 Testing: Open each page and check page source
-Expected: <link rel="canonical" href="https://isaiahwebdev.onrender.com/[page].html">
+Expected: <link rel="canonical" href="https://isaiahweb.pages.dev/[page].html">
 Pages to test:
-  - ✓ index.html → href="https://isaiahwebdev.onrender.com/"
-  - [ ] about.html → href="https://isaiahwebdev.onrender.com/about.html"
-  - [ ] projects.html → href="https://isaiahwebdev.onrender.com/projects.html"
-  - [ ] certificates.html → href="https://isaiahwebdev.onrender.com/certificates.html"
-  - [ ] contact.html → href="https://isaiahwebdev.onrender.com/contact.html"
-  - [ ] resume.html → href="https://isaiahwebdev.onrender.com/resume.html"
+  - ✓ index.html → href="https://isaiahweb.pages.dev/"
+  - [ ] about.html → href="https://isaiahweb.pages.dev/about.html"
+  - [ ] projects.html → href="https://isaiahweb.pages.dev/projects.html"
+  - [ ] certificates.html → href="https://isaiahweb.pages.dev/certificates.html"
+  - [ ] contact.html → href="https://isaiahweb.pages.dev/contact.html"
+  - [ ] resume.html → href="https://isaiahweb.pages.dev/resume.html"
 ```
 
 ### 2. Schema.org Validation
@@ -174,14 +174,14 @@ After deployment, verify:
 **Test:** Fetch and parse sitemap.xml
 
 - [ ] All 6 URLs listed:
-  1. https://isaiahwebdev.onrender.com/ (priority 1.0)
-  2. https://isaiahwebdev.onrender.com/index.html (priority 1.0)
-  3. https://isaiahwebdev.onrender.com/projects.html (priority 0.9)
-  4. https://isaiahwebdev.onrender.com/about.html (priority 0.8)
-  5. https://isaiahwebdev.onrender.com/certificates.html (priority 0.7)
-  6. https://isaiahwebdev.onrender.com/contact.html (priority 0.6)
-  7. https://isaiahwebdev.onrender.com/resume.html (priority 0.6)
-- [ ] All lastmod dates are current (2026-08-15)
+  1. https://isaiahweb.pages.dev/ (priority 1.0)
+  2. https://isaiahweb.pages.dev/index.html (priority 1.0)
+  3. https://isaiahweb.pages.dev/projects.html (priority 0.9)
+  4. https://isaiahweb.pages.dev/about.html (priority 0.8)
+  5. https://isaiahweb.pages.dev/certificates.html (priority 0.7)
+  6. https://isaiahweb.pages.dev/contact.html (priority 0.6)
+  7. https://isaiahweb.pages.dev/resume.html (priority 0.6)
+- [ ] All lastmod dates reflect the most recent committed page-content change
 - [ ] XML is valid (can be parsed)
 
 ## 📊 Estimated SEO Impact

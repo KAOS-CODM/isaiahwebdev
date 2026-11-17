@@ -1,0 +1,192 @@
+/*
+ * Browser presentation for sitemap.xml.
+ * The sitemap remains a plain sitemap-protocol XML document; this stylesheet
+ * only controls how that document is displayed. No scripts or XSLT are used.
+ */
+
+urlset {
+  --sitemap-bg: #08080a;
+  --sitemap-panel: #121114;
+  --sitemap-panel-hover: #18161a;
+  --sitemap-ink: #f6f1e7;
+  --sitemap-muted: #a8a29a;
+  --sitemap-gold: #f5b942;
+  --sitemap-gold-soft: #fde68a;
+  --sitemap-line: rgba(245, 185, 66, 0.18);
+  --sitemap-line-strong: rgba(253, 230, 138, 0.42);
+  --sitemap-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --sitemap-display: Orbitron, "Exo 2", "Segoe UI", system-ui, sans-serif;
+
+  display: block;
+  box-sizing: border-box;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(32px, 6vw, 72px) clamp(16px, 4vw, 40px) 64px;
+  background:
+    radial-gradient(900px 420px at 50% -10%, rgba(245, 185, 66, 0.1), transparent 70%),
+    var(--sitemap-bg);
+  color: var(--sitemap-ink);
+  font-family: "Exo 2", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+urlset::before {
+  content: "Sitemap";
+  display: block;
+  max-width: 1080px;
+  margin: 0 auto 6px;
+  color: var(--sitemap-gold-soft);
+  font-family: var(--sitemap-display);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+urlset::after {
+  content: "Preferred canonical domain: isaiahweb.pages.dev  ·  Both frontend domains serve the same portfolio.";
+  display: block;
+  max-width: 1080px;
+  margin: 32px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--sitemap-line);
+  color: var(--sitemap-muted);
+  font-family: var(--sitemap-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
+
+url {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: 18px 24px;
+  align-items: end;
+  box-sizing: border-box;
+  max-width: 1080px;
+  margin: 0 auto 16px;
+  padding: 22px 24px;
+  border: 1px solid var(--sitemap-line);
+  border-left: 3px solid var(--sitemap-gold);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
+  box-shadow: 0 14px 34px -26px #000;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+url:first-of-type {
+  margin-top: 28px;
+}
+
+url:last-of-type {
+  margin-bottom: 0;
+}
+
+url:hover {
+  border-color: var(--sitemap-line-strong);
+  border-left-color: var(--sitemap-gold-soft);
+  background-color: var(--sitemap-panel-hover);
+}
+
+loc,
+lastmod,
+changefreq,
+priority {
+  display: block;
+  min-width: 0;
+}
+
+loc::before,
+lastmod::before,
+changefreq::before,
+priority::before {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--sitemap-muted);
+  font-family: var(--sitemap-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+loc::before {
+  content: "Page URL";
+}
+
+lastmod::before {
+  content: "Last modified";
+}
+
+changefreq::before {
+  content: "Change frequency";
+}
+
+priority::before {
+  content: "Priority";
+}
+
+loc {
+  color: var(--sitemap-gold-soft);
+  font-family: var(--sitemap-mono);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--sitemap-line-strong);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+loc::after {
+  content: " ↗";
+  color: var(--sitemap-gold);
+}
+
+loc:hover {
+  color: #fff;
+  text-decoration-color: var(--sitemap-gold);
+}
+
+lastmod,
+changefreq {
+  color: var(--sitemap-ink);
+  font-family: var(--sitemap-mono);
+  font-size: 0.9rem;
+}
+
+priority {
+  color: var(--sitemap-gold);
+  font-family: var(--sitemap-display);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  url {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  loc {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  url {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  url {
+    transition: none;
+  }
+}

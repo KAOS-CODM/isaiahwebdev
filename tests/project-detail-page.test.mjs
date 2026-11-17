@@ -27,7 +27,7 @@ import { loadProjectBySlug, resolveApiBase } from '../js/api-config.js';
  */
 
 const LOCAL_URL = '/data/projects.json';
-const SITE = 'https://isaiahwebdev.onrender.com';
+const SITE = 'https://isaiahweb.pages.dev';
 const LEGACY_SLUGS = [
   'recipe-submission-website',
   'fintech-multipurpose-website',
@@ -329,7 +329,7 @@ test('projectSummary prefers the current field over legacy names', () => {
 });
 
 test('DEFAULT_SITE_URL matches the deployed portfolio origin', () => {
-  assert.equal(DEFAULT_SITE_URL, 'https://isaiahwebdev.onrender.com');
+  assert.equal(DEFAULT_SITE_URL, 'https://isaiahweb.pages.dev');
 });
 
 test('the fallback file is never requested when the API succeeds', async () => {

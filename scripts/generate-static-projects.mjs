@@ -45,7 +45,7 @@ import { buildHomepageWork } from '../js/project.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-export const SITE_ORIGIN = 'https://isaiahwebdev.onrender.com';
+export const SITE_ORIGIN = 'https://isaiahweb.pages.dev';
 export const PROJECTS_API_URL =
   'https://isaiahwebdev-api.onrender.com/api/content/projects';
 
